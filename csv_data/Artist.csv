@@ -1,0 +1,31 @@
+artist_id,name,pseudonym,birth_date,music_genres,music_subgenres,website,instagram,image_url
+1,Ronald Cox,,1955-12-27,Electronic,RnB,https://www.ronaldcox.com,https://instagram.com/ronald,https://example.com/artist_1.jpg
+2,Jesse Jones,,1998-08-24,HipHop,Trance,https://www.jessejones.com,https://instagram.com/jesse,https://example.com/artist_2.jpg
+3,Jasmine Nelson,,1988-11-21,Jazz,Alternative,https://www.jasminenelson.com,https://instagram.com/jasmine,https://example.com/artist_3.jpg
+4,Douglas Gray,michael81,1954-06-03,Rock,RnB,https://www.michael81.com,https://instagram.com/michael81,https://example.com/artist_4.jpg
+5,Chase Jackson,,1971-08-19,Electronic,Trance,https://www.chasejackson.com,https://instagram.com/chase,https://example.com/artist_5.jpg
+6,Kristine Merritt,,1956-06-20,Electronic,Bebop,https://www.kristinemerritt.com,https://instagram.com/kristine,https://example.com/artist_6.jpg
+7,Danielle Mckee,,2005-06-08,Electronic,RnB,https://www.daniellemckee.com,https://instagram.com/danielle,https://example.com/artist_7.jpg
+8,Courtney Robinson,adavis,1992-02-04,Jazz,Folk,https://www.adavis.com,https://instagram.com/adavis,https://example.com/artist_8.jpg
+9,Melissa Robinson,davidsonkristi,1988-10-07,Electronic,Alternative,https://www.davidsonkristi.com,https://instagram.com/davidsonkristi,https://example.com/artist_9.jpg
+10,Jean Caldwell,,1961-07-02,Jazz,Trance,https://www.jeancaldwell.com,https://instagram.com/jean,https://example.com/artist_10.jpg
+11,Erika Williams,,1955-03-18,Rock,Alternative,https://www.erikawilliams.com,https://instagram.com/erika,https://example.com/artist_11.jpg
+12,Mackenzie Pugh,,1998-09-07,Jazz,Trance,https://www.mackenziepugh.com,https://instagram.com/mackenzie,https://example.com/artist_12.jpg
+13,Andrew Pineda,,1988-02-24,Jazz,Alternative,https://www.andrewpineda.com,https://instagram.com/andrew,https://example.com/artist_13.jpg
+14,George Long,,1996-06-26,HipHop,Trance,https://www.georgelong.com,https://instagram.com/george,https://example.com/artist_14.jpg
+15,Olivia Morales,,1965-09-18,HipHop,RnB,https://www.oliviamorales.com,https://instagram.com/olivia,https://example.com/artist_15.jpg
+16,Kimberly Robinson,stephanie55,1996-02-28,Pop,Folk,https://www.stephanie55.com,https://instagram.com/stephanie55,https://example.com/artist_16.jpg
+17,Sara Walker,lawrencelauren,2001-07-12,HipHop,Bebop,https://www.lawrencelauren.com,https://instagram.com/lawrencelauren,https://example.com/artist_17.jpg
+18,Justin Williamson,,1998-09-12,Metal,Trance,https://www.justinwilliamson.com,https://instagram.com/justin,https://example.com/artist_18.jpg
+19,Deanna Wright,,1954-05-29,Electronic,Folk,https://www.deannawright.com,https://instagram.com/deanna,https://example.com/artist_19.jpg
+20,Roger Carney,christineboyd,1989-01-13,Pop,Bebop,https://www.christineboyd.com,https://instagram.com/christineboyd,https://example.com/artist_20.jpg
+21,Matthew Doyle,,1990-03-20,Jazz,Alternative,https://www.matthewdoyle.com,https://instagram.com/matthew,https://example.com/artist_21.jpg
+22,Mario Anderson,,1982-12-07,Electronic,Alternative,https://www.marioanderson.com,https://instagram.com/mario,https://example.com/artist_22.jpg
+23,Karen Johnston,pmoore,1983-01-14,Jazz,Bebop,https://www.pmoore.com,https://instagram.com/pmoore,https://example.com/artist_23.jpg
+24,Mrs. Mary Davis,lopezmaria,1971-03-14,Metal,Alternative,https://www.lopezmaria.com,https://instagram.com/lopezmaria,https://example.com/artist_24.jpg
+25,Sherri Molina,joseph36,1961-11-19,Jazz,Alternative,https://www.joseph36.com,https://instagram.com/joseph36,https://example.com/artist_25.jpg
+26,Elizabeth Moore,,1975-01-07,Pop,Alternative,https://www.elizabethmoore.com,https://instagram.com/elizabeth,https://example.com/artist_26.jpg
+27,Travis Taylor,vjohnson,1971-05-21,Rock,Hard Rock,https://www.vjohnson.com,https://instagram.com/vjohnson,https://example.com/artist_27.jpg
+28,Stacie Collins,,1982-05-14,HipHop,Hard Rock,https://www.staciecollins.com,https://instagram.com/stacie,https://example.com/artist_28.jpg
+29,William Hardy,austin32,1957-01-18,Metal,Bebop,https://www.austin32.com,https://instagram.com/austin32,https://example.com/artist_29.jpg
+30,Nicholas Graham,,1999-02-20,Metal,Folk,https://www.nicholasgraham.com,https://instagram.com/nicholas,https://example.com/artist_30.jpg

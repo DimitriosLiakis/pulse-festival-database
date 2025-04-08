@@ -1,0 +1,21 @@
+band_id,band_name,formation_date,music_genres,music_subgenres,website,instagram,image_url
+1,OfficialBand_1,2006-03-13,Pop,Folk,https://www.officialband_1.com,https://instagram.com/officialband_1,https://example.com/band_1.jpg
+2,ThemBand_2,2013-04-03,Electronic,Folk,https://www.themband_2.com,https://instagram.com/themband_2,https://example.com/band_2.jpg
+3,TenBand_3,2021-07-11,HipHop,Bebop,https://www.tenband_3.com,https://instagram.com/tenband_3,https://example.com/band_3.jpg
+4,CentralBand_4,2008-10-20,Metal,RnB,https://www.centralband_4.com,https://instagram.com/centralband_4,https://example.com/band_4.jpg
+5,DegreeBand_5,2020-04-15,Metal,Folk,https://www.degreeband_5.com,https://instagram.com/degreeband_5,https://example.com/band_5.jpg
+6,ThenBand_6,2019-01-12,Electronic,Folk,https://www.thenband_6.com,https://instagram.com/thenband_6,https://example.com/band_6.jpg
+7,AroundBand_7,2007-09-18,Metal,RnB,https://www.aroundband_7.com,https://instagram.com/aroundband_7,https://example.com/band_7.jpg
+8,MatterBand_8,2018-01-08,Rock,Alternative,https://www.matterband_8.com,https://instagram.com/matterband_8,https://example.com/band_8.jpg
+9,FiveBand_9,2009-05-13,Jazz,Hard Rock,https://www.fiveband_9.com,https://instagram.com/fiveband_9,https://example.com/band_9.jpg
+10,JoinBand_10,2012-05-04,Jazz,Hard Rock,https://www.joinband_10.com,https://instagram.com/joinband_10,https://example.com/band_10.jpg
+11,LetterBand_11,2021-06-12,Rock,Hard Rock,https://www.letterband_11.com,https://instagram.com/letterband_11,https://example.com/band_11.jpg
+12,FineBand_12,2009-09-30,Jazz,Trance,https://www.fineband_12.com,https://instagram.com/fineband_12,https://example.com/band_12.jpg
+13,EveningBand_13,2007-10-02,Electronic,Alternative,https://www.eveningband_13.com,https://instagram.com/eveningband_13,https://example.com/band_13.jpg
+14,FieldBand_14,2020-03-17,Metal,Hard Rock,https://www.fieldband_14.com,https://instagram.com/fieldband_14,https://example.com/band_14.jpg
+15,LeftBand_15,2006-12-18,Electronic,Alternative,https://www.leftband_15.com,https://instagram.com/leftband_15,https://example.com/band_15.jpg
+16,ReachBand_16,2018-04-13,Rock,Alternative,https://www.reachband_16.com,https://instagram.com/reachband_16,https://example.com/band_16.jpg
+17,ReachBand_17,2021-01-23,HipHop,Hard Rock,https://www.reachband_17.com,https://instagram.com/reachband_17,https://example.com/band_17.jpg
+18,AgreeBand_18,2022-04-17,Rock,Hard Rock,https://www.agreeband_18.com,https://instagram.com/agreeband_18,https://example.com/band_18.jpg
+19,EnjoyBand_19,2006-08-24,Metal,RnB,https://www.enjoyband_19.com,https://instagram.com/enjoyband_19,https://example.com/band_19.jpg
+20,AddBand_20,2010-12-14,HipHop,Folk,https://www.addband_20.com,https://instagram.com/addband_20,https://example.com/band_20.jpg

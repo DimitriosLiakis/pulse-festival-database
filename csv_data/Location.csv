@@ -1,0 +1,6 @@
+location_id,address,city,country,continent,coordinates,location_image
+1,0396 Kennedy Run Apt. 231,Leeberg,Namibia,Africa,"-84.8259, 167.8368",https://example.com/loc_1.jpg
+2,6415 Jones Lock,South Michaelburgh,Saint Pierre and Miquelon,Africa,"-74.3671, 108.9286",https://example.com/loc_2.jpg
+3,1833 Clarence Spur Apt. 445,Martinezland,Mongolia,Asia,"-85.9578, -46.0772",https://example.com/loc_3.jpg
+4,968 Sarah Grove,Leroymouth,Benin,North America,"45.0036, 170.6790",https://example.com/loc_4.jpg
+5,9497 Taylor Street Suite 395,Smithhaven,Croatia,Africa,"21.0521, 60.5392",https://example.com/loc_5.jpg

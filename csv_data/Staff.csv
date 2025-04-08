@@ -1,0 +1,31 @@
+staff_id,staff_name,age,role,experience_level
+1,Teresa Thompson,34,tech,beginner
+2,Lori Stephenson,56,tech,average
+3,Mrs. Carla Trujillo,41,tech,experienced
+4,Jacqueline Daniel,24,support,experienced
+5,Joseph Keller,26,tech,experienced
+6,David Thomas,50,support,experienced
+7,Linda Tucker,60,tech,experienced
+8,Carolyn Simmons,34,security,experienced
+9,Renee Obrien,55,security,beginner
+10,Nicholas Mcguire,20,tech,average
+11,Jacqueline Smith,32,tech,expert
+12,Tammy Robertson,51,support,average
+13,Mr. Christopher Duffy MD,53,security,expert
+14,Briana Marquez,39,security,beginner
+15,Larry Wilson,49,support,beginner
+16,Amy Ramirez,38,support,beginner
+17,Patrick Bernard,53,support,intern
+18,Ashley Smith,33,tech,average
+19,Sarah Snyder,55,support,experienced
+20,Jordan White,24,tech,expert
+21,Wesley Reyes,31,tech,expert
+22,Hector Smith,31,security,intern
+23,Tara Sanchez,57,security,beginner
+24,Lisa Hodge,48,support,beginner
+25,Ashley Garcia,52,security,experienced
+26,Brianna Espinoza,49,tech,beginner
+27,Christopher Murray,57,security,average
+28,Patrick Mahoney,55,security,average
+29,Cody Rodriguez,34,support,intern
+30,Megan Long,22,security,experienced
