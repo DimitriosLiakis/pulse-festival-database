@@ -1,6 +1,6 @@
 location_id,address,city,country,continent,coordinates,location_image
-1,0396 Kennedy Run Apt. 231,Leeberg,Namibia,Africa,"-84.8259, 167.8368",https://example.com/loc_1.jpg
-2,6415 Jones Lock,South Michaelburgh,Saint Pierre and Miquelon,Africa,"-74.3671, 108.9286",https://example.com/loc_2.jpg
-3,1833 Clarence Spur Apt. 445,Martinezland,Mongolia,Asia,"-85.9578, -46.0772",https://example.com/loc_3.jpg
-4,968 Sarah Grove,Leroymouth,Benin,North America,"45.0036, 170.6790",https://example.com/loc_4.jpg
-5,9497 Taylor Street Suite 395,Smithhaven,Croatia,Africa,"21.0521, 60.5392",https://example.com/loc_5.jpg
+1,386 Davis Green Suite 682,Walkerchester,Kiribati,Europe,"-37.7841, 98.5715",https://example.com/loc_1.jpg
+2,062 Bryant Viaduct Suite 832,Matthewsport,Belarus,Australia,"-78.7406, -80.1570",https://example.com/loc_2.jpg
+3,663 Anderson Ports,Banksmouth,Bangladesh,Australia,"56.3205, -140.6124",https://example.com/loc_3.jpg
+4,87701 Martinez Gardens,North Eddieton,Slovakia (Slovak Republic),Africa,"8.0508, -1.9972",https://example.com/loc_4.jpg
+5,422 Sandra Plaza,Port Sabrinaview,Guernsey,Australia,"47.3209, 176.6625",https://example.com/loc_5.jpg
