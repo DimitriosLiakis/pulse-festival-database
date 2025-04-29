@@ -1,0 +1,7 @@
+artist_id	name	participated
+8	Alyssa Cruz	Yes
+12	David Valentine	Yes
+21	Katrina Kirk	Yes
+17	Robert Lewis	Yes
+5	Theresa Williams	No
+2	Traci Lane	Yes
