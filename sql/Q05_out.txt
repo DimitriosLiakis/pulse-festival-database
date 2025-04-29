@@ -1,0 +1,6 @@
+artist_id	name	age	festival_count
+8	Alyssa Cruz	22	3
+3	Andrew King	20	2
+4	Richard Rice	27	2
+19	Jason Cunningham	19	1
+25	Kathryn Hamilton	22	1

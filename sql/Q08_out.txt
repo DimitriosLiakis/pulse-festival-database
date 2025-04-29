@@ -1,0 +1,15 @@
+staff_id	staff_name
+2	Jose Carey
+3	Maurice Warner
+8	Brittany Mcmahon
+9	David Graham
+11	Jacqueline Villa
+12	Nicholas George
+20	Matthew Perez
+21	Gary Rios
+22	Amanda Martin
+24	Evelyn Wilson
+25	Tasha May
+27	Lauren Roberson
+29	Gabrielle Sosa
+30	Samuel Foster
