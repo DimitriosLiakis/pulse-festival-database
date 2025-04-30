@@ -1,5 +1,5 @@
 performance_id	performance_type	times_attended	avg_rating
-10	warm up	1	NULL
-13	special guest	1	NULL
-38	warm up	1	NULL
-94	special guest	1	NULL
+17	special guest	1	NULL
+68	special guest	1	NULL
+74	special guest	1	NULL
+83	main act	1	NULL

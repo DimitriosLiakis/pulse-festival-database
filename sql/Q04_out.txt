@@ -1,2 +1,2 @@
 avg_interpretation	avg_overall
-2.62	2.38
+NULL	NULL

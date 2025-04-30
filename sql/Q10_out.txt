@@ -1,4 +1,4 @@
 genre_a	genre_b	festival_count
-Metal	Pop	6
-Jazz	Metal	6
-Jazz	Pop	6
+Electronic	HipHop	6
+HipHop	Jazz	5
+Jazz	Metal	4

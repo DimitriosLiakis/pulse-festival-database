@@ -1,31 +1,31 @@
 artist_id,name,pseudonym,birth_date,music_genres,music_subgenres,website,instagram,image_url
-1,Michael Dodson,,1991-10-19,Electronic,RnB,https://www.michaeldodson.com,https://instagram.com/michael,https://example.com/artist_1.jpg
-2,Traci Lane,kevin47,1986-11-11,Pop,Alternative,https://www.kevin47.com,https://instagram.com/kevin47,https://example.com/artist_2.jpg
-3,Andrew King,,2004-10-31,Metal,RnB,https://www.andrewking.com,https://instagram.com/andrew,https://example.com/artist_3.jpg
-4,Richard Rice,,1997-10-09,Rock,Folk,https://www.richardrice.com,https://instagram.com/richard,https://example.com/artist_4.jpg
-5,Theresa Williams,,1973-11-21,Pop,RnB,https://www.theresawilliams.com,https://instagram.com/theresa,https://example.com/artist_5.jpg
-6,Laurie Baker,,1968-06-19,HipHop,Trance,https://www.lauriebaker.com,https://instagram.com/laurie,https://example.com/artist_6.jpg
-7,Kathryn Palmer,laura94,1992-06-12,Metal,Alternative,https://www.laura94.com,https://instagram.com/laura94,https://example.com/artist_7.jpg
-8,Alyssa Cruz,,2002-09-05,Pop,RnB,https://www.alyssacruz.com,https://instagram.com/alyssa,https://example.com/artist_8.jpg
-9,Joseph Juarez,,1958-06-03,Metal,Folk,https://www.josephjuarez.com,https://instagram.com/joseph,https://example.com/artist_9.jpg
-10,Brad Brown,,1977-05-15,Jazz,RnB,https://www.bradbrown.com,https://instagram.com/brad,https://example.com/artist_10.jpg
-11,Travis Nguyen,,1968-09-28,Rock,Trance,https://www.travisnguyen.com,https://instagram.com/travis,https://example.com/artist_11.jpg
-12,David Valentine,vmurphy,1976-01-15,Pop,RnB,https://www.vmurphy.com,https://instagram.com/vmurphy,https://example.com/artist_12.jpg
-13,Denise Lawson,,1975-01-13,Electronic,Bebop,https://www.deniselawson.com,https://instagram.com/denise,https://example.com/artist_13.jpg
-14,Leonard Hall,,1956-05-29,Jazz,RnB,https://www.leonardhall.com,https://instagram.com/leonard,https://example.com/artist_14.jpg
-15,Margaret Torres,,1975-01-15,Rock,Bebop,https://www.margarettorres.com,https://instagram.com/margaret,https://example.com/artist_15.jpg
-16,Brittany Reyes,,2004-02-29,Jazz,Alternative,https://www.brittanyreyes.com,https://instagram.com/brittany,https://example.com/artist_16.jpg
-17,Robert Lewis,,1955-05-10,Pop,Hard Rock,https://www.robertlewis.com,https://instagram.com/robert,https://example.com/artist_17.jpg
-18,Greg Foster,wayne98,1974-08-09,Electronic,Hard Rock,https://www.wayne98.com,https://instagram.com/wayne98,https://example.com/artist_18.jpg
-19,Jason Cunningham,,2006-03-26,Rock,Trance,https://www.jasoncunningham.com,https://instagram.com/jason,https://example.com/artist_19.jpg
-20,Lonnie Sexton,,1961-04-06,Jazz,RnB,https://www.lonniesexton.com,https://instagram.com/lonnie,https://example.com/artist_20.jpg
-21,Katrina Kirk,,1967-07-28,Pop,Trance,https://www.katrinakirk.com,https://instagram.com/katrina,https://example.com/artist_21.jpg
-22,Rebecca Edwards,,1962-12-09,Metal,RnB,https://www.rebeccaedwards.com,https://instagram.com/rebecca,https://example.com/artist_22.jpg
-23,Kim Scott,,1957-07-31,Rock,Bebop,https://www.kimscott.com,https://instagram.com/kim,https://example.com/artist_23.jpg
-24,Melissa Grimes,,1956-01-02,HipHop,Folk,https://www.melissagrimes.com,https://instagram.com/melissa,https://example.com/artist_24.jpg
-25,Kathryn Hamilton,,2002-05-24,Metal,Alternative,https://www.kathrynhamilton.com,https://instagram.com/kathryn,https://example.com/artist_25.jpg
-26,Mackenzie Moses,moorezachary,2001-06-22,Metal,Hard Rock,https://www.moorezachary.com,https://instagram.com/moorezachary,https://example.com/artist_26.jpg
-27,Danny Johnson,rhall,1963-08-24,Rock,Alternative,https://www.rhall.com,https://instagram.com/rhall,https://example.com/artist_27.jpg
-28,David Baldwin,,1990-03-31,Jazz,Alternative,https://www.davidbaldwin.com,https://instagram.com/david,https://example.com/artist_28.jpg
-29,Mary Martin,michelle27,1967-12-19,Metal,Hard Rock,https://www.michelle27.com,https://instagram.com/michelle27,https://example.com/artist_29.jpg
-30,Travis Williamson DDS,,1974-02-16,Rock,Alternative,https://www.traviswilliamsondds.com,https://instagram.com/travis,https://example.com/artist_30.jpg
+1,Alan Wright,,1959-06-08,Metal,Hard Rock,https://www.alanwright.com,https://instagram.com/alan,https://example.com/artist_1.jpg
+2,Michael Estrada PhD,bettyhill,2004-03-06,Metal,Bebop,https://www.bettyhill.com,https://instagram.com/bettyhill,https://example.com/artist_2.jpg
+3,Michael Navarro,,1964-03-22,Electronic,Trance,https://www.michaelnavarro.com,https://instagram.com/michael,https://example.com/artist_3.jpg
+4,Denise Gomez,kimcastillo,1975-09-26,Pop,Alternative,https://www.kimcastillo.com,https://instagram.com/kimcastillo,https://example.com/artist_4.jpg
+5,Timothy Perry,laurafowler,1955-10-02,Metal,Alternative,https://www.laurafowler.com,https://instagram.com/laurafowler,https://example.com/artist_5.jpg
+6,Charles Kelly,,1962-07-19,Pop,RnB,https://www.charleskelly.com,https://instagram.com/charles,https://example.com/artist_6.jpg
+7,Samantha Vega,robinsonpamela,1977-08-20,Rock,RnB,https://www.robinsonpamela.com,https://instagram.com/robinsonpamela,https://example.com/artist_7.jpg
+8,April Hunter,,1992-02-25,HipHop,Bebop,https://www.aprilhunter.com,https://instagram.com/april,https://example.com/artist_8.jpg
+9,Ian Walker,,1993-11-20,Metal,Bebop,https://www.ianwalker.com,https://instagram.com/ian,https://example.com/artist_9.jpg
+10,Jack Brooks,mary55,1967-09-23,Electronic,Hard Rock,https://www.mary55.com,https://instagram.com/mary55,https://example.com/artist_10.jpg
+11,Paul Long,umcdonald,2000-02-20,Metal,RnB,https://www.umcdonald.com,https://instagram.com/umcdonald,https://example.com/artist_11.jpg
+12,Morgan Thomas,,1959-01-05,Metal,Hard Rock,https://www.morganthomas.com,https://instagram.com/morgan,https://example.com/artist_12.jpg
+13,Donald Salazar,,1983-09-25,Jazz,RnB,https://www.donaldsalazar.com,https://instagram.com/donald,https://example.com/artist_13.jpg
+14,Heidi Cortez,,1961-01-12,HipHop,Bebop,https://www.heidicortez.com,https://instagram.com/heidi,https://example.com/artist_14.jpg
+15,Pamela Lane,,1991-05-16,Electronic,Hard Rock,https://www.pamelalane.com,https://instagram.com/pamela,https://example.com/artist_15.jpg
+16,Stacey Rodriguez MD,,1957-06-28,HipHop,Folk,https://www.staceyrodriguezmd.com,https://instagram.com/stacey,https://example.com/artist_16.jpg
+17,Leslie Caldwell,,2001-11-29,Jazz,RnB,https://www.lesliecaldwell.com,https://instagram.com/leslie,https://example.com/artist_17.jpg
+18,Amber Jones,rebecca39,1958-03-03,Metal,Hard Rock,https://www.rebecca39.com,https://instagram.com/rebecca39,https://example.com/artist_18.jpg
+19,Hector Perez,,2003-03-29,Electronic,Hard Rock,https://www.hectorperez.com,https://instagram.com/hector,https://example.com/artist_19.jpg
+20,Diane Reese,,1966-07-28,Electronic,Hard Rock,https://www.dianereese.com,https://instagram.com/diane,https://example.com/artist_20.jpg
+21,Christopher Mcguire,,1976-04-21,Jazz,Hard Rock,https://www.christophermcguire.com,https://instagram.com/christopher,https://example.com/artist_21.jpg
+22,Amy Stewart,,1980-07-26,Pop,Folk,https://www.amystewart.com,https://instagram.com/amy,https://example.com/artist_22.jpg
+23,Ryan Smith,,1995-11-06,Jazz,Folk,https://www.ryansmith.com,https://instagram.com/ryan,https://example.com/artist_23.jpg
+24,James Richardson,,1985-10-22,HipHop,Bebop,https://www.jamesrichardson.com,https://instagram.com/james,https://example.com/artist_24.jpg
+25,Anna Walker,,1991-08-03,HipHop,Alternative,https://www.annawalker.com,https://instagram.com/anna,https://example.com/artist_25.jpg
+26,Lori Nelson,,1982-12-18,Rock,Trance,https://www.lorinelson.com,https://instagram.com/lori,https://example.com/artist_26.jpg
+27,Jeffery Palmer,shahwilliam,1998-04-12,Metal,Folk,https://www.shahwilliam.com,https://instagram.com/shahwilliam,https://example.com/artist_27.jpg
+28,Robert Dickerson,shepherdlindsey,2001-05-04,HipHop,Bebop,https://www.shepherdlindsey.com,https://instagram.com/shepherdlindsey,https://example.com/artist_28.jpg
+29,Ashley Lawson,,1989-08-23,Rock,Folk,https://www.ashleylawson.com,https://instagram.com/ashley,https://example.com/artist_29.jpg
+30,Melissa Sanchez,,1976-11-26,Rock,Trance,https://www.melissasanchez.com,https://instagram.com/melissa,https://example.com/artist_30.jpg
