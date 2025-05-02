@@ -1,2 +1,2 @@
 avg_interpretation	avg_overall
-3.14	1.43
+3.5714	2.4286

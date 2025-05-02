@@ -1,0 +1,31 @@
+artist_id,name,pseudonym,birth_date,main_genre,sub_genre,website,instagram,image_url
+1,Tim Patton,,1976-02-25,rock,hard rock,https://www.timpatton.com,https://instagram.com/timpatton,https://example.com/artist_1.jpg
+2,Nancy Wright,kristinrodriguez,2000-07-22,hip‑hop,boom bap,https://www.kristinrodriguez.com,https://instagram.com/kristinrodriguez,https://example.com/artist_2.jpg
+3,Courtney Velasquez,ybailey,2000-07-06,hip‑hop,trap,https://www.ybailey.com,https://instagram.com/ybailey,https://example.com/artist_3.jpg
+4,Matthew Ross,michelle45,1988-04-30,rock,indie rock,https://www.michelle45.com,https://instagram.com/michelle45,https://example.com/artist_4.jpg
+5,William Herrera,wilsontara,1963-10-18,hip‑hop,boom bap,https://www.wilsontara.com,https://instagram.com/wilsontara,https://example.com/artist_5.jpg
+6,Deborah Rodriguez,,1977-05-13,electronic,drum&bass,https://www.deborahrodriguez.com,https://instagram.com/deborahrodriguez,https://example.com/artist_6.jpg
+7,Emily Obrien,,1981-06-09,jazz,bebop,https://www.emilyobrien.com,https://instagram.com/emilyobrien,https://example.com/artist_7.jpg
+8,Kenneth Scott,zsmith,1982-11-14,rock,alternative,https://www.zsmith.com,https://instagram.com/zsmith,https://example.com/artist_8.jpg
+9,Natalie Lambert,,1973-08-20,rock,alternative,https://www.natalielambert.com,https://instagram.com/natalielambert,https://example.com/artist_9.jpg
+10,Matthew Rivera,,1970-12-20,rock,alternative,https://www.matthewrivera.com,https://instagram.com/matthewrivera,https://example.com/artist_10.jpg
+11,Michelle Evans,,1970-09-22,electronic,house,https://www.michelleevans.com,https://instagram.com/michelleevans,https://example.com/artist_11.jpg
+12,James Phillips,jamesortega,1974-06-05,electronic,house,https://www.jamesortega.com,https://instagram.com/jamesortega,https://example.com/artist_12.jpg
+13,Carrie Carroll,,1975-11-08,rock,alternative,https://www.carriecarroll.com,https://instagram.com/carriecarroll,https://example.com/artist_13.jpg
+14,Elizabeth Clark,steven73,1981-06-04,jazz,smooth jazz,https://www.steven73.com,https://instagram.com/steven73,https://example.com/artist_14.jpg
+15,Toni Fitzgerald,campbellelizabeth,1987-02-25,electronic,house,https://www.campbellelizabeth.com,https://instagram.com/campbellelizabeth,https://example.com/artist_15.jpg
+16,Trevor Young,,1970-10-14,rock,alternative,https://www.trevoryoung.com,https://instagram.com/trevoryoung,https://example.com/artist_16.jpg
+17,Brittany Williams,xcarr,1958-03-11,electronic,drum&bass,https://www.xcarr.com,https://instagram.com/xcarr,https://example.com/artist_17.jpg
+18,Mark Lee,,1991-03-29,pop,synth‑pop,https://www.marklee.com,https://instagram.com/marklee,https://example.com/artist_18.jpg
+19,David Douglas Jr.,,1994-02-18,pop,synth‑pop,https://www.daviddouglasjr..com,https://instagram.com/daviddouglasjr.,https://example.com/artist_19.jpg
+20,Ashley Coleman,lindadominguez,1978-12-14,jazz,fusion,https://www.lindadominguez.com,https://instagram.com/lindadominguez,https://example.com/artist_20.jpg
+21,Sylvia Martinez,,1961-05-26,hip‑hop,boom bap,https://www.sylviamartinez.com,https://instagram.com/sylviamartinez,https://example.com/artist_21.jpg
+22,Joseph Hansen,,1971-02-24,rock,hard rock,https://www.josephhansen.com,https://instagram.com/josephhansen,https://example.com/artist_22.jpg
+23,Jessica Briggs,,2001-08-10,electronic,house,https://www.jessicabriggs.com,https://instagram.com/jessicabriggs,https://example.com/artist_23.jpg
+24,Terry Griffin,juliawells,1968-01-26,jazz,fusion,https://www.juliawells.com,https://instagram.com/juliawells,https://example.com/artist_24.jpg
+25,Mark Cannon,rsims,1977-08-24,pop,synth‑pop,https://www.rsims.com,https://instagram.com/rsims,https://example.com/artist_25.jpg
+26,Cynthia Rogers,,2001-08-30,pop,electro‑pop,https://www.cynthiarogers.com,https://instagram.com/cynthiarogers,https://example.com/artist_26.jpg
+27,Chris Reyes,jasminebrown,1975-12-08,electronic,drum&bass,https://www.jasminebrown.com,https://instagram.com/jasminebrown,https://example.com/artist_27.jpg
+28,Jennifer Clark,,1976-08-07,electronic,house,https://www.jenniferclark.com,https://instagram.com/jenniferclark,https://example.com/artist_28.jpg
+29,Lauren Dominguez,,1999-09-27,electronic,techno,https://www.laurendominguez.com,https://instagram.com/laurendominguez,https://example.com/artist_29.jpg
+30,Jamie Smith,,1972-12-22,rock,hard rock,https://www.jamiesmith.com,https://instagram.com/jamiesmith,https://example.com/artist_30.jpg

@@ -1,4 +1,2 @@
-artist_id	name	age	festival_count
-17	Leslie Caldwell	23	3
-23	Ryan Smith	29	2
-19	Hector Perez	22	1
+artist_id	name	fest_count
+23	Jessica Briggs	4

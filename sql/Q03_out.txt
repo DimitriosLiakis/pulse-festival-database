@@ -1,0 +1,8 @@
+artist_id	name	festival_year	warmup_count
+16	Trevor Young	2026	1
+18	Mark Lee	2021	1
+25	Mark Cannon	2020	1
+21	Sylvia Martinez	2021	1
+22	Joseph Hansen	2024	1
+20	Ashley Coleman	2024	1
+8	Kenneth Scott	2019	1

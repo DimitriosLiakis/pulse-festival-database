@@ -1,15 +1,18 @@
 SELECT
   a.artist_id,
   a.name,
-  FLOOR(DATEDIFF(CURDATE(), a.birth_date)/365.25) AS age,
-  COUNT(DISTINCT e.festival_id_FK)               AS festival_count
-FROM Artist a
-JOIN Performance_Artist pa ON a.artist_id = pa.artist_id
-JOIN Performance p        ON pa.performance_id = p.performance_id
-JOIN Event e              ON p.event_id_FK     = e.event_id
-WHERE FLOOR(DATEDIFF(CURDATE(), a.birth_date)/365.25) < 30
+  COUNT(DISTINCT e.festival_id_FK) AS fest_count
+FROM   Artist             a
+JOIN   Performance_Artist pa ON pa.artist_id    = a.artist_id
+JOIN   Performance        p  ON p.performance_id = pa.performance_id
+JOIN   Event              e  ON e.event_id       = p.event_id_FK
+WHERE  TIMESTAMPDIFF(
+           YEAR,
+           a.birth_date,
+           DATE '2025-05-02'
+       ) < 30
 GROUP BY
-  a.artist_id,
-  a.name
-ORDER BY festival_count DESC
-LIMIT 5;
+  a.artist_id, a.name
+ORDER BY
+  fest_count DESC
+LIMIT 1;

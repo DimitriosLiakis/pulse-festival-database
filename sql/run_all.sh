@@ -3,7 +3,7 @@
 
     DB_USER="root"
     DB_PASS="2001"
-    DB_NAME="pulse_university"
+    DB_NAME="bla"
     SQL_DIR="."
 
     for i in $(seq -w 1 15); do

@@ -1,5 +1,5 @@
-artist_id	name	continent_count
-8	April Hunter	3
-10	Jack Brooks	3
-17	Leslie Caldwell	3
-18	Amber Jones	3
+artist_id	name
+14	Elizabeth Clark
+15	Toni Fitzgerald
+23	Jessica Briggs
+25	Mark Cannon

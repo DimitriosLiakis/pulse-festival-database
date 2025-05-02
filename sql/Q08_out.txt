@@ -1,11 +1,10 @@
 staff_id	staff_name
-5	Nina Brown
-6	Jeremy Long
-7	Thomas Lewis
-9	Laura Nelson
-11	Ashlee Parker
-15	Gina Davidson
-20	Melissa Tran
-25	Rachel Conrad
-27	Douglas Barton
-30	Michael Coffey
+2	Erin Daniels
+5	Kelly Taylor
+7	Emily Grant
+8	Bailey Stewart
+12	Denise Maxwell
+19	Corey Johnson
+24	David Sullivan
+29	Amanda Forbes
+30	Jennifer Moss

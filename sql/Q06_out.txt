@@ -1,5 +1,3 @@
-performance_id	performance_type	times_attended	avg_rating
-17	special guest	1	NULL
-68	special guest	1	NULL
-74	special guest	1	NULL
-83	main act	1	NULL
+event_id	event_name	avg_overall_rating
+6	Event_6	1.0000
+38	Event_38	3.0000

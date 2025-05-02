@@ -1,55 +1,37 @@
-WITH festival_days AS (
+WITH RECURSIVE festival_days AS (
   SELECT
-    f.festival_id,
-    DATE_ADD(f.start_date, INTERVAL seq DAY) AS fest_date
-  FROM Festival f
-  JOIN (
-    SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
-    UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
-    UNION ALL SELECT 8 UNION ALL SELECT 9
-  ) AS days
-    ON DATE_ADD(f.start_date, INTERVAL days.seq DAY) <= f.end_date
-),
-staff_days AS (
+    festival_id,
+    start_date AS day
+  FROM Festival
+  UNION ALL
   SELECT
-    ss.staff_id,
-    ss.stage_id,
-    DATE_ADD(ss.start_date, INTERVAL seq DAY) AS work_date,
-    s.role
-  FROM Stage_Staff ss
-  JOIN Staff s ON ss.staff_id = s.staff_id
-  JOIN (
-    SELECT 0 AS seq UNION ALL SELECT 1 UNION ALL SELECT 2 UNION ALL SELECT 3
-    UNION ALL SELECT 4 UNION ALL SELECT 5 UNION ALL SELECT 6 UNION ALL SELECT 7
-    UNION ALL SELECT 8 UNION ALL SELECT 9
-  ) AS days
-    ON DATE_ADD(ss.start_date, INTERVAL days.seq DAY) <= ss.end_date
-),
-festival_staff AS (
-  SELECT
-    fd.festival_id,
-    fd.fest_date,
-    sd.role,
-    sd.staff_id
-  FROM festival_days fd
-  LEFT JOIN staff_days sd
-    ON sd.work_date = fd.fest_date
-  LEFT JOIN Event e
-    ON e.stage_id_FK = sd.stage_id
-   AND e.festival_id_FK = fd.festival_id
+    festival_id,
+    DATE_ADD(day, INTERVAL 1 DAY)
+  FROM festival_days
+  WHERE day < (
+    SELECT end_date
+      FROM Festival
+     WHERE Festival.festival_id = festival_days.festival_id
+  )
 )
 SELECT
-  fs.festival_id,
-  fs.fest_date   AS date,
-  fs.role        AS staff_category,
-  COUNT(DISTINCT fs.staff_id) AS staff_required
-FROM festival_staff fs
-WHERE fs.role IS NOT NULL
+  f.festival_id,
+  f.festival_name,
+  fd.day,
+  sr.description     AS role,
+  COUNT(DISTINCT ss.staff_id) AS staff_count
+FROM festival_days fd
+JOIN Festival     f  ON f.festival_id   = fd.festival_id
+JOIN Stage_Staff  ss ON ss.start_date <= fd.day
+                    AND ss.end_date   >= fd.day
+JOIN Staff        s  ON s.staff_id      = ss.staff_id
+JOIN Staff_role   sr ON sr.staff_role_id = s.role_id
 GROUP BY
-  fs.festival_id,
-  fs.fest_date,
-  fs.role
+  f.festival_id,
+  f.festival_name,
+  fd.day,
+  sr.description
 ORDER BY
-  fs.festival_id,
-  fs.fest_date,
-  fs.role;
+  f.festival_id,
+  fd.day,
+  sr.description;

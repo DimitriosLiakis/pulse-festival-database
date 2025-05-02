@@ -1,6 +1,0 @@
-location_id,address,city,country,continent,coordinates,location_image
-1,04143 Pitts Meadow Apt. 572,East Henry,Myanmar,North America,"77.1462, -123.7075",https://example.com/loc_1.jpg
-2,2387 Smith Causeway,Johnside,Taiwan,Europe,"-42.7750, -146.6837",https://example.com/loc_2.jpg
-3,7169 Bradley Cove,Jonesport,Qatar,Asia,"31.6280, 159.5143",https://example.com/loc_3.jpg
-4,10875 Meyer Via Apt. 758,Jorgeside,Northern Mariana Islands,Africa,"16.3300, 46.5708",https://example.com/loc_4.jpg
-5,649 Justin Land Apt. 242,East Jayview,Somalia,Australia,"-30.2707, -112.1811",https://example.com/loc_5.jpg
