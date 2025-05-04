@@ -3,7 +3,6 @@ SELECT
   G.g2,
   COUNT(DISTINCT f.festival_id) AS festival_count
 FROM (
-  -- build normalized genre‐pairs per artist
   SELECT
     artist_id,
     CASE

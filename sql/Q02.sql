@@ -1,4 +1,3 @@
--- 2a) All artists in a genre, flagged by appearance in a given year
 SELECT
   a.artist_id,
   a.name,
