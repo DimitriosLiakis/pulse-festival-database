@@ -1,6 +1,3 @@
-/* ============================================================
-   load2.sql – bulk load all CSVs into schema “db”
-   ============================================================ */
 SET FOREIGN_KEY_CHECKS=0;
 TRUNCATE TABLE Resale_queue; TRUNCATE TABLE Rating;
 TRUNCATE TABLE Stage_Staff;     TRUNCATE TABLE Staff;

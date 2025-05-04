@@ -1,8 +1,3 @@
-/* ============================================================
-   install_v3.sql  –  Pulse‑University DB (ENUM‑free version)
-   Compatible with load‑script & CSV generator of 2025‑05‑02
- ============================================================ */
-
 DROP DATABASE IF EXISTS bla;
 CREATE DATABASE bla
   CHARACTER SET utf8mb4
@@ -10,7 +5,6 @@ CREATE DATABASE bla
 USE bla;
 
 
-/* ---------- lookup tables ---------- */
 CREATE TABLE Performance_type (
   performance_type_id TINYINT PRIMARY KEY,
   description VARCHAR(30) UNIQUE NOT NULL
@@ -36,7 +30,6 @@ CREATE TABLE Interest_type (
   description VARCHAR(30) UNIQUE NOT NULL
 );
 
-/* seed lookup values */
 INSERT INTO Performance_type  VALUES
  (1,'warm up'),(2,'headline'),(3,'special guest'),(4,'main act');
 INSERT INTO Staff_role        VALUES (1,'tech'),(2,'security'),(3,'support');
@@ -47,7 +40,6 @@ INSERT INTO Purchase_method   VALUES
  (1,'credit_card'),(2,'debit_card'),(3,'bank_transfer'),(4,'other');
 INSERT INTO Interest_type     VALUES (1,'seller'),(2,'buyer');
 
-/* ---------- main entities ---------- */
 CREATE TABLE Location (
   location_id INT PRIMARY KEY,
   address VARCHAR(255) NOT NULL,
@@ -239,7 +231,6 @@ CREATE TABLE Resale_queue (
   FOREIGN KEY (interest_type_id) REFERENCES Interest_type(interest_type_id)
 );
 
-/* ---------- indexes & trigger ---------- */
 CREATE INDEX idx_event_period      ON Event(event_start,event_end);
 CREATE INDEX idx_performance_event ON Performance(event_id_FK,start_time);
 CREATE INDEX idx_stage_staff_role  ON Staff(role_id);
