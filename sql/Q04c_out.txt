@@ -1,0 +1,2 @@
+EXPLAIN
+-> Aggregate: avg(r.rating_interpretation), avg(r.rating_overall)  (cost=5.25 rows=1) (actual time=0.0783..0.0784 rows=1 loops=1)\n    -> Nested loop inner join  (cost=4.03 rows=12.2) (actual time=0.0426..0.0718 rows=7 loops=1)\n        -> Covering index lookup on pa using artist_id (artist_id=5)  (cost=0.551 rows=3) (actual time=0.0185..0.0205 rows=3 loops=1)\n        -> Index lookup on r using performance_id_FK (performance_id_FK=pa.performance_id)  (cost=0.886 rows=4.08) (actual time=0.014..0.016 rows=2.33 loops=3)\n

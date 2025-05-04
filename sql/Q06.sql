@@ -9,3 +9,4 @@ WHERE  r.visitor_id_FK = 10
 GROUP BY
   e.event_id,
   e.event_name;
+-- NESTED-LOOP
