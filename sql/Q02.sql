@@ -9,7 +9,7 @@ SELECT
       JOIN   Event              e  ON e.event_id       = p.event_id_FK
       JOIN   Festival           f  ON f.festival_id    = e.festival_id_FK
       WHERE  pa.artist_id   = a.artist_id
-        AND  f.festival_year = 2023
+        AND  f.festival_year = 2024
     )
     THEN 'Y'
     ELSE 'N'

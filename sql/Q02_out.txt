@@ -1,10 +1,10 @@
 artist_id	name	appeared_in_year
 13	Carrie Carroll	N
 30	Jamie Smith	N
-22	Joseph Hansen	N
+22	Joseph Hansen	Y
 8	Kenneth Scott	N
 10	Matthew Rivera	N
 4	Matthew Ross	N
 9	Natalie Lambert	N
 1	Tim Patton	N
-16	Trevor Young	N
+16	Trevor Young	Y
