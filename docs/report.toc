@@ -1,0 +1,23 @@
+\xpginauxfiletrue 
+\selectlanguage *{greek}
+\contentsline {section}{\numberline {1}Σχεδίαση Βάσης Δεδομένων}{2}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Διάγραμμα Οντοτήτων-Συσχετίσεων (E/R)}{2}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Διάγραμμα E/R}{2}{subsection.1.2}%
+\contentsline {subsection}{\numberline {1.3}Σχεσιακό Σχήμα}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.4}Ευρετήρια}{3}{subsection.1.4}%
+\contentsline {subsection}{\numberline {1.5}Mock data}{4}{subsection.1.5}%
+\contentsline {section}{\numberline {2}Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}{5}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Script Δημιουργίας Σχήματος (\texttt {sql/install.sql})}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Script Φόρτωσης Δεδομένων (\texttt {sql/load.sql})}{6}{subsection.2.2}%
+\contentsline {subsection}{\numberline {2.3}Ερώτημα 4: Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{7}{subsection.2.3}%
+\contentsline {paragraph}{Default (Nested-Loop Join)}{7}{lstlisting.-4}%
+\contentsline {paragraph}{Hash Join (forced via \texttt {SET SESSION optimizer\_switch='block\_nested\_loop=off';})}{7}{lstlisting.-5}%
+\contentsline {paragraph}{Merge Join (forced via \texttt {SET SESSION optimizer\_switch='batched\_key\_access=off,block\_nested\_loop=off';})}{8}{lstlisting.-6}%
+\contentsline {paragraph}{Συμπεράσματα}{8}{section*.5}%
+\contentsline {subsection}{\numberline {2.4}Ερώτημα 6: Μέσος Όρος Αξιολόγησης Επισκέπτη}{8}{subsection.2.4}%
+\contentsline {paragraph}{Default (Nested-Loop Join)}{9}{lstlisting.-8}%
+\contentsline {paragraph}{Hash Join (forced via optimizer\_switch)}{9}{lstlisting.-9}%
+\contentsline {paragraph}{Merge Join}{9}{lstlisting.-10}%
+\contentsline {paragraph}{Συμπεράσματα}{10}{section*.9}%
+\contentsline {section}{\numberline {3}Συμπεράσματα Εργασίας}{10}{section.3}%
+\xpginauxfilefalse 

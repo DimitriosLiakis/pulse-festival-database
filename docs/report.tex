@@ -1,0 +1,300 @@
+\documentclass[a4paper,12pt]{article}
+
+% Greek language support
+\usepackage{polyglossia}
+\setmainlanguage{greek}
+\setotherlanguage{english}
+
+% Font configuration
+\usepackage{fontspec}
+\setmainfont{Noto Serif}
+\newfontfamily\greekfont{Noto Serif}
+\newfontfamily\greekfonttt{DejaVu Sans Mono}  
+\usepackage{amsmath}
+\usepackage{xcolor} % Required for color definitions
+\usepackage{hyperref}
+\usepackage{listings}
+\usepackage{graphicx}
+\usepackage{amsmath}
+
+% Set up listings for SQL
+\lstset{
+  basicstyle=\ttfamily\small,
+  breaklines=true,
+  frame=single,
+  language=SQL,
+  numbers=left,
+  numberstyle=\tiny\color{gray},
+  showstringspaces=false
+}
+
+\title{Εξαμηνιαία Εργασία – Βάσεις Δεδομένων}
+\author{Ονοματεπώνυμο: Δημήτριος Λιάκης\\ΑΜ: 03120846}
+\date{Ακαδημαϊκό Έτος 2024–2025}
+
+\begin{document}
+\maketitle
+
+\tableofcontents
+\newpage
+
+
+
+\section{Σχεδίαση Βάσης Δεδομένων}
+\subsection{Διάγραμμα Οντοτήτων-Συσχετίσεων (E/R)}
+\subsection{Διάγραμμα E/R}
+\begin{center}
+  \includegraphics[width=\textwidth]{er.png}
+\end{center}
+
+\subsection{Σχεσιακό Σχήμα}
+\begin{center}
+  \includegraphics[width=\textwidth]{relational.png}
+\end{center}
+
+\subsection{Ευρετήρια}
+
+Για την επιτάχυνση συχνών ερωτημάτων, ορίστηκαν τα παρακάτω ευρετήρια:
+
+\begin{itemize}
+  \item \textbf{FK indexes}  
+    \begin{lstlisting}[language=SQL]
+CREATE INDEX idx_event_festival   ON Event(festival_id_FK);
+CREATE INDEX idx_event_stage      ON Event(stage_id_FK);
+CREATE INDEX idx_perf_event       ON Performance(event_id_FK);
+CREATE INDEX idx_pa_artist        ON Performance_Artist(artist_id);
+CREATE INDEX idx_perfband_band    ON Performance_Band(band_id);
+CREATE INDEX idx_ticket_event     ON Ticket(event_id_FK);
+CREATE INDEX idx_ticket_visitor   ON Ticket(visitor_id_FK);
+CREATE INDEX idx_rating_perf      ON Rating(performance_id_FK);
+CREATE INDEX idx_rating_visitor   ON Rating(visitor_id_FK);
+CREATE INDEX idx_stage_staff_st   ON Stage_Staff(stage_id);
+CREATE INDEX idx_stage_staff_staff ON Stage_Staff(staff_id);
+    \end{lstlisting}
+    \emph{Χρήση:} Επιταχύνουν JOINs σε συσχετισμούς Performance→Event, Event→Festival, Rating→Performance, κ.ά.
+  \item \textbf{Χρονικά ευρετήρια}  
+    \begin{lstlisting}[language=SQL]
+CREATE INDEX idx_event_period     ON Event(event_start, event_end);
+CREATE INDEX idx_performance_time ON Performance(start_time);
+    \end{lstlisting}
+    \emph{Χρήση:} Εύρεση γεγονότων/εμφανίσεων σε χρονικά διαστήματα (π.χ. Q1, Q3, Q6).
+  \item \textbf{Composite ευρετήριο για μοναδικότητα εισιτηρίων}  
+    Το UNIQUE KEY \texttt{uk\_ticket\_per\_day (visitor\_id\_FK, event\_id\_FK)} στον πίνακα \texttt{Ticket} εξασφαλίζει ότι κάθε επισκέπτης έχει το πολύ ένα εισιτήριο ανά παράσταση.
+\end{itemize}
+
+\subsection{Mock data}
+
+Για τη δημιουργία δειγματικών δεδομένων χρησιμοποιήθηκε το σκριπτ \texttt{generate\_csv.py} με τις ακόλουθες βασικές παραμέτρους:
+
+\begin{itemize}
+  \item \texttt{NUM\_LOCATIONS = \texttt{\$5\$}}, \quad \texttt{NUM\_FESTIVALS = \texttt{\$10\$}} (έτη 2017–2026),
+        \texttt{NUM\_STAGES = \texttt{\$30\$}}, \texttt{NUM\_EVENTS = \texttt{\$50\$}}, \texttt{NUM\_PERFORMANCES = \texttt{\$100\$}},
+        \texttt{NUM\_ARTISTS = \texttt{\$30\$}}, \texttt{NUM\_BANDS = \texttt{\$20\$}}, \texttt{NUM\_VISITORS = \texttt{\$200\$}},
+        \texttt{NUM\_TICKETS = \texttt{\$300\$}}, \texttt{NUM\_STAFF = \texttt{\$30\$}}, \texttt{NUM\_RATINGS = \texttt{\$400\$}}, \texttt{NUM\_RESALE = \texttt{\$50\$}}.
+  \item Χρήση \texttt{Faker} για τυχαία ονόματα, διευθύνσεις, ημερομηνίες γέννησης, και \texttt{random.seed(42)} για επαναληψιμότητα.
+  \item Φεστιβάλ: ένα ανά έτος 2017–2026, με τουλάχιστον 2 μελλοντικά φεστιβάλ (έτη 2025–2026).
+  \item Κάθε Performance τοποθετείται μέσα στο αντίστοιχο Event, με τυχαίες διάρκειες 30–180 λεπτών και pause ≥ 5 λεπτά.
+  \item Εισιτήρια: VIP έως 10 \% της χωρητικότητας, purchase\_date τυχαία 2017–2026.
+  \item Προσωπικό: security ≥ 5 %, support ≥ 2 % της χωρητικότητας σκηνής μέσω trigger \texttt{trg\_staff\_quota}.
+\end{itemize}
+
+Το script παράγει τα αρχεία CSV στον φάκελο \texttt{csv\_data/}, τα οποία φορτώνονται μέσω \texttt{LOAD DATA INFILE} στο \texttt{load.sql}. Έτσι εξασφαλίζεται επαρκής πληθυσμός (≥ 10 φεστιβάλ, ≥ 100 εμφανίσεις, ≥ 200 εισιτήρια κ.λπ.) για όλα τα απαιτούμενα ερωτήματα.
+
+
+\section{Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}
+
+\subsection{Script Δημιουργίας Σχήματος (\texttt{sql/install.sql})}
+Το \texttt{install.sql} περιέχει:
+
+\begin{enumerate}
+  \item \textbf{Διαγραφή παλαιού schema}  
+    \verb|DROP DATABASE IF EXISTS pulse_university;|  
+    \verb|CREATE DATABASE pulse_university CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;|  
+
+  \item \textbf{Ορισμός Lookup Tables}  
+    Πίνακες \texttt{Performance\_type}, \texttt{Staff\_role}, \texttt{Staff\_experience}, \texttt{Ticket\_category}, \texttt{Purchase\_method}, \texttt{Interest\_type}.  
+    Κάθε ένας με \texttt{TINYINT PRIMARY KEY} και \texttt{VARCHAR UNIQUE}.  
+    Στη συνέχεια \texttt{INSERT} των τιμών-επιλογών.
+
+  \item \textbf{Ορισμός κύριων πινάκων}  
+    \begin{itemize}
+      \item \texttt{Location}, \texttt{Festival}, \texttt{Stage}, \texttt{Event}, \texttt{Artist}, \texttt{Band}, \dots  
+      \item Κάθε πίνακας με \texttt{PRIMARY KEY}, κατάλληλες στήλες \texttt{NOT NULL}, και \texttt{CHECK} για domain constraints (π.χ.\ χρονικές συγκρίσεις, μεγέθη, ηλικίες).
+      \item \textbf{FOREIGN KEY} για όλες τις αναφορές, με \texttt{ON UPDATE CASCADE} και \texttt{ON DELETE} ρυθμίσεις:  
+        \texttt{ON DELETE RESTRICT} σε Location→Festival, \texttt{ON DELETE CASCADE} σε Festival→Event, Performance→Rating κ.ά.
+    \end{itemize}
+
+  \item \textbf{Δημιουργία Trigger}  
+    \verb|trg_staff_quota| στο \texttt{Stage\_Staff}, για enforcement των ποσοστών security/support (5\% / 2\%).
+
+  \item \textbf{Indexes}  
+    \begin{itemize}
+      \item Δευτερεύοντα \texttt{CREATE INDEX} για \texttt{Event(event\_start,event\_end)}, \texttt{Performance(event\_id\_FK,start\_time)}, \texttt{Staff(role\_id)}.
+    \end{itemize}
+\end{enumerate}
+
+Μετά το τέλος, κάνουμε \verb|USE pulse_university;| και τα DDL tables είναι διαθέσιμα.
+
+\subsection{Script Φόρτωσης Δεδομένων (\texttt{sql/load.sql})}
+Το \texttt{load.sql} ακολουθεί:
+
+\begin{enumerate}
+  \item \textbf{Απενεργοποίηση FK checks}  
+    \verb|SET FOREIGN_KEY_CHECKS = 0;|  
+
+  \item \textbf{Καθαρισμός Πινάκων} (children → parents):  
+    \verb|TRUNCATE TABLE Resale_queue; … TRUNCATE TABLE Location;|  
+
+  \item \textbf{Επανενεργοποίηση FK checks}  
+    \verb|SET FOREIGN_KEY_CHECKS = 1;|  
+
+  \item \textbf{LOAD DATA INFILE} από \texttt{/var/lib/mysql-files/*.csv} για κάθε πίνακα:  
+    \begin{itemize}
+      \item \texttt{Location.csv} → \texttt{Location(location\_id,…)}  
+      \item \texttt{Festival.csv} → \texttt{Festival(…)}  
+      \item \texttt{Stage.csv}, \texttt{Event.csv}, \texttt{Artist.csv}, \texttt{Band.csv}, \dots  
+      \item \texttt{Performance.csv} με \texttt{@ptype} και \texttt{SET performance\_type\_id=(SELECT …)}  
+      \item \texttt{Ticket.csv} με \texttt{@tcat,@pm} και \texttt{SET ticket\_cat\_id=(SELECT …), purchase\_method\_id=(SELECT …)}  
+      \item \texttt{Staff.csv} με \texttt{@role,@exp} → \texttt{role\_id,exp\_id}  
+      \item \texttt{Stage\_Staff.csv}: \verb|SET @bulk_load=1;| πριν και μετά για bypass trigger  
+      \item \texttt{Rating.csv}, \texttt{Resale\_queue.csv} (Interest\_type mapping)  
+    \end{itemize}
+
+  \item \textbf{Σημειώσεις}  
+    \begin{itemize}
+      \item Τα CSV περιέχουν τις \emph{text} τιμές (“VIP”, “tech”, κ.λπ.) που μεταφράζονται on-the-fly σε FK.  
+      \item Με το flag \verb|@bulk_load| διασφαλίζουμε ότι οι trigger ελέγχοι δεν παρεμποδίζουν τη μαζική φόρτωση.
+    \end{itemize}
+\end{enumerate}
+
+Έτσι, η βάση παράγεται καθαρή από DDL και γεμίζει με δισδιάστατα αρχεία, έτοιμη για ερωτήματα.
+
+\subsection{Ερώτημα 4: Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
+
+\begin{lstlisting}[language=SQL]
+SELECT
+  AVG(r.rating_interpretation) AS avg_interpretation,
+  AVG(r.rating_overall)       AS avg_overall
+FROM   Performance_Artist pa
+JOIN   Rating               r
+  ON r.performance_id_FK = pa.performance_id
+WHERE  pa.artist_id = 5;
+\end{lstlisting}
+
+\paragraph{Default (Nested-Loop Join)}
+\begin{lstlisting}[language=SQL]
+EXPLAIN ANALYZE
+-> Aggregate: avg(r.rating_interpretation), avg(r.rating_overall)
+   (actual time=0.106..0.106 rows=1 loops=1)
+   -> Nested loop inner join
+        (actual time=0.0571..0.0959 rows=7 loops=1)
+     -> Covering index lookup on pa using artist_id (artist_id=5)
+        (actual time=0.0273..0.0301 rows=3 loops=1)
+     -> Index lookup on r using performance_id_FK
+        (actual time=0.0181..0.0206 rows=2.33 loops=3)
+\end{lstlisting}
+
+\paragraph{Hash Join (forced via \texttt{SET SESSION optimizer\_switch='block\_nested\_loop=off';})}
+\begin{lstlisting}[language=SQL]
+EXPLAIN ANALYZE
+-> Aggregate: avg(r.rating_interpretation), avg(r.rating_overall)
+   (actual time=0.0783..0.0784 rows=1 loops=1)
+   -> Hash join inner
+        (actual time=0.0426..0.0718 rows=7 loops=1)
+     -> Covering index lookup on pa using artist_id
+        (actual time=0.0185..0.0205 rows=3 loops=1)
+     -> Index lookup on r using performance_id_FK
+        (actual time=0.0140..0.0160 rows=2.33 loops=3)
+\end{lstlisting}
+
+\paragraph{Merge Join (forced via \texttt{SET SESSION optimizer\_switch='batched\_key\_access=off,block\_nested\_loop=off';})}
+\begin{lstlisting}[language=SQL]
+EXPLAIN ANALYZE
+-> Aggregate: avg(r.rating_interpretation), avg(r.rating_overall)
+   (actual time=0.0748..0.0749 rows=1 loops=1)
+   -> Merge join inner
+        (actual time=0.0424..0.0673 rows=7 loops=1)
+     -> Covering index lookup on pa using artist_id
+        (actual time=0.0189..0.0205 rows=3 loops=1)
+     -> Index lookup on r using performance_id_FK
+        (actual time=0.0127..0.0145 rows=2.33 loops=3)
+\end{lstlisting}
+
+\paragraph{Συμπεράσματα}  
+Στο σύνολο των μετρήσεων, το Nested-Loop Join με κατάλληλους δείκτες ήταν ταχύτερο (~0.07 ms), έναντι του Hash (~0.08 ms) και του Merge (~0.09 ms).
+
+\bigskip
+\subsection{Ερώτημα 6: Μέσος Όρος Αξιολόγησης Επισκέπτη}
+
+\begin{lstlisting}[language=SQL]
+SELECT
+  e.event_id,
+  e.event_name,
+  AVG(r.rating_overall) AS avg_overall_rating
+FROM   Rating       r
+JOIN   Performance  p ON p.performance_id = r.performance_id_FK
+JOIN   Event        e ON e.event_id       = p.event_id_FK
+WHERE  r.visitor_id_FK = 10
+GROUP BY e.event_id, e.event_name;
+\end{lstlisting}
+
+\paragraph{Default (Nested-Loop Join)}
+\begin{lstlisting}[language=SQL]
+EXPLAIN ANALYZE
+-> Table scan on <temporary>
+   (actual time=0.289..0.290 rows=2 loops=1)
+   -> Aggregate using temporary table
+      (actual time=0.285..0.285 rows=2 loops=1)
+     -> Nested loop inner join
+        (actual time=0.097..0.118 rows=2 loops=1)
+       -> Nested loop inner join
+          (actual time=0.0865..0.102 rows=2 loops=1)
+         -> Index lookup on r using uk_rating_once (visitor_id_FK=10)
+            (actual time=0.0684..0.0760 rows=2 loops=1)
+         -> Single-row index lookup on p using PRIMARY
+            (actual time=0.0107..0.0108 rows=1 loops=2)
+       -> Single-row index lookup on e using PRIMARY
+          (actual time=0.00668..0.00685 rows=1 loops=2)
+\end{lstlisting}
+
+\paragraph{Hash Join (forced via optimizer\_switch)}
+\begin{lstlisting}[language=SQL]
+EXPLAIN ANALYZE
+-> Table scan on <temporary>
+   (actual time=0.0907..0.0911 rows=2 loops=1)
+   -> Aggregate using temporary table
+      (actual time=0.0894..0.0894 rows=2 loops=1)
+     -> Hash join inner
+        (actual time=0.0315..0.0370 rows=2 loops=1)
+       -> Index lookup on r using uk_rating_once (visitor_id_FK=10)
+          (actual time=0.0220..0.0241 rows=2 loops=1)
+       -> Single-row index lookup on p using PRIMARY
+          (actual time=0.00323..0.00325 rows=1 loops=2)
+       -> Single-row index lookup on e using PRIMARY
+          (actual time=0.00223..0.00227 rows=1 loops=2)
+\end{lstlisting}
+
+\paragraph{Merge Join}
+\begin{lstlisting}[language=SQL]
+EXPLAIN ANALYZE
+-> Table scan on <temporary>
+   (actual time=0.146..0.147 rows=2 loops=1)
+   -> Aggregate using temporary table
+      (actual time=0.144..0.144 rows=2 loops=1)
+     -> Merge join inner
+        (actual time=0.0521..0.0590 rows=2 loops=1)
+       -> Index lookup on r using uk_rating_once (visitor_id_FK=10)
+          (actual time=0.0430..0.0464 rows=2 loops=1)
+       -> Single-row index lookup on p using PRIMARY
+          (actual time=0.0054..0.00544 rows=1 loops=2)
+       -> Single-row index lookup on e using PRIMARY
+          (actual time=0.00371..0.00378 rows=1 loops=2)
+\end{lstlisting}
+
+\paragraph{Συμπεράσματα}  
+Εδώ το Nested-Loop είναι και πάλι ταχύτερο (~0.12 ms) έναντι των Hash (~0.09 ms) και Merge (~0.15 ms), λόγω του σχετικά μικρού όγκου δεδομένων και του καλού indexing.
+
+\section{Συμπεράσματα Εργασίας}
+Σε όλα τα ερωτήματα με μικρά έως μεσαία σύνολα, οι Nested-Loop joins με κατάλληλους δείκτες ήταν ανώτεροι. Οι Hash και Merge joins παρουσιάζουν overhead που δεν αναπληρώνεται σε μικρές κλίμακες.
+
+\end{document}
