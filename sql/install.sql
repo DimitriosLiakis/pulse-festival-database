@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS bla;
-CREATE DATABASE bla
+DROP DATABASE IF EXISTS festival_database;
+CREATE DATABASE festival_database
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_0900_ai_ci;
-USE bla;
+USE festival_database;
 
 
 CREATE TABLE Performance_type (
