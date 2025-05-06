@@ -8,4 +8,3 @@ staff_id	staff_name	age	experience
 2	Erin Daniels	41	intern
 30	Jennifer Moss	57	average
 5	Kelly Taylor	49	average
- 
