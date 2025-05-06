@@ -1,2 +1,2 @@
-avg_interpretation	avg_overall
-3.5714	2.4286
+artist_id	artist_name	avg_interpretation	avg_overall
+5	William Herrera	3.5714	2.4286

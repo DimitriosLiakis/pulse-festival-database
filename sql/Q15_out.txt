@@ -1,6 +1,6 @@
-visitor_id	first_name	last_name	artist_id	artist_name	total_score
-21	Ashlee	Sparks	23	Jessica Briggs	8
-29	Cory	Jennings	15	Toni Fitzgerald	5
-97	Amanda	Jenkins	24	Terry Griffin	5
-194	Leslie	Price	20	Ashley Coleman	5
-195	Randall	Guerrero	16	Trevor Young	5
+visitor_id	visitor_name	artist_id	artist_name	total_score
+21	Ashlee Sparks	23	Jessica Briggs	8
+57	Benjamin Harris	1	Tim Patton	5
+178	Michael Rhodes	4	Matthew Ross	5
+166	Nathan Richards	6	Deborah Rodriguez	5
+40	Jeffrey Joyce	7	Emily Obrien	5

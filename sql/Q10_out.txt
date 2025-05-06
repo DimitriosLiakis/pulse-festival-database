@@ -1,4 +1,4 @@
-g1	g2	festival_count
+genre1	genre2	festival_appearances
 electronic	house	8
 alternative	rock	6
 boom bap	hip‑hop	5

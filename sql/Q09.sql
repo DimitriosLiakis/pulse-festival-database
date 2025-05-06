@@ -1,12 +1,37 @@
+WITH
+  visitor_counts AS (
+    SELECT
+      r.visitor_id_FK       AS visitor_id,
+      COUNT(*)              AS perf_count
+    FROM Rating      AS r
+    JOIN Performance AS p
+      ON r.performance_id_FK = p.performance_id
+    WHERE
+      p.start_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND CURDATE()
+    GROUP BY
+      r.visitor_id_FK
+    HAVING
+      COUNT(*) > 3
+  ),
+
+  duplicate_counts AS (
+    SELECT
+      perf_count
+    FROM visitor_counts
+    GROUP BY perf_count
+    HAVING COUNT(*) > 1
+  )
+
 SELECT
-  v.visitor_id,
+  vc.visitor_id,
   v.first_name,
   v.last_name,
-  YEAR(e.event_start) AS year,
-  COUNT(*)             AS attended_count
-FROM   Visitor v
-JOIN   Ticket  t ON t.visitor_id_FK = v.visitor_id
-               AND t.is_activated   = 1
-JOIN   Event   e ON e.event_id       = t.event_id_FK
-GROUP BY v.visitor_id, year
-HAVING attended_count > 3;
+  vc.perf_count AS attendance_count
+FROM visitor_counts AS vc
+JOIN duplicate_counts AS dc
+  ON vc.perf_count = dc.perf_count
+JOIN Visitor AS v
+  ON vc.visitor_id = v.visitor_id
+ORDER BY
+  vc.perf_count DESC,
+  vc.visitor_id;

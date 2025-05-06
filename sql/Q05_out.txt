@@ -1,2 +1,2 @@
-artist_id	name	fest_count
-23	Jessica Briggs	4
+artist_id	artist_name	age	festival_count
+23	Jessica Briggs	23	4

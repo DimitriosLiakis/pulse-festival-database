@@ -1,2 +1,2 @@
-festival_id	festival_name	festival_year	avg_tech_experience_level
-4	PulseFestival_2020	2020	1.00
+festival_id	festival_name	festival_year	avg_tech_experience
+4	PulseFestival_2020	2020	NULL

@@ -1,22 +1,29 @@
-WITH genre_counts AS (
+WITH genre_year_counts AS (
   SELECT
-    a.main_genre          AS genre,
-    YEAR(p.start_time)    AS yr,
-    COUNT(*)              AS cnt
-  FROM   Performance        p
-  JOIN   Performance_Artist pa ON pa.performance_id = p.performance_id
-  JOIN   Artist            a  ON a.artist_id       = pa.artist_id
-  GROUP BY a.main_genre, YEAR(p.start_time)
+    a.main_genre     AS genre,
+    f.festival_year  AS year,
+    COUNT(DISTINCT p.performance_id) AS appearances
+  FROM Performance        AS p
+  JOIN Performance_Artist AS pa ON p.performance_id = pa.performance_id
+  JOIN Artist             AS a  ON pa.artist_id       = a.artist_id
+  JOIN Event              AS e  ON p.event_id_FK       = e.event_id
+  JOIN Festival           AS f  ON e.festival_id_FK    = f.festival_id
+  GROUP BY
+    a.main_genre,
+    f.festival_year
 )
 SELECT
-  gc1.genre,
-  gc1.yr      AS year1,
-  gc2.yr      AS year2,
-  gc1.cnt     AS performances
-FROM   genre_counts gc1
-JOIN   genre_counts gc2
-  ON gc1.genre = gc2.genre
- AND gc2.yr    = gc1.yr + 1
- AND gc1.cnt   = gc2.cnt
- AND gc1.cnt  >= 3
-ORDER BY gc1.genre, gc1.yr;
+  g1.genre,
+  g1.year    AS year_n,
+  g2.year    AS year_n_plus_1,
+  g1.appearances AS appearances_in_both_years
+FROM genre_year_counts AS g1
+JOIN genre_year_counts AS g2
+  ON g1.genre = g2.genre
+ AND g2.year  = g1.year + 1
+WHERE
+  g1.appearances = g2.appearances
+  AND g1.appearances >= 3
+ORDER BY
+  g1.genre,
+  g1.year;

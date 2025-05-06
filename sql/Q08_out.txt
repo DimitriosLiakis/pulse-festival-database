@@ -1,10 +1,10 @@
-staff_id	staff_name
-2	Erin Daniels
-5	Kelly Taylor
-7	Emily Grant
-8	Bailey Stewart
-12	Denise Maxwell
-19	Corey Johnson
-24	David Sullivan
-29	Amanda Forbes
-30	Jennifer Moss
+staff_id	staff_name	age	experience
+29	Amanda Forbes	42	experienced
+8	Bailey Stewart	40	average
+19	Corey Johnson	45	experienced
+24	David Sullivan	21	expert
+12	Denise Maxwell	58	average
+7	Emily Grant	35	beginner
+2	Erin Daniels	41	intern
+30	Jennifer Moss	57	average
+5	Kelly Taylor	49	average
