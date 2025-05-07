@@ -4,8 +4,6 @@ CREATE DATABASE pip
   COLLATE utf8mb4_0900_ai_ci;
 USE pip;
 
--- No more lookup tables (Performance_type, Staff_role, etc.)
-
 CREATE TABLE Location (
   location_id INT PRIMARY KEY,
   address VARCHAR(255) NOT NULL,
@@ -245,7 +243,6 @@ CREATE TABLE Resale_queue (
       ON DELETE CASCADE
 );
 
--- Indexes
 CREATE INDEX idx_event_period
   ON Event(event_start, event_end);
 CREATE INDEX idx_performance_event
@@ -253,7 +250,6 @@ CREATE INDEX idx_performance_event
 CREATE INDEX idx_staff_role
   ON Staff(role);
 
--- Adjusted trigger: use Staff.role directly instead of Staff_role lookup
 DROP TRIGGER IF EXISTS trg_staff_quota;
 DELIMITER $$
 CREATE TRIGGER trg_staff_quota
@@ -268,12 +264,10 @@ BEGIN
       FROM Stage
      WHERE stage_id = NEW.stage_id;
 
-    -- get the staff's role text directly
     SELECT role INTO role_txt
       FROM Staff
      WHERE staff_id = NEW.staff_id;
 
-    -- count existing same-role staff on that stage/day
     SELECT COUNT(*) INTO cnt
       FROM Stage_Staff ss
       JOIN Staff s ON s.staff_id = ss.staff_id

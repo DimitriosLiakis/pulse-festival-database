@@ -1,37 +1,31 @@
-WITH
-  visitor_counts AS (
-    SELECT
-      r.visitor_id_FK       AS visitor_id,
-      COUNT(*)              AS perf_count
-    FROM Rating      AS r
-    JOIN Performance AS p
-      ON r.performance_id_FK = p.performance_id
-    WHERE
-      p.start_time BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 YEAR) AND CURDATE()
-    GROUP BY
-      r.visitor_id_FK
-    HAVING
-      COUNT(*) > 3
-  ),
-
-  duplicate_counts AS (
-    SELECT
-      perf_count
-    FROM visitor_counts
-    GROUP BY perf_count
-    HAVING COUNT(*) > 1
-  )
-
+WITH ετήσιες_παρακολουθήσεις AS (
+  SELECT
+    t.visitor_id_FK                             AS επισκέπτης,
+    COUNT(DISTINCT p.performance_id)            AS παρακολουθήσεις
+  FROM Ticket      AS t
+  JOIN Performance AS p
+    ON p.event_id_FK = t.event_id_FK
+  WHERE p.start_time
+    BETWEEN DATE_SUB(CURDATE(), INTERVAL 1 YEAR)
+        AND CURDATE()
+  GROUP BY t.visitor_id_FK
+),
+διπλά_πλήθη AS (
+  SELECT
+    παρακολουθήσεις
+  FROM ετήσιες_παρακολουθήσεις
+  WHERE παρακολουθήσεις > 3
+  GROUP BY παρακολουθήσεις
+  HAVING COUNT(*) > 1
+)
 SELECT
-  vc.visitor_id,
-  v.first_name,
-  v.last_name,
-  vc.perf_count AS attendance_count
-FROM visitor_counts AS vc
-JOIN duplicate_counts AS dc
-  ON vc.perf_count = dc.perf_count
-JOIN Visitor AS v
-  ON vc.visitor_id = v.visitor_id
-ORDER BY
-  vc.perf_count DESC,
-  vc.visitor_id;
+  e.επισκέπτης                             AS visitor_id,
+  v.first_name                             AS Όνομα,
+  v.last_name                              AS Επώνυμο,
+  e.παρακολουθήσεις                        AS Παρακολουθήσεις_τελευταίου_έτους
+FROM ετήσιες_παρακολουθήσεις AS e
+JOIN διπλά_πλήθη          AS d
+  ON e.παρακολουθήσεις = d.παρακολουθήσεις
+JOIN Visitor              AS v
+  ON v.visitor_id      = e.επισκέπτης
+ORDER BY e.παρακολουθήσεις, e.επισκέπτης;

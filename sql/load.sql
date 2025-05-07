@@ -1,9 +1,5 @@
--- sql/load.sql
-
--- 1) Turn off foreign key checks so we can truncate in any order
 SET FOREIGN_KEY_CHECKS = 0;
 
--- 2) Truncate all tables
 TRUNCATE TABLE Resale_queue;
 TRUNCATE TABLE Rating;
 TRUNCATE TABLE Stage_Staff;
@@ -21,11 +17,8 @@ TRUNCATE TABLE Stage;
 TRUNCATE TABLE Festival;
 TRUNCATE TABLE Location;
 
--- 3) Re-enable foreign key checks
 SET FOREIGN_KEY_CHECKS = 1;
 
--- 4) Dynamically drop any CHECK constraint on Staff.experience
---    (works regardless of the constraint's auto-generated name)
 SELECT CONSTRAINT_NAME
   INTO @cn
   FROM information_schema.TABLE_CONSTRAINTS
@@ -38,8 +31,6 @@ SET @sql = CONCAT('ALTER TABLE Staff DROP CHECK ', @cn);
 PREPARE stmt FROM @sql;
 EXECUTE stmt;
 DEALLOCATE PREPARE stmt;
-
--- 5) Bulk load CSV files
 
 /* Location */
 LOAD DATA INFILE '/var/lib/mysql-files/Location.csv'
