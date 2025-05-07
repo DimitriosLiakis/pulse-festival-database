@@ -27,7 +27,7 @@ performance_id,event_id_FK,performance_type,start_time,duration_minutes,performa
 26,49,special guest,2024-01-12 13:48:00,177,https://example.com/performance_26.jpg
 27,49,headline,2024-01-12 14:47:00,129,https://example.com/performance_27.jpg
 28,32,main act,2018-08-23 14:34:00,86,https://example.com/performance_28.jpg
-29,22,headline,2024-01-14 19:05:00,133,https://example.com/performance_29.jpg
+29,22,warm up,2024-01-14 19:05:00,133,https://example.com/performance_29.jpg
 30,2,warm up,2018-08-24 02:03:00,130,https://example.com/performance_30.jpg
 31,42,warm up,2025-08-08 21:34:00,139,https://example.com/performance_31.jpg
 32,17,special guest,2025-08-09 22:23:00,127,https://example.com/performance_32.jpg

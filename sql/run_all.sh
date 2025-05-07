@@ -3,7 +3,7 @@
 
     DB_USER="root"
     DB_PASS="2001"
-    DB_NAME="pip"
+    DB_NAME="blabla"
     SQL_DIR="."
 
     for i in $(seq -w 1 15); do

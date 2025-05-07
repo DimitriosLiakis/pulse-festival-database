@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS pip;
-CREATE DATABASE pip
+DROP DATABASE IF EXISTS blabla;
+CREATE DATABASE blabla
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_0900_ai_ci;
-USE pip;
+USE blabla;
 
 CREATE TABLE Location (
   location_id INT PRIMARY KEY,
