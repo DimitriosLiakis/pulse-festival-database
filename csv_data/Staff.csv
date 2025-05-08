@@ -1,31 +1,31 @@
-staff_id,staff_name,age,role,experience_level
-1,Christian Waller,21,tech,experienced
-2,Erin Daniels,41,support,intern
-3,Charles Weaver,53,tech,beginner
-4,Shari Parker,25,tech,average
-5,Kelly Taylor,49,support,average
-6,Vanessa Thomas DVM,24,tech,experienced
-7,Emily Grant,35,support,beginner
-8,Bailey Stewart,40,support,average
-9,Monica Cannon,57,tech,beginner
-10,Jennifer Jenkins,40,security,experienced
-11,Timothy Shannon,49,security,average
-12,Denise Maxwell,58,support,average
-13,Cody Farmer,42,tech,beginner
-14,Debra Bradley,45,tech,intern
-15,David Mcdaniel,26,tech,experienced
-16,Michael Woods,32,tech,beginner
-17,Lisa Joseph,24,tech,intern
-18,Samuel Henry,27,tech,average
-19,Corey Johnson,45,support,experienced
-20,Alexis Nelson,33,tech,average
-21,Patrick Mcneil,59,tech,intern
-22,Andrea Ho,55,security,experienced
-23,Dr. Katherine Nguyen,46,security,beginner
-24,David Sullivan,21,support,expert
-25,Nicolas James,52,security,expert
-26,Logan Newton,58,tech,average
-27,Kelly Liu,42,security,expert
-28,Kelly Hayes,37,tech,beginner
-29,Amanda Forbes,42,support,experienced
-30,Jennifer Moss,57,support,average
+staff_id,staff_name,age,role,experience
+1,Amanda Olson,59,security,average
+2,Katherine Galloway,31,tech,expert
+3,Sheila Henry,48,tech,beginner
+4,Dr. Diana Walker,34,tech,average
+5,Amy Lloyd,32,tech,experienced
+6,Joshua Shaw,23,support,experienced
+7,Michael Thompson,43,tech,experienced
+8,Melissa Stevens,41,security,beginner
+9,Alexandra Clark,49,tech,intern
+10,Erika Salazar,58,tech,average
+11,Joshua Young,51,security,expert
+12,Louis Diaz,47,security,intern
+13,Mr. Michael Watson PhD,57,support,beginner
+14,Christopher Anderson,52,tech,experienced
+15,Crystal Garcia,48,security,intern
+16,David Reynolds,33,tech,experienced
+17,Charles Haley,21,support,intern
+18,Robert Thompson,56,support,experienced
+19,Dr. Samuel Holmes DDS,31,tech,experienced
+20,Elizabeth Hart,44,support,intern
+21,Jennifer Vaughn,54,security,expert
+22,Robert Woods,52,security,intern
+23,Joanna Cook,59,security,experienced
+24,Justin Frederick,24,support,expert
+25,Alejandro Martinez,54,security,beginner
+26,Tracey Gonzalez,40,support,beginner
+27,Mariah Thompson,24,security,intern
+28,Heather Nunez,27,support,expert
+29,Dr. Steve James,43,security,expert
+30,Mark Thomas,31,tech,experienced

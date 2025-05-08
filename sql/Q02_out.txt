@@ -6,5 +6,5 @@ artist_id	name	appeared_in_year
 10	Matthew Rivera	N
 4	Matthew Ross	N
 9	Natalie Lambert	N
-1	Tim Patton	N
+1	Tim Patton	Y
 16	Trevor Young	Y

@@ -2,4 +2,5 @@ artist_id	artist_name	continent_count
 14	Elizabeth Clark	3
 23	Jessica Briggs	3
 25	Mark Cannon	3
+1	Tim Patton	3
 15	Toni Fitzgerald	3

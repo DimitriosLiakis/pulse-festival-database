@@ -15,7 +15,7 @@ JOIN Performance AS p
   ON r.performance_id_FK = p.performance_id
 JOIN Event       AS e
   ON p.event_id_FK      = e.event_id
-WHERE r.visitor_id_FK = 10
+WHERE r.visitor_id_FK = 24
 GROUP BY
   p.performance_id,
   e.event_name,

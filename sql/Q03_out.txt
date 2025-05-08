@@ -1,2 +1,2 @@
-festival_id	festival_name	festival_year	artist_id	artist_name	warmup_count
-8	PulseFestival_2024	2024	22	Joseph Hansen	3
+festival_id	festival_name	artist_id	artist_name	warmup_count
+1	PulseFestival_2017	1	Tim Patton	3

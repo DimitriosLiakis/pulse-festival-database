@@ -1,8 +1,8 @@
-DROP DATABASE IF EXISTS blabla;
-CREATE DATABASE blabla
+DROP DATABASE IF EXISTS pko;
+CREATE DATABASE pko
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_0900_ai_ci;
-USE blabla;
+USE pko;
 
 CREATE TABLE Location (
   location_id INT PRIMARY KEY,

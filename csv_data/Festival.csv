@@ -7,5 +7,5 @@ festival_id,festival_name,festival_year,start_date,end_date,location_id_FK,festi
 6,PulseFestival_2022,2022,2022-10-10,2022-10-12,2,https://example.com/fest_6.jpg
 7,PulseFestival_2023,2023,2023-03-25,2023-03-26,5,https://example.com/fest_7.jpg
 8,PulseFestival_2024,2024,2024-01-12,2024-01-14,5,https://example.com/fest_8.jpg
-9,PulseFestival_2025,2025,2025-08-07,2025-08-11,2,https://example.com/fest_9.jpg
+9,PulseFestival_2025,2025,2025-08-11,2025-08-15,2,https://example.com/fest_9.jpg
 10,PulseFestival_2026,2026,2026-04-08,2026-04-12,5,https://example.com/fest_10.jpg

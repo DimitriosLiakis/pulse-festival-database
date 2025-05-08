@@ -1,10 +1,9 @@
 staff_id	staff_name	age	experience
-29	Amanda Forbes	42	experienced
-8	Bailey Stewart	40	average
-19	Corey Johnson	45	experienced
-24	David Sullivan	21	expert
-12	Denise Maxwell	58	average
-7	Emily Grant	35	beginner
-2	Erin Daniels	41	intern
-30	Jennifer Moss	57	average
-5	Kelly Taylor	49	average
+17	Charles Haley	21	intern
+20	Elizabeth Hart	44	intern
+28	Heather Nunez	27	expert
+6	Joshua Shaw	23	experienced
+24	Justin Frederick	24	expert
+13	Mr. Michael Watson PhD	57	beginner
+18	Robert Thompson	56	experienced
+26	Tracey Gonzalez	40	beginner

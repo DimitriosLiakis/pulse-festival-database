@@ -1,3 +1,5 @@
 performance_id	event_name	performance_type	avg_visitor_rating
-93	Event_38	main act	4.20000000
-12	Event_6	headline	2.20000000
+42	Event_23	special guest	3.60000000
+19	Event_36	main act	3.20000000
+27	Event_49	headline	3.00000000
+23	Event_9	headline	3.80000000

@@ -10,4 +10,3 @@ artist_id	artist_name	festival_count
 4	Matthew Ross	1
 11	Michelle Evans	1
 2	Nancy Wright	1
-1	Tim Patton	1
