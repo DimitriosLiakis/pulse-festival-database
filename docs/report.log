@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  8 MAY 2025 18:28
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  8 MAY 2025 19:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1035,89 +1035,7 @@ Overfull \hbox (7.40761pt too wide) in paragraph at lines 290--290
 []\TU/NotoSerif(1)/b/n/14.4 Script Δημιουργίας Σχήματος (\TU/DejaVuSansMono(0)/b/n/14.4 sql/install.sql\TU/NotoSerif(1)/b/n/14.4 ) 
  []
 
-
-Overfull \hbox (93.47218pt too wide) in paragraph at lines 294--297
-[]\TU/NotoSerif(1)/b/n/12 Διαγραφή παλαιού schema [][]\TU/DejaVuSansMono(0)/m/n/12 DROP DATABASE IF EXISTS pulse_university;
- []
-
-
-Overfull \hbox (215.56055pt too wide) in paragraph at lines 294--297
-[]\TU/DejaVuSansMono(0)/m/n/12 CREATE DATABASE pulse_university CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci; 
- []
-
-
-Overfull \hbox (30.20493pt too wide) in paragraph at lines 298--302
-[]\TU/NotoSerif(1)/b/n/12 Ορισμός Lookup Tables \TU/NotoSerif(1)/m/n/12 Πίνακες \TU/DejaVuSansMono(0)/m/n/12 Performance_type\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 Staff_role\TU/NotoSerif(1)/m/n/12 ,
- []
-
-
-Overfull \hbox (84.49512pt too wide) in paragraph at lines 298--302
-\TU/DejaVuSansMono(0)/m/n/12 Staff_experience\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 Ticket_category\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 Purchase_method\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 Interest_type\TU/NotoSerif(1)/m/n/12 .
- []
-
-
-Overfull \hbox (9.43437pt too wide) in paragraph at lines 306--307
-[]\TU/NotoSerif(1)/m/n/12 Κάθε πίνακας με \TU/DejaVuSansMono(0)/m/n/12 PRIMARY KEY\TU/NotoSerif(1)/m/n/12 , κατάλληλες στήλες \TU/DejaVuSansMono(0)/m/n/12 NOT NULL\TU/NotoSerif(1)/m/n/12 ,
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (13.28812pt too wide) in paragraph at lines 307--309
-[]\TU/NotoSerif(1)/b/n/12 FOREIGN KEY \TU/NotoSerif(1)/m/n/12 για όλες τις αναφορές, με \TU/DejaVuSansMono(0)/m/n/12 ON UPDATE CASCADE
- []
-
-
-Overfull \hbox (59.32167pt too wide) in paragraph at lines 307--309
-\TU/NotoSerif(1)/m/n/12 και \TU/DejaVuSansMono(0)/m/n/12 ON DELETE \TU/NotoSerif(1)/m/n/12 ρυθμίσεις: \TU/DejaVuSansMono(0)/m/n/12 ON DELETE RESTRICT \TU/NotoSerif(1)/m/n/12 σε Location→Festival,
- []
-
-
-Overfull \hbox (9.33716pt too wide) in paragraph at lines 307--309
-\TU/DejaVuSansMono(0)/m/n/12 ON DELETE CASCADE \TU/NotoSerif(1)/m/n/12 σε Festival→Event, Performance→Rating
- []
-
-[10]
-Overfull \hbox (59.9647pt too wide) in paragraph at lines 316--317
-[]\TU/NotoSerif(1)/m/n/12 Δευτερεύοντα \TU/DejaVuSansMono(0)/m/n/12 CREATE INDEX \TU/NotoSerif(1)/m/n/12 για \TU/DejaVuSansMono(0)/m/n/12 Event(event_start,event_end)\TU/NotoSerif(1)/m/n/12 ,
- []
-
-
-Overfull \hbox (28.48688pt too wide) in paragraph at lines 316--317
-\TU/DejaVuSansMono(0)/m/n/12 Performance(event_id_FK,start_time)\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 Staff(role_id)\TU/NotoSerif(1)/m/n/12 . 
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (273.23543pt too wide) in paragraph at lines 329--331
-[]\TU/NotoSerif(1)/b/n/12 Καθαρισμός Πινάκων \TU/NotoSerif(1)/m/n/12 (children → parents): [][]\TU/DejaVuSansMono(0)/m/n/12 TRUNCATE TABLE Resale_queue; … TRUNCATE TABLE Location; 
- []
-
-
-Overfull \hbox (11.11482pt too wide) in paragraph at lines 332--334
-[]\TU/NotoSerif(1)/b/n/12 Επανενεργοποίηση FK checks [][]\TU/DejaVuSansMono(0)/m/n/12 SET FOREIGN_KEY_CHECKS = 1; 
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (79.81306pt too wide) in paragraph at lines 340--341
-[]\TU/DejaVuSansMono(0)/m/n/12 Performance.csv \TU/NotoSerif(1)/m/n/12 με \TU/DejaVuSansMono(0)/m/n/12 @ptype \TU/NotoSerif(1)/m/n/12 και \TU/DejaVuSansMono(0)/m/n/12 SET performance_type_id=(SELECT
- []
-
-
-Overfull \hbox (22.01619pt too wide) in paragraph at lines 341--342
-[]\TU/DejaVuSansMono(0)/m/n/12 Ticket.csv \TU/NotoSerif(1)/m/n/12 με \TU/DejaVuSansMono(0)/m/n/12 @tcat,@pm \TU/NotoSerif(1)/m/n/12 και \TU/DejaVuSansMono(0)/m/n/12 SET ticket_cat_id=(SELECT
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-[11] [12]
-Overfull \hbox (152.16003pt too wide) in paragraph at lines 395--395
-\TU/DejaVuSansMono(0)/b/n/12 optimizer_switch='batched_key_access=off,block_nested_loop=off';)[] 
- []
-
-[13] [14] [15] (./report.aux)
+[10] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -1126,12 +1044,12 @@ Package rerunfilecheck Info: File `report.out' has not changed.
 (rerunfilecheck)             Checksum: 28B705EF76D369CCF1A0617638CDDED6;3191.
  ) 
 Here is how much of TeX's memory you used:
- 14943 strings out of 474878
- 295306 string characters out of 5762517
- 2168627 words of memory out of 5000000
- 36776 multiletter control sequences out of 15000+600000
- 563539 words of font info for 96 fonts, out of 8000000 for 9000
+ 14914 strings out of 474878
+ 294880 string characters out of 5762517
+ 1985627 words of memory out of 5000000
+ 36748 multiletter control sequences out of 15000+600000
+ 563531 words of font info for 95 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  93i,6n,107p,449b,2093s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report.pdf (15 pages).
+Output written on report.pdf (10 pages).
