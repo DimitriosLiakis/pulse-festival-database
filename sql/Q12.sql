@@ -2,7 +2,7 @@ WITH RECURSIVE festival_days AS (
   SELECT
     festival_id,
     festival_name,
-    start_date AS festival_day,
+    start_date  AS festival_day,
     end_date
   FROM Festival
 
@@ -21,7 +21,7 @@ SELECT
   fd.festival_id,
   fd.festival_name,
   fd.festival_day,
-  s.role AS staff_category,
+  COALESCE(s.role, 'none') AS staff_category,
   COUNT(DISTINCT ss.staff_id) AS staff_count
 FROM festival_days AS fd
 
@@ -36,9 +36,9 @@ GROUP BY
   fd.festival_id,
   fd.festival_name,
   fd.festival_day,
-  s.role
+  staff_category
 
 ORDER BY
   fd.festival_id,
   fd.festival_day,
-  s.role;
+  staff_category;

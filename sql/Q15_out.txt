@@ -1,6 +1,6 @@
 visitor_id	visitor_name	artist_id	artist_name	total_score
-67	Linda Cohen	14	Elizabeth Clark	5
-93	Angelica Mendoza	15	Toni Fitzgerald	5
-106	Matthew Ochoa	24	Terry Griffin	5
-57	Benjamin Harris	25	Mark Cannon	5
-76	Michael Ingram	18	Mark Lee	5
+178	Michael Rhodes	1	Tim Patton	5
+79	Richard Donovan	2	Nancy Wright	5
+51	Brett Castillo	3	Courtney Velasquez	5
+24	Katrina Becker	5	William Herrera	5
+109	Cheyenne Hart	5	William Herrera	5
