@@ -16,6 +16,8 @@
 \usepackage{listings}
 \usepackage{graphicx}
 \usepackage{amsmath}
+\usepackage{longtable}
+\usepackage{booktabs}
 
 % Set up listings for SQL
 \lstset{
@@ -52,6 +54,188 @@
   \includegraphics[width=\textwidth]{relational.png}
 \end{center}
 
+\section*{2.1 Απαραίτητοι Περιορισμοί για την Ορθότητα της ΒΔ}
+
+\subsection*{1. Ακεραιότητα Οντοτήτων (Entity Integrity)}
+\begin{itemize}
+  \item \textbf{PRIMARY KEY:}  
+  \begin{itemize}
+    \item Location(location\_id)
+    \item Festival(festival\_id)
+    \item Stage(stage\_id)
+    \item Event(event\_id)
+    \item Artist(artist\_id)
+    \item Band(band\_id)
+    \item Artist\_Band(artist\_id, band\_id)
+    \item Performance(performance\_id)
+    \item Performance\_Artist(performance\_id, artist\_id)
+    \item Performance\_Band(performance\_id, band\_id)
+    \item Visitor(visitor\_id)
+    \item Ticket(ticket\_id)
+    \item Staff(staff\_id)
+    \item Stage\_Staff(stage\_id, staff\_id, start\_date)
+    \item Rating(rating\_id)
+    \item Resale\_queue(resale\_id)
+  \end{itemize}
+\end{itemize}
+
+\subsection*{2. Αναφορική Ακεραιότητα (Referential Integrity)}
+\begin{itemize}
+  \item \textbf{FOREIGN KEY με ON UPDATE CASCADE / ON DELETE …:}
+  \begin{itemize}
+    \item Festival.location\_id\_FK $\to$ Location.location\_id (ON DELETE RESTRICT)
+    \item Event.festival\_id\_FK $\to$ Festival.festival\_id (ON DELETE CASCADE)
+    \item Event.stage\_id\_FK $\to$ Stage.stage\_id (ON DELETE CASCADE)
+    \item Artist\_Band.artist\_id $\to$ Artist.artist\_id (ON DELETE CASCADE)
+    \item Artist\_Band.band\_id $\to$ Band.band\_id (ON DELETE CASCADE)
+    \item Performance.event\_id\_FK $\to$ Event.event\_id (ON DELETE CASCADE)
+    \item Performance\_Artist.performance\_id $\to$ Performance.performance\_id (ON DELETE CASCADE)
+    \item Performance\_Artist.artist\_id $\to$ Artist.artist\_id (ON DELETE CASCADE)
+    \item Performance\_Band.performance\_id $\to$ Performance.performance\_id (ON DELETE CASCADE)
+    \item Performance\_Band.band\_id $\to$ Band.band\_id (ON DELETE CASCADE)
+    \item Ticket.event\_id\_FK $\to$ Event.event\_id (ON DELETE CASCADE)
+    \item Ticket.visitor\_id\_FK $\to$ Visitor.visitor\_id (ON DELETE CASCADE)
+    \item Stage\_Staff.stage\_id $\to$ Stage.stage\_id (ON DELETE CASCADE)
+    \item Stage\_Staff.staff\_id $\to$ Staff.staff\_id (ON DELETE CASCADE)
+    \item Rating.visitor\_id\_FK $\to$ Visitor.visitor\_id (ON DELETE CASCADE)
+    \item Rating.performance\_id\_FK $\to$ Performance.performance\_id (ON DELETE CASCADE)
+    \item Resale\_queue.ticket\_id\_FK $\to$ Ticket.ticket\_id (ON DELETE CASCADE)
+    \item Resale\_queue.visitor\_id\_FK $\to$ Visitor.visitor\_id (ON DELETE CASCADE)
+  \end{itemize}
+\end{itemize}
+
+\subsection*{3. Ακεραιότητα Πεδίου Τιμών (Domain Integrity)}
+\subsubsection*{3.1 Check Constraints}
+\begin{itemize}
+  \item \textbf{Festival:} \texttt{CHECK (end\_date >= start\_date)}
+  \item \textbf{Stage:} \texttt{CHECK (capacity > 0)}
+  \item \textbf{Event:} \texttt{CHECK (event\_end > event\_start)}
+  \item \textbf{Performance:}
+    \begin{itemize}
+      \item \texttt{CHECK (performance\_type IN ('warm up','headline','special guest','main act'))}
+      \item \texttt{CHECK (duration\_minutes BETWEEN 1 AND 180)}
+    \end{itemize}
+  \item \textbf{Visitor:} \texttt{CHECK (age BETWEEN 0 AND 120)}
+  \item \textbf{Staff:}
+    \begin{itemize}
+      \item \texttt{CHECK (age >= 18)}
+      \item \texttt{CHECK (role IN ('tech','security','support'))}
+      \item \texttt{CHECK (experience IN ('intern','beginner','average','experienced','expert'))}
+    \end{itemize}
+  \item \textbf{Ticket:}
+    \begin{itemize}
+      \item \texttt{CHECK (ticket\_cost >= 0)}
+      \item \texttt{CHECK (ticket\_category IN ('general','VIP','backstage'))}
+      \item \texttt{CHECK (purchase\_method IN ('credit\_card','debit\_card','bank\_transfer','other'))}
+    \end{itemize}
+  \item \textbf{Rating:}
+    \begin{itemize}
+      \item \texttt{CHECK (rating\_interpretation BETWEEN 1 AND 5)}
+      \item \texttt{CHECK (rating\_sound\_light BETWEEN 1 AND 5)}
+      \item \texttt{CHECK (rating\_stage\_presence BETWEEN 1 AND 5)}
+      \item \texttt{CHECK (rating\_organization BETWEEN 1 AND 5)}
+      \item \texttt{CHECK (rating\_overall BETWEEN 1 AND 5)}
+    \end{itemize}
+  \item \textbf{Stage\_Staff:} \texttt{CHECK (end\_date >= start\_date)}
+  \item \textbf{Resale\_queue:} \texttt{CHECK (interest\_type IN ('seller','buyer'))}
+\end{itemize}
+
+\subsubsection*{3.2 Μήκη και Τύποι Πεδίων}
+\begin{itemize}
+  \item \texttt{VARCHAR} και \texttt{CHAR(13)} με περιορισμένο μήκος.
+  \item Τύποι \texttt{DATE}, \texttt{DATETIME}, \texttt{YEAR} για σωστή αποθήκευση χρόνου.
+\end{itemize}
+
+\subsection*{4. Μοναδικότητα (Uniqueness)}
+\begin{itemize}
+  \item \textbf{Ticket:}
+    \begin{itemize}
+      \item \texttt{UNIQUE (ean\_code)}
+      \item \texttt{UNIQUE (visitor\_id\_FK, event\_id\_FK)}
+    \end{itemize}
+  \item \textbf{Artist\_Band}, \textbf{Performance\_Artist}, \textbf{Performance\_Band}, \textbf{Stage\_Staff}, \textbf{Rating}: σύνθετα PK.
+\end{itemize}
+
+\subsection*{5. Περιορισμοί Οριζόμενοι από τον Χρήστη (Triggers)}
+\begin{enumerate}
+  \item \textbf{trg\_staff\_quota} (BEFORE INSERT ON Stage\_Staff):  
+    Ελέγχει security ≥ 5\% και support ≥ 2\% της χωρητικότητας, στρογγυλοποίηση προς τα πάνω.
+  \item \textbf{trg\_ticket\_capacity\_vip} (BEFORE INSERT ON Ticket):  
+    Ελέγχοι: συνολική χωρητικότητα και VIP ≤ 10\% capacity.
+  \item \textbf{trg\_performance\_break} (BEFORE INSERT/UPDATE ON Performance):  
+    Εξασφάλιση διαλείμματος 5–30 λεπτών μεταξύ διαδοχικών εμφανίσεων.
+  \item \textbf{trg\_artist\_overlap} (BEFORE INSERT ON Performance\_Artist/Performance\_Band):  
+    Αποφυγή χρονικής επικάλυψης εμφανίσεων.
+  \item \textbf{trg\_consecutive\_years} (BEFORE INSERT ON Performance\_Artist/Performance\_Band):  
+    Περιορισμός σε ≤ 3 συνεχόμενα έτη συμμετοχής.
+\end{enumerate}
+
+\newpage
+
+\section*{2.2 Ευρετήρια (Indexes) και Αιτιολόγηση}
+
+\begin{longtable}{p{3cm}p{4cm}p{6cm}}
+\toprule
+\textbf{Πίνακας} & \textbf{Ευρετήριο} & \textbf{Χρησιμότητα / Αιτιολόγηση} \\
+\midrule
+\endfirsthead
+\toprule
+\textbf{Πίνακας} & \textbf{Ευρετήριο} & \textbf{Χρησιμότητα / Αιτιολόγηση} \\
+\midrule
+\endhead
+Event & \texttt{idx\_event\_period}\\
+\texttt{ON Event(event\_start, event\_end)} &
+Επιτάχυνση αναζήτησης events σε χρονικό διάστημα (π.χ. events μεταξύ X και Y). \\
+
+Performance & \texttt{idx\_performance\_event\_start}\\
+\texttt{ON Performance(event\_id\_FK, start\_time)} &
+Γρήγορη λίστα εμφανίσεων ανά event με χρονολογική σειρά. \\
+
+Staff & \texttt{idx\_staff\_role}\\
+\texttt{ON Staff(role)} &
+Εύρεση διαθέσιμου προσωπικού ανά ρόλο (π.χ. security). \\
+
+Ticket & \texttt{idx\_ticket\_event\_category}\\
+\texttt{ON Ticket(event\_id\_FK, ticket\_category)} &
+Έλεγχος ορίων πωλήσεων εισιτηρίων (π.χ. πόσα VIP tickets sold). \\
+
+Ticket & \texttt{idx\_ticket\_visitor\_date}\\
+\texttt{ON Ticket(visitor\_id\_FK, purchase\_date)} &
+Επιβολή “ένα εισιτήριο ανά ημέρα/παράσταση” ανά επισκέπτη. \\
+
+Resale\_queue & \texttt{idx\_resale\_interest}\\
+\texttt{ON Resale\_queue(interest\_date)} &
+Υποστήριξη FIFO επεξεργασίας ουράς αγοράς/πώλησης. \\
+
+Artist\_Band & \texttt{idx\_artistband\_band}\\
+\texttt{ON Artist\_Band(band\_id)} &
+Ανάκτηση μελών συγκροτήματος. \\
+
+Performance\_Artist & \texttt{idx\_perf\_artist\_artist}\\
+\texttt{ON Performance\_Artist(artist\_id)} &
+Εμφανίσεις συγκεκριμένου καλλιτέχνη. \\
+
+Performance\_Band & \texttt{idx\_perf\_band\_band}\\
+\texttt{ON Performance\_Band(band\_id)} &
+Εμφανίσεις συγκεκριμένου συγκροτήματος. \\
+
+Rating & \texttt{idx\_rating\_performance}\\
+\texttt{ON Rating(performance\_id\_FK)} &
+Αναφορές και μέσοι όροι βαθμολογιών ανά εμφάνιση. \\
+
+Festival & \texttt{idx\_festival\_year}\\
+\texttt{ON Festival(festival\_year)} &
+Αναζήτηση ανά έτος (π.χ. festivals του 2023). \\
+
+Stage & \texttt{idx\_stage\_capacity}\\
+\texttt{ON Stage(capacity)} &
+Φιλτράρισμα σκηνών με ελάχιστη χωρητικότητα. \\
+
+Location & \texttt{idx\_location\_city\_country}\\
+\texttt{ON Location(city, country)} &
+Γεωγραφικές αναζητήσεις (πόλη, χώρα). \\
+\bottomrule
+\end{longtable}
 \subsection{Ευρετήρια}
 
 Για την επιτάχυνση συχνών ερωτημάτων, ορίστηκαν τα παρακάτω ευρετήρια:
