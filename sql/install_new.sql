@@ -229,25 +229,24 @@ CREATE TABLE Resale_queue (
   ticket_id_FK       INT NOT NULL,
   visitor_id_FK      INT NOT NULL,
   event_id_FK        INT NOT NULL,
-  seller_FK          INT,
-  buyer_FK           INT,
-  requested_category VARCHAR(10)
-      CHECK (requested_category IN ('general','VIP','backstage') OR requested_category IS NULL),
   interest_type      VARCHAR(6) NOT NULL
       CHECK (interest_type IN ('seller','buyer')),
   interest_date      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  is_completed       TINYINT(1) NOT NULL DEFAULT 0,
-  FOREIGN KEY (ticket_id_FK)  REFERENCES Ticket(ticket_id)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (visitor_id_FK) REFERENCES Visitor(visitor_id)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (event_id_FK)   REFERENCES Event(event_id)
-    ON UPDATE CASCADE ON DELETE CASCADE,
-  FOREIGN KEY (seller_FK)     REFERENCES Visitor(visitor_id)
-    ON UPDATE CASCADE ON DELETE SET NULL,
-  FOREIGN KEY (buyer_FK)      REFERENCES Visitor(visitor_id)
-    ON UPDATE CASCADE ON DELETE SET NULL
+  
+  FOREIGN KEY (ticket_id_FK)
+    REFERENCES Ticket(ticket_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE,
+  FOREIGN KEY (visitor_id_FK)
+    REFERENCES Visitor(visitor_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE,
+  FOREIGN KEY (event_id_FK)
+    REFERENCES Event(event_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE
 );
+
 
 /* ─────────────────────────────────────────────
    INDEXES

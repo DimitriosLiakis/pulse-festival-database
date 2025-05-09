@@ -1,0 +1,1603 @@
+===== Q06.sql =====
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+===== RESULT =====
+performance_id	event_name	performance_type	avg_visitor_rating
+19	Event_37	headline	3.20000000
+23	Event_45	warm up	3.80000000
+27	Event_47	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.15"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_visitor_performance",\n                "performance_id_FK"\n              ],\n              "key": "uk_visitor_performance",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 3,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "1.05",\n                "data_read_per_join": "72"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_by_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "10new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "2.10",\n                "data_read_per_join": "6K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "10new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "3.15",\n                "data_read_per_join": "7K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+=========================================
+
+===== Q06a.sql =====
+/*  Forced Index Only */
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)    -- αναγκαστική χρήση index στο FK
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)              -- αναγκαστική χρήση PK index
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)    -- αναγκαστική χρήση index στο FK
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)              -- αναγκαστική χρήση PK index
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+===== RESULT =====
+performance_id	event_name	performance_type	avg_visitor_rating
+19	Event_37	headline	3.20000000
+23	Event_45	warm up	3.80000000
+27	Event_47	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "141.83"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ALL",\n              "possible_keys": [\n                "performance_id_FK"\n              ],\n              "rows_examined_per_scan": 400,\n              "rows_produced_per_join": 2,\n              "filtered": "0.56",\n              "cost_info": {\n                "read_cost": "140.02",\n                "eval_cost": "0.23",\n                "prefix_cost": "140.25",\n                "data_read_per_join": "54"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ],\n              "attached_condition": "(`8new`.`r`.`visitor_id_FK` = 24)"\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.04",\n                "data_read_per_join": "4K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.83",\n                "data_read_per_join": "5K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+=========================================
+
+===== Q06b.sql =====
+SET optimizer_trace="enabled=on";
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+SELECT * FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE\G
+
+EXPLAIN FORMAT=JSON
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+SELECT * FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE\G
+
+===== RESULT =====
+performance_id	event_name	performance_type	avg_visitor_rating
+19	Event_37	headline	3.20000000
+23	Event_45	warm up	3.80000000
+27	Event_47	special guest	3.00000000
+*************************** 1. row ***************************
+                            QUERY: SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time
+                            TRACE: {
+  "steps": [
+    {
+      "join_preparation": {
+        "select#": 1,
+        "steps": [
+          {
+            "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from ((`Rating` `r` join `Performance` `p` on((`r`.`performance_id_FK` = `p`.`performance_id`))) join `Event` `e` on((`p`.`event_id_FK` = `e`.`event_id`))) where (`r`.`visitor_id_FK` = 24) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+          },
+          {
+            "transformations_to_nested_joins": {
+              "transformations": [
+                "JOIN_condition_to_WHERE",
+                "parenthesis_removal"
+              ],
+              "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from `Rating` `r` join `Performance` `p` join `Event` `e` where ((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`)) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+            }
+          },
+          {
+            "functional_dependencies_of_GROUP_columns": {
+              "all_columns_of_table_map_bits": [
+                1
+              ],
+              "columns": [
+                "8new.p.performance_id",
+                "8new.e.event_name",
+                "8new.p.performance_type"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "join_optimization": {
+        "select#": 1,
+        "steps": [
+          {
+            "condition_processing": {
+              "condition": "WHERE",
+              "original_condition": "((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`))",
+              "steps": [
+                {
+                  "transformation": "equality_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "constant_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "trivial_condition_removal",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                }
+              ]
+            }
+          },
+          {
+            "substitute_generated_columns": {
+            }
+          },
+          {
+            "table_dependencies": [
+              {
+                "table": "`Rating` `r`",
+                "row_may_be_null": false,
+                "map_bit": 0,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Performance` `p`",
+                "row_may_be_null": false,
+                "map_bit": 1,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Event` `e`",
+                "row_may_be_null": false,
+                "map_bit": 2,
+                "depends_on_map_bits": [
+                ]
+              }
+            ]
+          },
+          {
+            "ref_optimizer_key_uses": [
+              {
+                "table": "`Rating` `r`",
+                "field": "visitor_id_FK",
+                "equals": "24",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "performance_id",
+                "equals": "`r`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "event_id_FK",
+                "equals": "`e`.`event_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Event` `e`",
+                "field": "event_id",
+                "equals": "`p`.`event_id_FK`",
+                "null_rejecting": true
+              }
+            ]
+          },
+          {
+            "rows_estimation": [
+              {
+                "table": "`Rating` `r`",
+                "range_analysis": {
+                  "table_scan": {
+                    "rows": 400,
+                    "cost": 42.85
+                  },
+                  "potential_range_indexes": [
+                    {
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    },
+                    {
+                      "index": "uk_visitor_performance",
+                      "usable": true,
+                      "key_parts": [
+                        "visitor_id_FK",
+                        "performance_id_FK"
+                      ]
+                    },
+                    {
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    }
+                  ],
+                  "setup_range_conditions": [
+                  ],
+                  "group_index_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "skip_scan_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "analyzing_range_alternatives": {
+                    "range_scan_alternatives": [
+                      {
+                        "index": "uk_visitor_performance",
+                        "ranges": [
+                          "visitor_id_FK = 24"
+                        ],
+                        "index_dives_for_eq_ranges": true,
+                        "rowid_ordered": false,
+                        "using_mrr": false,
+                        "index_only": false,
+                        "in_memory": 1,
+                        "rows": 3,
+                        "cost": 1.31,
+                        "chosen": true
+                      }
+                    ],
+                    "analyzing_roworder_intersect": {
+                      "usable": false,
+                      "cause": "too_few_roworder_scans"
+                    }
+                  },
+                  "chosen_range_access_summary": {
+                    "range_access_plan": {
+                      "type": "range_scan",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "ranges": [
+                        "visitor_id_FK = 24"
+                      ]
+                    },
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 1.31,
+                    "chosen": true
+                  }
+                }
+              },
+              {
+                "table": "`Performance` `p`",
+                "table_scan": {
+                  "rows": 114,
+                  "cost": 0.25
+                }
+              },
+              {
+                "table": "`Event` `e`",
+                "table_scan": {
+                  "rows": 50,
+                  "cost": 0.25
+                }
+              }
+            ]
+          },
+          {
+            "considered_execution_plans": [
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Rating` `r`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "cost": 1.05,
+                      "chosen": true
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "range",
+                      "range_details": {
+                        "used_index": "uk_visitor_performance"
+                      },
+                      "chosen": false,
+                      "cause": "heuristic_index_cheaper"
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 3,
+                "cost_for_plan": 1.05,
+                "rest_of_plan": [
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Event` `e`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "ref",
+                          "index": "PRIMARY",
+                          "usable": false,
+                          "chosen": false
+                        },
+                        {
+                          "rows_to_scan": 50,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 50,
+                          "cost": 15.25,
+                          "chosen": true
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 150,
+                    "cost_for_plan": 16.3,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Event` `e`"
+                        ],
+                        "table": "`Performance` `p`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 15.75,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 114,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 114,
+                              "cost": 1710.31,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "condition_filtering_pct": 100,
+                        "rows_for_plan": 150,
+                        "cost_for_plan": 32.05,
+                        "chosen": true
+                      }
+                    ]
+                  },
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Performance` `p`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "eq_ref",
+                          "index": "PRIMARY",
+                          "rows": 1,
+                          "cost": 1.05,
+                          "chosen": true,
+                          "cause": "clustered_pk_chosen_by_heuristics"
+                        },
+                        {
+                          "rows_to_scan": 114,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 114,
+                          "cost": 34.45,
+                          "chosen": false
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 2.1,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Performance` `p`"
+                        ],
+                        "table": "`Event` `e`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 1.05,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 50,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 50,
+                              "cost": 15.2503,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "added_to_eq_ref_extension": true,
+                        "condition_filtering_pct": 100,
+                        "rows_for_plan": 3,
+                        "cost_for_plan": 3.15,
+                        "chosen": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Event` `e`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 50,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 50,
+                      "cost": 5.25,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 50,
+                "cost_for_plan": 5.25,
+                "pruned_by_cost": true
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Performance` `p`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "idx_performance_by_event",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 114,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 114,
+                      "cost": 11.65,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 114,
+                "cost_for_plan": 11.65,
+                "pruned_by_cost": true
+              }
+            ]
+          },
+          {
+            "attaching_conditions_to_tables": {
+              "original_condition": "((`p`.`performance_id` = `r`.`performance_id_FK`) and (`e`.`event_id` = `p`.`event_id_FK`) and (`r`.`visitor_id_FK` = 24))",
+              "attached_conditions_computation": [
+              ],
+              "attached_conditions_summary": [
+                {
+                  "table": "`Rating` `r`",
+                  "attached": "(`r`.`visitor_id_FK` = 24)"
+                },
+                {
+                  "table": "`Performance` `p`",
+                  "attached": "(`p`.`performance_id` = `r`.`performance_id_FK`)"
+                },
+                {
+                  "table": "`Event` `e`",
+                  "attached": "(`e`.`event_id` = `p`.`event_id_FK`)"
+                }
+              ]
+            }
+          },
+          {
+            "optimizing_distinct_group_by_order_by": {
+              "simplifying_order_by": {
+                "original_clause": "`e`.`event_name`,`p`.`start_time`",
+                "items": [
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`start_time`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`e`.`event_name`,`p`.`start_time`"
+              },
+              "simplifying_group_by": {
+                "original_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`",
+                "items": [
+                  {
+                    "item": "`p`.`performance_id`"
+                  },
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`performance_type`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`"
+              }
+            }
+          },
+          {
+            "finalizing_table_conditions": [
+              {
+                "table": "`Rating` `r`",
+                "original_table_condition": "(`r`.`visitor_id_FK` = 24)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Performance` `p`",
+                "original_table_condition": "(`p`.`performance_id` = `r`.`performance_id_FK`)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Event` `e`",
+                "original_table_condition": "(`e`.`event_id` = `p`.`event_id_FK`)",
+                "final_table_condition   ": null
+              }
+            ]
+          },
+          {
+            "refine_plan": [
+              {
+                "table": "`Rating` `r`"
+              },
+              {
+                "table": "`Performance` `p`"
+              },
+              {
+                "table": "`Event` `e`"
+              }
+            ]
+          },
+          {
+            "considering_tmp_tables": [
+              {
+                "adding_tmp_table_in_plan_at_position": 3,
+                "write_method": "continuously_update_group_row"
+              },
+              {
+                "adding_sort_to_table": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "join_execution": {
+        "select#": 1,
+        "steps": [
+          {
+            "temp_table_aggregate": {
+              "select#": 1,
+              "steps": [
+                {
+                  "creating_tmp_table": {
+                    "tmp_table_info": {
+                      "table": "<temporary>",
+                      "in_plan_at_position": 3,
+                      "columns": 5,
+                      "row_length": 517,
+                      "key_length": 488,
+                      "unique_constraint": false,
+                      "makes_grouped_rows": true,
+                      "cannot_insert_duplicates": false,
+                      "location": "TempTable"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "sorting_table": "<temporary>",
+            "filesort_information": [
+              {
+                "direction": "asc",
+                "expression": "`e`.`event_name`"
+              },
+              {
+                "direction": "asc",
+                "expression": "`p`.`start_time`"
+              }
+            ],
+            "filesort_priority_queue_optimization": {
+              "usable": false,
+              "cause": "not applicable (no LIMIT)"
+            },
+            "filesort_execution": [
+            ],
+            "filesort_summary": {
+              "memory_available": 262144,
+              "key_size": 1616,
+              "row_size": 2137,
+              "max_rows_per_buffer": 122,
+              "num_rows_estimate": 18446744073709551615,
+              "num_rows_found": 3,
+              "num_initial_chunks_spilled_to_disk": 0,
+              "peak_memory_used": 32800,
+              "sort_algorithm": "std::sort",
+              "sort_mode": "<varlen_sort_key, packed_additional_fields>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+MISSING_BYTES_BEYOND_MAX_MEM_SIZE: 0
+          INSUFFICIENT_PRIVILEGES: 0
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.15"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_visitor_performance",\n                "performance_id_FK"\n              ],\n              "key": "uk_visitor_performance",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 3,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "1.05",\n                "data_read_per_join": "72"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_by_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "2.10",\n                "data_read_per_join": "6K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "3.15",\n                "data_read_per_join": "7K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+*************************** 1. row ***************************
+                            QUERY: EXPLAIN FORMAT=JSON
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time
+                            TRACE: {
+  "steps": [
+    {
+      "join_preparation": {
+        "select#": 1,
+        "steps": [
+          {
+            "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from ((`Rating` `r` join `Performance` `p` on((`r`.`performance_id_FK` = `p`.`performance_id`))) join `Event` `e` on((`p`.`event_id_FK` = `e`.`event_id`))) where (`r`.`visitor_id_FK` = 24) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+          },
+          {
+            "transformations_to_nested_joins": {
+              "transformations": [
+                "JOIN_condition_to_WHERE",
+                "parenthesis_removal"
+              ],
+              "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from `Rating` `r` join `Performance` `p` join `Event` `e` where ((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`)) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+            }
+          },
+          {
+            "functional_dependencies_of_GROUP_columns": {
+              "all_columns_of_table_map_bits": [
+                1
+              ],
+              "columns": [
+                "8new.p.performance_id",
+                "8new.e.event_name",
+                "8new.p.performance_type"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "join_optimization": {
+        "select#": 1,
+        "steps": [
+          {
+            "condition_processing": {
+              "condition": "WHERE",
+              "original_condition": "((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`))",
+              "steps": [
+                {
+                  "transformation": "equality_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "constant_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "trivial_condition_removal",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                }
+              ]
+            }
+          },
+          {
+            "substitute_generated_columns": {
+            }
+          },
+          {
+            "table_dependencies": [
+              {
+                "table": "`Rating` `r`",
+                "row_may_be_null": false,
+                "map_bit": 0,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Performance` `p`",
+                "row_may_be_null": false,
+                "map_bit": 1,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Event` `e`",
+                "row_may_be_null": false,
+                "map_bit": 2,
+                "depends_on_map_bits": [
+                ]
+              }
+            ]
+          },
+          {
+            "ref_optimizer_key_uses": [
+              {
+                "table": "`Rating` `r`",
+                "field": "visitor_id_FK",
+                "equals": "24",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "performance_id",
+                "equals": "`r`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "event_id_FK",
+                "equals": "`e`.`event_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Event` `e`",
+                "field": "event_id",
+                "equals": "`p`.`event_id_FK`",
+                "null_rejecting": true
+              }
+            ]
+          },
+          {
+            "rows_estimation": [
+              {
+                "table": "`Rating` `r`",
+                "range_analysis": {
+                  "table_scan": {
+                    "rows": 400,
+                    "cost": 42.85
+                  },
+                  "potential_range_indexes": [
+                    {
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    },
+                    {
+                      "index": "uk_visitor_performance",
+                      "usable": true,
+                      "key_parts": [
+                        "visitor_id_FK",
+                        "performance_id_FK"
+                      ]
+                    },
+                    {
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    }
+                  ],
+                  "setup_range_conditions": [
+                  ],
+                  "group_index_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "skip_scan_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "analyzing_range_alternatives": {
+                    "range_scan_alternatives": [
+                      {
+                        "index": "uk_visitor_performance",
+                        "ranges": [
+                          "visitor_id_FK = 24"
+                        ],
+                        "index_dives_for_eq_ranges": true,
+                        "rowid_ordered": false,
+                        "using_mrr": false,
+                        "index_only": false,
+                        "in_memory": 1,
+                        "rows": 3,
+                        "cost": 1.31,
+                        "chosen": true
+                      }
+                    ],
+                    "analyzing_roworder_intersect": {
+                      "usable": false,
+                      "cause": "too_few_roworder_scans"
+                    }
+                  },
+                  "chosen_range_access_summary": {
+                    "range_access_plan": {
+                      "type": "range_scan",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "ranges": [
+                        "visitor_id_FK = 24"
+                      ]
+                    },
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 1.31,
+                    "chosen": true
+                  }
+                }
+              },
+              {
+                "table": "`Performance` `p`",
+                "table_scan": {
+                  "rows": 114,
+                  "cost": 0.25
+                }
+              },
+              {
+                "table": "`Event` `e`",
+                "table_scan": {
+                  "rows": 50,
+                  "cost": 0.25
+                }
+              }
+            ]
+          },
+          {
+            "considered_execution_plans": [
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Rating` `r`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "cost": 1.05,
+                      "chosen": true
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "range",
+                      "range_details": {
+                        "used_index": "uk_visitor_performance"
+                      },
+                      "chosen": false,
+                      "cause": "heuristic_index_cheaper"
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 3,
+                "cost_for_plan": 1.05,
+                "rest_of_plan": [
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Event` `e`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "ref",
+                          "index": "PRIMARY",
+                          "usable": false,
+                          "chosen": false
+                        },
+                        {
+                          "rows_to_scan": 50,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 50,
+                          "cost": 15.25,
+                          "chosen": true
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 150,
+                    "cost_for_plan": 16.3,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Event` `e`"
+                        ],
+                        "table": "`Performance` `p`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 15.75,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 114,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 114,
+                              "cost": 1710.31,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "condition_filtering_pct": 5,
+                        "rows_for_plan": 7.5,
+                        "cost_for_plan": 32.05,
+                        "chosen": true
+                      }
+                    ]
+                  },
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Performance` `p`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "eq_ref",
+                          "index": "PRIMARY",
+                          "rows": 1,
+                          "cost": 1.05,
+                          "chosen": true,
+                          "cause": "clustered_pk_chosen_by_heuristics"
+                        },
+                        {
+                          "rows_to_scan": 114,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 114,
+                          "cost": 34.45,
+                          "chosen": false
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 2.1,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Performance` `p`"
+                        ],
+                        "table": "`Event` `e`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 1.05,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 50,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 50,
+                              "cost": 15.2503,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "added_to_eq_ref_extension": true,
+                        "condition_filtering_pct": 100,
+                        "rows_for_plan": 3,
+                        "cost_for_plan": 3.15,
+                        "chosen": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Event` `e`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 50,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 50,
+                      "cost": 5.25,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 50,
+                "cost_for_plan": 5.25,
+                "pruned_by_cost": true
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Performance` `p`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "idx_performance_by_event",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 114,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 114,
+                      "cost": 11.65,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 114,
+                "cost_for_plan": 11.65,
+                "pruned_by_cost": true
+              }
+            ]
+          },
+          {
+            "attaching_conditions_to_tables": {
+              "original_condition": "((`p`.`performance_id` = `r`.`performance_id_FK`) and (`e`.`event_id` = `p`.`event_id_FK`) and (`r`.`visitor_id_FK` = 24))",
+              "attached_conditions_computation": [
+              ],
+              "attached_conditions_summary": [
+                {
+                  "table": "`Rating` `r`",
+                  "attached": "(`r`.`visitor_id_FK` = 24)"
+                },
+                {
+                  "table": "`Performance` `p`",
+                  "attached": "(`p`.`performance_id` = `r`.`performance_id_FK`)"
+                },
+                {
+                  "table": "`Event` `e`",
+                  "attached": "(`e`.`event_id` = `p`.`event_id_FK`)"
+                }
+              ]
+            }
+          },
+          {
+            "optimizing_distinct_group_by_order_by": {
+              "simplifying_order_by": {
+                "original_clause": "`e`.`event_name`,`p`.`start_time`",
+                "items": [
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`start_time`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`e`.`event_name`,`p`.`start_time`"
+              },
+              "simplifying_group_by": {
+                "original_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`",
+                "items": [
+                  {
+                    "item": "`p`.`performance_id`"
+                  },
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`performance_type`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`"
+              }
+            }
+          },
+          {
+            "finalizing_table_conditions": [
+              {
+                "table": "`Rating` `r`",
+                "original_table_condition": "(`r`.`visitor_id_FK` = 24)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Performance` `p`",
+                "original_table_condition": "(`p`.`performance_id` = `r`.`performance_id_FK`)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Event` `e`",
+                "original_table_condition": "(`e`.`event_id` = `p`.`event_id_FK`)",
+                "final_table_condition   ": null
+              }
+            ]
+          },
+          {
+            "refine_plan": [
+              {
+                "table": "`Rating` `r`"
+              },
+              {
+                "table": "`Performance` `p`"
+              },
+              {
+                "table": "`Event` `e`"
+              }
+            ]
+          },
+          {
+            "considering_tmp_tables": [
+              {
+                "adding_tmp_table_in_plan_at_position": 3,
+                "write_method": "continuously_update_group_row"
+              },
+              {
+                "adding_sort_to_table": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "join_explain": {
+        "select#": 1,
+        "steps": [
+        ]
+      }
+    }
+  ]
+}
+MISSING_BYTES_BEYOND_MAX_MEM_SIZE: 0
+          INSUFFICIENT_PRIVILEGES: 0
+
+=========================================
+
+===== Q06c.sql =====
+/* 6.3 Forced Nested Loop Join */
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)     -- force FK index on Rating
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)               -- force PK index on Performance
+  /*+ LOOP_JOIN(r p) */               -- hint for Nested Loop
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)               -- force PK index on Event
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+/* 6.3 Forced Nested Loop Join */
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)     -- force FK index on Rating
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)               -- force PK index on Performance
+  /*+ LOOP_JOIN(r p) */               -- hint for Nested Loop
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)               -- force PK index on Event
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+===== RESULT =====
+performance_id	event_name	performance_type	avg_visitor_rating
+19	Event_37	headline	3.20000000
+23	Event_45	warm up	3.80000000
+27	Event_47	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "141.83"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ALL",\n              "possible_keys": [\n                "performance_id_FK"\n              ],\n              "rows_examined_per_scan": 400,\n              "rows_produced_per_join": 2,\n              "filtered": "0.56",\n              "cost_info": {\n                "read_cost": "140.02",\n                "eval_cost": "0.23",\n                "prefix_cost": "140.25",\n                "data_read_per_join": "54"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ],\n              "attached_condition": "(`8new`.`r`.`visitor_id_FK` = 24)"\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.04",\n                "data_read_per_join": "4K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.83",\n                "data_read_per_join": "5K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+=========================================
+
+===== Q06d.sql =====
+/* 6.4 Forced Hash Join */
+SET optimizer_switch='hash_join=on';
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)
+  /*+ HASH_JOIN(r p) */
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)
+  /*+ HASH_JOIN(r p) */
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+===== RESULT =====
+performance_id	event_name	performance_type	avg_visitor_rating
+19	Event_37	headline	3.20000000
+23	Event_45	warm up	3.80000000
+27	Event_47	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "141.83"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ALL",\n              "possible_keys": [\n                "performance_id_FK"\n              ],\n              "rows_examined_per_scan": 400,\n              "rows_produced_per_join": 2,\n              "filtered": "0.56",\n              "cost_info": {\n                "read_cost": "140.02",\n                "eval_cost": "0.23",\n                "prefix_cost": "140.25",\n                "data_read_per_join": "54"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ],\n              "attached_condition": "(`8new`.`r`.`visitor_id_FK` = 24)"\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.04",\n                "data_read_per_join": "4K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.83",\n                "data_read_per_join": "5K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+=========================================
+

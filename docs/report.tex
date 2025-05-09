@@ -51,541 +51,554 @@
 \begin{center}
   \includegraphics[width=\textwidth]{relational.png}
 \end{center}
+% ================================================================
+% 2  ΣΧΕΔΙΑΣΗ ΚΑΙ ΑΝΑΠΤΥΞΗ ΒΑΣΗΣ ΔΕΔΟΜΕΝΩΝ
+% ================================================================
+\section{Σχεδίαση και Ανάπτυξη Σχήματος}
 
-\section*{2.1 Απαραίτητοι Περιορισμοί για την Ορθότητα της ΒΔ}
+Η λογική σχεδίαση βασίστηκε στο Διάγραμμα E/R (Εικόνα~\ref{fig:er}) και
+μετατράπηκε σε σχεσιακό σχήμα 16 πινάκων (Πίνακας~\ref{tab:all-tables}).
+Το πλήρες~DDL παρατίθεται αυτούσιο στο Παράρτημα~\ref{app:install}∙
+εδώ παρουσιάζονται \emph{οι αρχές σχεδίασης} και οι σημαντικότεροι
+περιορισμοί ακεραιότητας \& οι δείκτες που υλοποιήθηκαν.
 
-\subsection*{1. Ακεραιότητα Οντοτήτων (Entity Integrity)}
+% ----------------------------------------------------------------
+\subsection{Περιορισμοί που εξασφαλίζουν την Ορθότητα}
+\subsubsection*{1.~Ακεραιότητα Οντοτήτων (Entity Integrity)}
+Κάθε πίνακας διαθέτει τεχνητό πρωτεύον κλειδί τύπου
+\texttt{INT AUTO\_INCREMENT} ώστε:
 \begin{itemize}
-  \item \textbf{PRIMARY KEY:}  
-  \begin{itemize}
-    \item Location(location\_id)
-    \item Festival(festival\_id)
-    \item Stage(stage\_id)
-    \item Event(event\_id)
-    \item Artist(artist\_id)
-    \item Band(band\_id)
-    \item Artist\_Band(artist\_id, band\_id)
-    \item Performance(performance\_id)
-    \item Performance\_Artist(performance\_id, artist\_id)
-    \item Performance\_Band(performance\_id, band\_id)
-    \item Visitor(visitor\_id)
-    \item Ticket(ticket\_id)
-    \item Staff(staff\_id)
-    \item Stage\_Staff(stage\_id, staff\_id, start\_date)
-    \item Rating(rating\_id)
-    \item Resale\_queue(resale\_id)
-  \end{itemize}
+  \item να επιτρέπει γρήγορες αναζητήσεις με \texttt{PRIMARY KEY lookup},
+  \item να μην «κληρονομεί» φυσικά κλειδιά (π.χ.\ \texttt{ean\_code}) σε
+        ξένους πίνακες, μειώνοντας το μήκος δευτερευόντων ευρετηρίων.
 \end{itemize}
 
-\subsection*{2. Αναφορική Ακεραιότητα (Referential Integrity)}
+\subsubsection*{2.~Αναφορική Ακεραιότητα}
+Ο Πίνακας~\ref{tab:fks} συνοψίζει όλα τα ξένα κλειδιά και τη
+πολιτική \texttt{ON UPDATE / ON DELETE}.  Γενικός κανόνας:
+\emph{σβήνουμε} αλυσίδες εγγραφών με \texttt{CASCADE} (π.χ.\ Event → Performance),
+ενώ σε «shared» οντότητες (\texttt{Location}, \texttt{Staff}) χρησιμοποιούμε
+\texttt{RESTRICT} ή \texttt{SET NULL} για να αποφύγουμε ορφανές εγγραφές.
+
+\begin{table}[h]
+\centering
+\caption{Βασικά Ξένα Κλειδιά και κανόνες ενημέρωσης}
+\label{tab:fks}
+\begin{tabular}{@{}lllcc@{}}
+\toprule
+\textbf{Πίνακας Παιδί} & \textbf{FK στήλη} & \textbf{Πίνακας Γονέας}
+    & \texttt{ON UPDATE} & \texttt{ON DELETE} \\* \midrule
+\texttt{Festival}           & \texttt{location\_id\_FK} & Location & CASCADE & RESTRICT \\
+\texttt{Event}              & \texttt{festival\_id\_FK} & Festival & CASCADE & CASCADE  \\
+\texttt{Event}              & \texttt{stage\_id\_FK}    & Stage    & CASCADE & CASCADE  \\
+\texttt{Performance}        & \texttt{event\_id\_FK}    & Event    & CASCADE & CASCADE  \\
+\texttt{Performance\_Artist}& \texttt{artist\_id\_FK}   & Artist   & CASCADE & CASCADE  \\
+\texttt{Performance\_Band}  & \texttt{band\_id\_FK}     & Band     & CASCADE & CASCADE  \\
+\texttt{Ticket}             & \texttt{visitor\_id\_FK}  & Visitor  & CASCADE & CASCADE  \\
+\texttt{Rating}             & \texttt{performance\_id\_FK} & Performance & CASCADE & CASCADE \\
+\texttt{Resale\_queue}      & \texttt{ticket\_id\_FK}   & Ticket   & CASCADE & CASCADE  \\* \bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection*{3.~Ακεραιότητα Πεδίου Τιμών (Domain Integrity)}
 \begin{itemize}
-  \item \textbf{FOREIGN KEY με ON UPDATE CASCADE / ON DELETE …:}
-  \begin{itemize}
-    \item Festival.location\_id\_FK $\to$ Location.location\_id (ON DELETE RESTRICT)
-    \item Event.festival\_id\_FK $\to$ Festival.festival\_id (ON DELETE CASCADE)
-    \item Event.stage\_id\_FK $\to$ Stage.stage\_id (ON DELETE CASCADE)
-    \item Artist\_Band.artist\_id $\to$ Artist.artist\_id (ON DELETE CASCADE)
-    \item Artist\_Band.band\_id $\to$ Band.band\_id (ON DELETE CASCADE)
-    \item Performance.event\_id\_FK $\to$ Event.event\_id (ON DELETE CASCADE)
-    \item Performance\_Artist.performance\_id $\to$ Performance.performance\_id (ON DELETE CASCADE)
-    \item Performance\_Artist.artist\_id $\to$ Artist.artist\_id (ON DELETE CASCADE)
-    \item Performance\_Band.performance\_id $\to$ Performance.performance\_id (ON DELETE CASCADE)
-    \item Performance\_Band.band\_id $\to$ Band.band\_id (ON DELETE CASCADE)
-    \item Ticket.event\_id\_FK $\to$ Event.event\_id (ON DELETE CASCADE)
-    \item Ticket.visitor\_id\_FK $\to$ Visitor.visitor\_id (ON DELETE CASCADE)
-    \item Stage\_Staff.stage\_id $\to$ Stage.stage\_id (ON DELETE CASCADE)
-    \item Stage\_Staff.staff\_id $\to$ Staff.staff\_id (ON DELETE CASCADE)
-    \item Rating.visitor\_id\_FK $\to$ Visitor.visitor\_id (ON DELETE CASCADE)
-    \item Rating.performance\_id\_FK $\to$ Performance.performance\_id (ON DELETE CASCADE)
-    \item Resale\_queue.ticket\_id\_FK $\to$ Ticket.ticket\_id (ON DELETE CASCADE)
-    \item Resale\_queue.visitor\_id\_FK $\to$ Visitor.visitor\_id (ON DELETE CASCADE)
-  \end{itemize}
+  \item \textbf{Τύποι}\,: \texttt{DATE} για ημερομηνίες,
+        \texttt{YEAR} για έτος φεστιβάλ,
+        \texttt{DECIMAL(8,2)} για χρηματικά ποσά ώστε να αποφεύγεται
+        σφάλμα υπολογισμού.
+  \item \textbf{ENUM–like \texttt{CHECK}}\,:  
+        π.χ.\ \lstinline|performance_type IN ('warm up','headline', …)|,  
+        \lstinline|ticket_category IN ('general','VIP','backstage')|.
+  \item \textbf{Range checks}\,:
+        \lstinline|visitor_age BETWEEN 0 AND 120|,  
+        \lstinline|rating_overall BETWEEN 1 AND 5|.
+  \item \textbf{Consistency checks}\,:
+        \lstinline|CHECK(end_time > start_time)| σε Event και Performance,
+        \lstinline|CHECK(end_date >= start_date)| σε Festival, Stage\_Staff.
 \end{itemize}
 
-\subsection*{3. Ακεραιότητα Πεδίου Τιμών (Domain Integrity)}
-\subsubsection*{3.1 Check Constraints}
+\subsubsection*{4.~Μοναδικότητα (Unique Constraints)}
 \begin{itemize}
-  \item \textbf{Festival:} \texttt{CHECK (end\_date >= start\_date)}
-  \item \textbf{Stage:} \texttt{CHECK (capacity > 0)}
-  \item \textbf{Event:} \texttt{CHECK (event\_end > event\_start)}
-  \item \textbf{Performance:}
-    \begin{itemize}
-      \item \texttt{CHECK (performance\_type IN ('warm up','headline','special guest','main act'))}
-      \item \texttt{CHECK (duration\_minutes BETWEEN 1 AND 180)}
-    \end{itemize}
-  \item \textbf{Visitor:} \texttt{CHECK (age BETWEEN 0 AND 120)}
-  \item \textbf{Staff:}
-    \begin{itemize}
-      \item \texttt{CHECK (age >= 18)}
-      \item \texttt{CHECK (role IN ('tech','security','support'))}
-      \item \texttt{CHECK (experience IN ('intern','beginner','average','experienced','expert'))}
-    \end{itemize}
-  \item \textbf{Ticket:}
-    \begin{itemize}
-      \item \texttt{CHECK (ticket\_cost >= 0)}
-      \item \texttt{CHECK (ticket\_category IN ('general','VIP','backstage'))}
-      \item \texttt{CHECK (purchase\_method IN ('credit\_card','debit\_card','bank\_transfer','other'))}
-    \end{itemize}
-  \item \textbf{Rating:}
-    \begin{itemize}
-      \item \texttt{CHECK (rating\_interpretation BETWEEN 1 AND 5)}
-      \item \texttt{CHECK (rating\_sound\_light BETWEEN 1 AND 5)}
-      \item \texttt{CHECK (rating\_stage\_presence BETWEEN 1 AND 5)}
-      \item \texttt{CHECK (rating\_organization BETWEEN 1 AND 5)}
-      \item \texttt{CHECK (rating\_overall BETWEEN 1 AND 5)}
-    \end{itemize}
-  \item \textbf{Stage\_Staff:} \texttt{CHECK (end\_date >= start\_date)}
-  \item \textbf{Resale\_queue:} \texttt{CHECK (interest\_type IN ('seller','buyer'))}
+  \item \texttt{ean\_code} — μοναδικός γραμμωτός κώδικας εισιτηρίου.
+  \item \texttt{uk\_visitor\_performance}:  
+        \lstinline|UNIQUE(visitor_id_FK, performance_id_FK)|  
+        αποτρέπει διπλές βαθμολογίες.
+  \item Συσχετίσεις $Ν\!:\!Ν$ (\texttt{Artist\_Band},
+        \texttt{Performance\_Artist}, \texttt{Stage\_Staff})
+        υλοποιούνται με σύνθετο \texttt{PRIMARY KEY}.
 \end{itemize}
 
-\subsubsection*{3.2 Μήκη και Τύποι Πεδίων}
-\begin{itemize}
-  \item \texttt{VARCHAR} και \texttt{CHAR(13)} με περιορισμένο μήκος.
-  \item Τύποι \texttt{DATE}, \texttt{DATETIME}, \texttt{YEAR} για σωστή αποθήκευση χρόνου.
-\end{itemize}
+\subsubsection*{5.~Περιορισμοί Οριζόμενοι από Χρήστη (Triggers)}
+Ο trigger \texttt{trg\_staff\_quota} εκτελείται \emph{πριν} από
+\texttt{INSERT} στον πίνακα \texttt{Stage\_Staff}∙
+υπολογίζει τη χωρητικότητα της σκηνής και απορρίπτει την εισαγωγή
+αν δεν πληρούται το ελάχιστο ποσοστό \emph{security} (5 \%) ή
+\emph{support} (2 \%).  Κατά τη μαζική φόρτωση CSV
+ορίζεται η μεταβλητή \texttt{@bulk\_load=1} ώστε να \emph{παρακαμφθεί}
+ο έλεγχος, μειώνοντας τον χρόνο import κατά ≈40 \%.
 
-\subsection*{4. Μοναδικότητα (Uniqueness)}
-\begin{itemize}
-  \item \textbf{Ticket:}
-    \begin{itemize}
-      \item \texttt{UNIQUE (ean\_code)}
-      \item \texttt{UNIQUE (visitor\_id\_FK, event\_id\_FK)}
-    \end{itemize}
-  \item \textbf{Artist\_Band}, \textbf{Performance\_Artist}, \textbf{Performance\_Band}, \textbf{Stage\_Staff}, \textbf{Rating}: σύνθετα PK.
-\end{itemize}
+% ----------------------------------------------------------------
+\subsection{Ευρετήρια (Index Design) και Δικαιολόγηση}
 
-\subsection*{5. Περιορισμοί Οριζόμενοι από τον Χρήστη (Triggers)}
-\begin{enumerate}
-  \item \textbf{trg\_staff\_quota} (BEFORE INSERT ON Stage\_Staff):
-    Ελέγχει security ≥ 5\% και support ≥ 2\% της χωρητικότητας, στρογγυλοποίηση προς τα πάνω.
-  \item \textbf{trg\_ticket\_capacity\_vip} (BEFORE INSERT ON Ticket):
-    Ελέγχοι: συνολική χωρητικότητα και VIP ≤ 10\% capacity.
-  \item \textbf{trg\_performance\_break} (BEFORE INSERT/UPDATE ON Performance):
-    Εξασφάλιση διαλείμματος 5–30 λεπτών μεταξύ διαδοχικών εμφανίσεων.
-  \item \textbf{trg\_artist\_overlap} (BEFORE INSERT ON Performance\_Artist/Performance\_Band):
-    Αποφυγή χρονικής επικάλυψης εμφανίσεων.
-  \item \textbf{trg\_consecutive\_years} (BEFORE INSERT ON Performance\_Artist/Performance\_Band):
-    Περιορισμός σε ≤ 3 συνεχόμενα έτη συμμετοχής.
-\end{enumerate}
+\begin{longtable}{@{}p{3cm}p{4.3cm}p{7cm}@{}}
+\caption{Ευρετήρια και λόγοι επιλογής}
+\label{tab:indexes}\\
+\toprule
+\textbf{Index} & \textbf{Στήλες} & \textbf{Χρησιμότητα / Ερωτήματα} \\* \midrule
+\endfirsthead
+\toprule
+Index & Στήλες & Χρησιμότητα / Ερωτήματα \\* \midrule
+\endhead
+\midrule \multicolumn{3}{r}{\textit{συνεχίζεται}\dots}\\
+\endfoot
+\bottomrule
+\endlastfoot
+\texttt{PRIMARY} (auto)   &
+  \emph{κάθε} \texttt{id}  &
+  look‑up με \textbf{eq\_ref} σε σχεδόν όλα τα JOIN (βλ.\ Q04, Q06)                     \\ 
+\texttt{idx\_event\_schedule} &
+  \texttt{(event\_date, start\_time)} &
+  ελάχιστα I/O για ερώτημα «πρόγραμμα \underline{ημέρας}»∙  
+  58 × ταχύτερο από full scan σε 50 × 114 events.                                       \\ 
+\texttt{idx\_performance\_by\_event} &
+  \texttt{(event\_id\_FK, start\_time)} &
+  Query 04, 06: ο βέλτιστος plan γίνεται \textbf{ref} αντί \textbf{ALL},  
+  μειώνοντας \texttt{query\_cost} από 141.8 → 26.8.                                       \\ 
+\texttt{uk\_visitor\_performance} &
+  \texttt{(visitor\_id\_FK, performance\_id\_FK)} &
+  \emph{α)} Unique constraint,  
+  \emph{β)} ταχύτερο φίλτρο ανά \texttt{visitor} (Q06: 3 row look‑ups).                 \\ 
+\texttt{idx\_staff\_role} &
+  \texttt{(staff\_role)} &
+  Query 07 (\emph{μέση εμπειρία τεχνικών}):  
+  αντί για 30 linears → 6 index reads.                                                   \\ 
+\end{longtable}
 
-\newpage
-
-\section*{2.2 Ευρετήρια (Indexes) και Αιτιολόγηση}
-
-\begin{longtable}{p{2.5cm}p{5cm}p{6cm}}
-  \toprule
-  \textbf{Πίνακας} & \textbf{Ευρετήριο} & \textbf{Χρησιμότητα / Αιτιολόγηση} \\
-  \midrule
-  \endfirsthead
-  \toprule
-  \textbf{Πίνακας} & \textbf{Ευρετήριο} & \textbf{Χρησιμότητα / Αιτιολόγηση} \\
-  \midrule
-  \endhead
-  
-  Event & \texttt{idx\_event\_period ON (event\_start, event\_end)} &
-  Επιτάχυνση αναζήτησης events σε χρονικό διάστημα (π.χ. events μεταξύ X και Y). \\
-  
-  Performance & \texttt{idx\_performance\_event\_start ON (event\_id\_FK, start\_time)} &
-  Γρήγορη ανάκτηση των performances για ένα event, ταξινομημένα χρονολογικά. \\
-  
-  Staff & \texttt{idx\_staff\_role ON (role)} &
-  Εύρεση διαθέσιμου προσωπικού ανά ρόλο (π.χ. security). \\
-  
-  Ticket & \texttt{idx\_ticket\_event\_category ON (event\_id\_FK, ticket\_category)} &
-  Έλεγχος ορίων πωλήσεων ανά κατηγορία (π.χ. πόσα VIP tickets έχουν πωληθεί). \\
-  
-  Ticket & \texttt{idx\_ticket\_visitor\_date ON (visitor\_id\_FK, purchase\_date)} &
-  Εξασφάλιση “ένα εισιτήριο ανά ημέρα/παράσταση” ανά επισκέπτη. \\
-  
-  Resale\_queue & \texttt{idx\_resale\_interest ON (interest\_date)} &
-  Υποστήριξη FIFO επεξεργασίας ουράς αγοράς/πώλησης. \\
-  
-  Artist\_Band & \texttt{idx\_artistband\_band ON (band\_id)} &
-  Γρήγορη ανάκτηση όλων των καλλιτεχνών που ανήκουν σε ένα συγκρότημα. \\
-  
-  Performance\_Artist & \texttt{idx\_perf\_artist\_artist ON (artist\_id)} &
-  Ανάκτηση όλων των εμφανίσεων ενός συγκεκριμένου καλλιτέχνη. \\
-  
-  Performance\_Band & \texttt{idx\_perf\_band\_band ON (band\_id)} &
-  Ανάκτηση όλων των εμφανίσεων ενός συγκροτήματος. \\
-  
-  Rating & \texttt{idx\_rating\_performance ON (performance\_id\_FK)} &
-  Υπολογισμός μέσων όρων και αναφορών βάσει performance. \\
-  
-  Festival & \texttt{idx\_festival\_year ON (festival\_year)} &
-  Αναζήτηση φεστιβάλ κατά έτος (π.χ. όλα του 2023). \\
-  
-  Stage & \texttt{idx\_stage\_capacity ON (capacity)} &
-  Φιλτράρισμα σκηνών με βάση ελάχιστη απαιτούμενη χωρητικότητα. \\
-  
-  Location & \texttt{idx\_location\_city\_country ON (city, country)} &
-  Γρήγορες γεωγραφικές αναζητήσεις (πόλη + χώρα). \\
-  
-  \bottomrule
-  \end{longtable}
-  
-  
-\subsection{Ευρετήρια}
-
-Για την επιτάχυνση συχνών ερωτημάτων, ορίστηκαν τα παρακάτω ευρετήρια:
+\paragraph{Απόδειξη βελτίωσης.}
+Παραθέτουμε ενδεικτικά το \texttt{query\_cost} που μετρήθηκε με
+\texttt{EXPLAIN FORMAT=JSON}:
 
 \begin{itemize}
-  \item \textbf{FK indexes}  
-    \begin{lstlisting}[language=SQL]
-CREATE INDEX idx_event_festival   ON Event(festival_id_FK);
-CREATE INDEX idx_event_stage      ON Event(stage_id_FK);
-CREATE INDEX idx_perf_event       ON Performance(event_id_FK);
-CREATE INDEX idx_pa_artist        ON Performance_Artist(artist_id);
-CREATE INDEX idx_perfband_band    ON Performance_Band(band_id);
-CREATE INDEX idx_ticket_event     ON Ticket(event_id_FK);
-CREATE INDEX idx_ticket_visitor   ON Ticket(visitor_id_FK);
-CREATE INDEX idx_rating_perf      ON Rating(performance_id_FK);
-CREATE INDEX idx_rating_visitor   ON Rating(visitor_id_FK);
-CREATE INDEX idx_stage_staff_st   ON Stage_Staff(stage_id);
-CREATE INDEX idx_stage_staff_staff ON Stage_Staff(staff_id);
-    \end{lstlisting}
-    \emph{Χρήση:} Επιταχύνουν JOINs σε συσχετισμούς Performance→Event, Event→Festival, Rating→Performance, κ.ά.
-  \item \textbf{Χρονικά ευρετήρια}  
-    \begin{lstlisting}[language=SQL]
-CREATE INDEX idx_event_period     ON Event(event_start, event_end);
-CREATE INDEX idx_performance_time ON Performance(start_time);
-    \end{lstlisting}
-    \emph{Χρήση:} Εύρεση γεγονότων/εμφανίσεων σε χρονικά διαστήματα (π.χ. Q1, Q3, Q6).
-  \item \textbf{Composite ευρετήριο για μοναδικότητα εισιτηρίων}  
-    Το UNIQUE KEY \texttt{uk\_ticket\_per\_day (visitor\_id\_FK, event\_id\_FK)} στον πίνακα \texttt{Ticket} εξασφαλίζει ότι κάθε επισκέπτης έχει το πολύ ένα εισιτήριο ανά παράσταση.
+  \item \textbf{Query 04} χωρίς \texttt{FORCE INDEX}:  
+        \verb|"query_cost": "320.25"|.  
+        Με το ευρετήριο \texttt{performance\_id\_FK} το κόστος έγινε
+        \verb|"26.79"| (≈12× ταχύτερο).
+  \item \textbf{Query 06} σε έκδοση \emph{nested‑loop}:  
+        από \verb|141.83| → \verb|3.15| (\(-97.8\%\)) χάρη στον
+        σύνθετο δείκτη \texttt{uk\_visitor\_performance}.
 \end{itemize}
 
-\subsection{Mock data}
+\paragraph{Επεξήγηση τύπου JOIN.}
+Για ανάλυση εναλλακτικών στρατηγικών (Nested Loop, Hash Join) — ζητούμενο
+στο Ερώτημα 4 — προστέθηκαν optimizer hints
+\lstinline|/*+ LOOP_JOIN(...) */| και \lstinline|/*+ HASH_JOIN(...) */|.
+Οι διαφορές σε χρόνο εκτέλεσης είναι μικρές λόγω μικρού
+όγκου δεδομένων, αλλά οι \texttt{EXPLAIN} δείχνουν καθαρά
+τη μετάβαση από \textbf{ref} προς \emph{Block Nested Loop} (BNL)
+όταν \texttt{hash\_join=on}.
 
-Για τη δημιουργία δειγματικών δεδομένων χρησιμοποιήθηκε το σκριπτ \texttt{generate\_csv.py} με τις ακόλουθες βασικές παραμέτρους:
+\bigskip
+Με τα παραπάνω τεκμηριώνεται πλήρως η ενότητα 2 (2.1 Περιορισμοί,
+2.2 Ευρετήρια).  Το αναλυτικό DDL και το script φόρτωσης CSV
+βρίσκονται στα Παραρτήματα \ref{app:install} και \ref{app:load} αντίστοιχα.
+
+\subsection{Mock data}
+
+Για την παραγωγή ρεαλιστικών δειγματικών δεδομένων χρησιμοποιείται
+το script \texttt{data\_generator.py} με τις
+παρακάτω βασικές παραμέτρους:
 
 \begin{itemize}
-  \item \texttt{NUM\_LOCATIONS = \texttt{\$5\$}}, \quad \texttt{NUM\_FESTIVALS = \texttt{\$10\$}} (έτη 2017–2026),
-        \texttt{NUM\_STAGES = \texttt{\$30\$}}, \texttt{NUM\_EVENTS = \texttt{\$50\$}}, \texttt{NUM\_PERFORMANCES = \texttt{\$100\$}},
-        \texttt{NUM\_ARTISTS = \texttt{\$30\$}}, \texttt{NUM\_BANDS = \texttt{\$20\$}}, \texttt{NUM\_VISITORS = \texttt{\$200\$}},
-        \texttt{NUM\_TICKETS = \texttt{\$300\$}}, \texttt{NUM\_STAFF = \texttt{\$30\$}}, \texttt{NUM\_RATINGS = \texttt{\$400\$}}, \texttt{NUM\_RESALE = \texttt{\$50\$}}.
-  \item Χρήση \texttt{Faker} για τυχαία ονόματα, διευθύνσεις, ημερομηνίες γέννησης, και \texttt{random.seed(42)} για επαναληψιμότητα.
-  \item Φεστιβάλ: ένα ανά έτος 2017–2026, με τουλάχιστον 2 μελλοντικά φεστιβάλ (έτη 2025–2026).
-  \item Κάθε Performance τοποθετείται μέσα στο αντίστοιχο Event, με τυχαίες διάρκειες 30–180 λεπτών και pause ≥ 5 λεπτά.
-  \item Εισιτήρια: VIP έως 10 \% της χωρητικότητας, purchase\_date τυχαία 2017–2026.
-  \item Προσωπικό: security ≥ 5 %, support ≥ 2 % της χωρητικότητας σκηνής μέσω trigger \texttt{trg\_staff\_quota}.
+  \item Πλήθος οντοτήτων \smallskip\\
+        \begin{tabular}{@{}ll@{}}
+          \texttt{NUM\_LOCATIONS}  &= 5 \\
+          \texttt{NUM\_FESTIVALS}  &= 10 \;(\,έτη 2017–2026\,)\\
+          \texttt{NUM\_STAGES}     &= 30 \\
+          \texttt{NUM\_EVENTS}     &= 50 \\
+          \texttt{NUM\_PERFORMANCES}&= 100 \\
+          \texttt{NUM\_ARTISTS}    &= 30 \\
+          \texttt{NUM\_BANDS}      &= 20 \\
+          \texttt{NUM\_VISITORS}   &= 200 \\
+          \texttt{NUM\_TICKETS}    &= 300 \\
+          \texttt{NUM\_STAFF}      &= 30 \\
+          \texttt{NUM\_RATINGS}    &= 400 \\
+          \texttt{NUM\_RESALE}     &= 50
+        \end{tabular}
+
+  \item \textbf{Determinism}: \texttt{Faker.seed(42)} και
+        \texttt{random.seed(42)} για επαναληψιμότητα.
+
+  \item \textbf{Ειδικοί κανόνες ώστε να καλύπτονται τα seed‑σενάρια που
+        απαιτούνται από τα ερωτήματα 3, 7, 9 και 14:}
+        \begin{enumerate}
+          \item τουλάχιστον \textbf{3 Events} δημιουργούνται ρητά στο
+                \textit{Festival \#1}
+                (\lstinline|MIN_EVENTS_F1 = 3|)· έτσι ο
+                καλλιτέχνης \#1 μπορεί να εμφανιστεί ως
+                \emph{warm‑up} τρεις φορές (Q3).
+          \item σε κάθε Festival αντιστοιχεί τουλάχιστον \textbf{1
+                τεχνικός (role ``tech'')} στο Stage Staff (Q7).
+          \item οι επισκέπτες \#1 και \#2 λαμβάνουν \textbf{≥ 4
+                παραστάσεις} στο παλαιότερο έτος δεδομένων (Q9).
+          \item εξισορρόπηση \emph{rock} εμφανίσεων: \textbf{≥ 3} σε
+                κάθε ένα από τα έτη 2023-2024 (Q14).
+        \end{enumerate}
+
+  \item \textbf{Επιπλέον λογική παραγωγής}
+        \begin{itemize}
+          \item Εγγυημένο κενό τουλάχιστον 5′ μεταξύ Performances,
+                διάρκεια 30–180′.
+          \item VIP εισιτήρια \(\le 10\%\) της χωρητικότητας σκηνής
+                (ελέγχεται δυναμικά).
+          \item Trigger \texttt{trg\_staff\_quota} παραμένει απενεργοποιημένος
+                μόνο κατά το \texttt{LOAD DATA} με τη
+                μεταβλητή \lstinline|@bulk_load|.
+        \end{itemize}
+
+  \item Το script παράγει 12 αρχεία CSV στον φάκελο
+        \texttt{csv\_data/}.  Η φόρτωση γίνεται με το
+        \texttt{load\_new.sql} που απενεργοποιεί προσωρινά τα
+        \texttt{FOREIGN\_KEY\_CHECKS}, εκτελεί \texttt{TRUNCATE} και
+        μετά κάνει \texttt{LOAD DATA INFILE} με ρυθμίσεις
+        \texttt{IGNORE 1 LINES} και κατάλληλο χειρισμό \texttt{\textbackslash N}
+        για προαιρετικά FK (π.χ.\ \texttt{Performance\_Artist.band\_id\_FK}).
 \end{itemize}
 
-Το script παράγει τα αρχεία CSV στον φάκελο \texttt{csv\_data/}, τα οποία φορτώνονται μέσω \texttt{LOAD DATA INFILE} στο \texttt{load.sql}. Έτσι εξασφαλίζεται επαρκής πληθυσμός (≥ 10 φεστιβάλ, ≥ 100 εμφανίσεις, ≥ 200 εισιτήρια κ.λπ.) για όλα τα απαιτούμενα ερωτήματα.
+Η ρουτίνα \texttt{\_self\_test()} εκτελείται στο τέλος της
+δημιουργίας και τερματίζει με \lstinline|AssertionError| εάν
+οποιοδήποτε seed‑σενάριο αποτύχει.  Με επιτυχία εμφανίζεται μήνυμα:
+
+\begin{verbatim}
+✅  Self‑test passed – all seed scenarios satisfied.
+\end{verbatim}
+
+Έτσι διασφαλίζεται ότι το dataset είναι πάντοτε επαρκές και
+συμβατό με τα ερωτήματα αξιολόγησης.
 
 
 \section{Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}
 
-\subsection{Script Δημιουργίας Σχήματος (\texttt{sql/install.sql})}
-\subsection{Script Δημιουργίας Σχήματος (\texttt{sql/install.sql})}
+\subsection{Script Δημιουργίας Σχήματος (\texttt{install.sql})}
 \begin{lstlisting}[language=SQL]
-DROP DATABASE IF EXISTS pko;
-CREATE DATABASE pko
-  CHARACTER SET utf8mb4
-  COLLATE utf8mb4_0900_ai_ci;
-USE pko;
 
-CREATE TABLE Location (
-  location_id INT PRIMARY KEY,
-  address VARCHAR(255) NOT NULL,
-  city VARCHAR(100) NOT NULL,
-  country VARCHAR(100) NOT NULL,
-  continent VARCHAR(50) NOT NULL,
-  coordinates VARCHAR(50),
-  location_image VARCHAR(255)
-);
-
-CREATE TABLE Festival (
-  festival_id INT PRIMARY KEY,
-  festival_name VARCHAR(100) NOT NULL,
-  festival_year YEAR NOT NULL,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
-  location_id_FK INT NOT NULL,
-  festival_image VARCHAR(255),
-  FOREIGN KEY (location_id_FK)
-    REFERENCES Location(location_id)
-      ON UPDATE CASCADE
-      ON DELETE RESTRICT,
-  CHECK (end_date >= start_date)
-);
-
-CREATE TABLE Stage (
-  stage_id INT PRIMARY KEY,
-  stage_name VARCHAR(100) NOT NULL,
-  stage_description TEXT,
-  capacity INT NOT NULL CHECK (capacity > 0),
-  tech_equipment VARCHAR(255),
-  stage_image VARCHAR(255)
-);
-
-CREATE TABLE Event (
-  event_id INT PRIMARY KEY,
-  event_name VARCHAR(100) NOT NULL,
-  festival_id_FK INT NOT NULL,
-  stage_id_FK INT NOT NULL,
-  event_start DATETIME NOT NULL,
-  event_end DATETIME NOT NULL,
-  event_image VARCHAR(255),
-  FOREIGN KEY (festival_id_FK)
-    REFERENCES Festival(festival_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (stage_id_FK)
-    REFERENCES Stage(stage_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  CHECK (event_end > event_start)
-);
-
-CREATE TABLE Artist (
-  artist_id INT PRIMARY KEY,
-  name VARCHAR(100) NOT NULL,
-  pseudonym VARCHAR(50),
-  birth_date DATE NOT NULL,
-  main_genre VARCHAR(50) NOT NULL,
-  sub_genre VARCHAR(50),
-  website VARCHAR(255),
-  instagram VARCHAR(255),
-  image_url VARCHAR(255)
-);
-
-CREATE TABLE Band (
-  band_id INT PRIMARY KEY,
-  band_name VARCHAR(100) NOT NULL,
-  formation_date DATE NOT NULL,
-  website VARCHAR(255),
-  instagram VARCHAR(255),
-  image_url VARCHAR(255)
-);
-
-CREATE TABLE Artist_Band (
-  artist_id INT NOT NULL,
-  band_id INT NOT NULL,
-  join_date DATE NOT NULL,
-  PRIMARY KEY (artist_id, band_id),
-  FOREIGN KEY (artist_id)
-    REFERENCES Artist(artist_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (band_id)
-    REFERENCES Band(band_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE
-);
-
-CREATE TABLE Performance (
-  performance_id INT PRIMARY KEY,
-  event_id_FK INT NOT NULL,
-  performance_type VARCHAR(30) NOT NULL
-    CHECK (performance_type IN (
-      'warm up','headline','special guest','main act'
-    )),
-  start_time DATETIME NOT NULL,
-  duration_minutes INT NOT NULL
-    CHECK (duration_minutes BETWEEN 1 AND 180),
-  performance_image VARCHAR(255),
-  FOREIGN KEY (event_id_FK)
-    REFERENCES Event(event_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE
-);
-
-CREATE TABLE Performance_Artist (
-  performance_id INT NOT NULL,
-  artist_id INT NOT NULL,
-  PRIMARY KEY (performance_id, artist_id),
-  FOREIGN KEY (performance_id)
-    REFERENCES Performance(performance_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (artist_id)
-    REFERENCES Artist(artist_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE
-);
-
-CREATE TABLE Performance_Band (
-  performance_id INT NOT NULL,
-  band_id INT NOT NULL,
-  PRIMARY KEY (performance_id, band_id),
-  FOREIGN KEY (performance_id)
-    REFERENCES Performance(performance_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (band_id)
-    REFERENCES Band(band_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE
-);
-
-CREATE TABLE Visitor (
-  visitor_id INT PRIMARY KEY,
-  first_name VARCHAR(50) NOT NULL,
-  last_name VARCHAR(50) NOT NULL,
-  age INT CHECK (age BETWEEN 0 AND 120),
-  phone VARCHAR(30),
-  email VARCHAR(100)
-);
-
-CREATE TABLE Ticket (
-  ticket_id INT PRIMARY KEY,
-  event_id_FK INT NOT NULL,
-  visitor_id_FK INT NOT NULL,
-  ticket_category VARCHAR(30) NOT NULL
-    CHECK (ticket_category IN ('general','VIP','backstage')),
-  purchase_date DATETIME NOT NULL,
-  ticket_cost DECIMAL(8,2) NOT NULL CHECK (ticket_cost >= 0),
-  purchase_method VARCHAR(30) NOT NULL
-    CHECK (purchase_method IN (
-      'credit_card','debit_card','bank_transfer','other'
-    )),
-  ean_code CHAR(13) NOT NULL UNIQUE,
-  is_activated TINYINT(1) NOT NULL DEFAULT 0,
-  FOREIGN KEY (event_id_FK)
-    REFERENCES Event(event_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (visitor_id_FK)
-    REFERENCES Visitor(visitor_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  UNIQUE KEY uk_ticket_per_day (visitor_id_FK, event_id_FK)
-);
-
-CREATE TABLE Staff (
-  staff_id INT PRIMARY KEY,
-  staff_name VARCHAR(100) NOT NULL,
-  age INT NOT NULL CHECK (age >= 18),
-  role VARCHAR(30) NOT NULL
-    CHECK (role IN ('tech','security','support')),
-  experience VARCHAR(30) NOT NULL
-    CHECK (experience IN (
-      'intern','beginner','average','experienced','expert'
-    ))
-);
-
-CREATE TABLE Stage_Staff (
-  stage_id INT NOT NULL,
-  staff_id INT NOT NULL,
-  start_date DATE NOT NULL,
-  end_date DATE NOT NULL,
-  PRIMARY KEY (stage_id, staff_id, start_date),
-  FOREIGN KEY (stage_id)
-    REFERENCES Stage(stage_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (staff_id)
-    REFERENCES Staff(staff_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  CHECK (end_date >= start_date)
-);
-
-CREATE TABLE Rating (
-  rating_id INT PRIMARY KEY,
-  visitor_id_FK INT NOT NULL,
-  performance_id_FK INT NOT NULL,
-  rating_interpretation TINYINT NOT NULL
-    CHECK (rating_interpretation BETWEEN 1 AND 5),
-  rating_sound_light    TINYINT NOT NULL
-    CHECK (rating_sound_light BETWEEN 1 AND 5),
-  rating_stage_presence TINYINT NOT NULL
-    CHECK (rating_stage_presence BETWEEN 1 AND 5),
-  rating_organization   TINYINT NOT NULL
-    CHECK (rating_organization BETWEEN 1 AND 5),
-  rating_overall        TINYINT NOT NULL
-    CHECK (rating_overall BETWEEN 1 AND 5),
-  FOREIGN KEY (visitor_id_FK)
-    REFERENCES Visitor(visitor_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (performance_id_FK)
-    REFERENCES Performance(performance_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  UNIQUE KEY uk_rating_once(visitor_id_FK, performance_id_FK)
-);
-
-CREATE TABLE Resale_queue (
-  resale_id INT PRIMARY KEY,
-  ticket_id_FK INT NOT NULL,
-  visitor_id_FK INT NOT NULL,
-  interest_type VARCHAR(30) NOT NULL
-    CHECK (interest_type IN ('seller','buyer')),
-  interest_date DATETIME NOT NULL,
-  FOREIGN KEY (ticket_id_FK)
-    REFERENCES Ticket(ticket_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (visitor_id_FK)
-    REFERENCES Visitor(visitor_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE
-);
-
-CREATE INDEX idx_event_period
-  ON Event(event_start, event_end);
-CREATE INDEX idx_performance_event
-  ON Performance(event_id_FK, start_time);
-CREATE INDEX idx_staff_role
-  ON Staff(role);
-
-DROP TRIGGER IF EXISTS trg_staff_quota;
-DELIMITER $$
-CREATE TRIGGER trg_staff_quota
-BEFORE INSERT ON Stage_Staff
-FOR EACH ROW
-BEGIN
-  DECLARE cap INT;
-  DECLARE role_txt VARCHAR(30);
-  DECLARE cnt INT;
-  IF IFNULL(@bulk_load,0)=0 THEN
-    SELECT capacity INTO cap
-      FROM Stage
-     WHERE stage_id = NEW.stage_id;
-
-    SELECT role INTO role_txt
-      FROM Staff
-     WHERE staff_id = NEW.staff_id;
-
-    SELECT COUNT(*) INTO cnt
-      FROM Stage_Staff ss
-      JOIN Staff s ON s.staff_id = ss.staff_id
-     WHERE ss.stage_id = NEW.stage_id
-       AND ss.start_date = NEW.start_date
-       AND s.role = role_txt;
-
-    IF role_txt = 'security'
-       AND cnt + 1 < CEIL(cap * 0.05) THEN
-      SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Security staff below 5%';
-    ELSEIF role_txt = 'support'
-       AND cnt + 1 < CEIL(cap * 0.02) THEN
-      SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Support staff below 2%';
+  DROP DATABASE IF EXISTS 10new;
+  CREATE DATABASE 10new
+    CHARACTER SET utf8mb4
+    COLLATE utf8mb4_0900_ai_ci;
+  USE 10new;
+  
+  /* ─────────────────────────────────────────────
+     REFERENCE TABLES
+     ─────────────────────────────────────────── */
+  CREATE TABLE Location (
+    location_id        INT AUTO_INCREMENT PRIMARY KEY,
+    address            VARCHAR(255) NOT NULL,
+    city               VARCHAR(100) NOT NULL,
+    country            VARCHAR(100) NOT NULL,
+    continent          VARCHAR(50)  NOT NULL,
+    coordinates        VARCHAR(50),
+    location_image     VARCHAR(255),
+    location_image_alt VARCHAR(255)
+  );
+  
+  CREATE TABLE Festival (
+    festival_id        INT AUTO_INCREMENT PRIMARY KEY,
+    festival_name      VARCHAR(100) NOT NULL,
+    festival_year      YEAR         NOT NULL,
+    start_date         DATE         NOT NULL,
+    end_date           DATE         NOT NULL,
+    location_id_FK     INT          NOT NULL,
+    festival_image     VARCHAR(255),
+    festival_image_alt VARCHAR(255),
+    CONSTRAINT fk_festival_location
+      FOREIGN KEY (location_id_FK)
+      REFERENCES Location(location_id)
+        ON UPDATE CASCADE
+        ON DELETE RESTRICT,
+    CONSTRAINT ck_festival_dates CHECK (end_date >= start_date)
+  );
+  
+  CREATE TABLE Stage (
+    stage_id           INT AUTO_INCREMENT PRIMARY KEY,
+    stage_name         VARCHAR(100) NOT NULL,
+    building_name      VARCHAR(100),
+    capacity           INT NOT NULL CHECK (capacity > 0),
+    tech_equipment     VARCHAR(255),
+    stage_image        VARCHAR(255),
+    stage_image_alt    VARCHAR(255),
+    stage_description  TEXT
+  );
+  
+  CREATE TABLE Event (
+    event_id         INT AUTO_INCREMENT PRIMARY KEY,
+    festival_id_FK   INT NOT NULL,
+    stage_id_FK      INT NOT NULL,
+    event_name       VARCHAR(100) NOT NULL,
+    event_date       DATE NOT NULL,
+    start_time       TIME NOT NULL,
+    end_time         TIME NOT NULL,
+    event_image      VARCHAR(255),
+    event_image_alt  VARCHAR(255),
+    FOREIGN KEY (festival_id_FK) REFERENCES Festival(festival_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (stage_id_FK)    REFERENCES Stage(stage_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    CONSTRAINT ck_event_time CHECK (end_time > start_time)
+  );
+  
+  /* ─────────────────────────────────────────────
+     ARTIST / BAND
+     ─────────────────────────────────────────── */
+  CREATE TABLE Artist (
+    artist_id        INT AUTO_INCREMENT PRIMARY KEY,
+    real_name        VARCHAR(100) NOT NULL,
+    pseudonym       VARCHAR(100),
+    birth_date       DATE NOT NULL,
+    music_genre      VARCHAR(50) NOT NULL,
+    sub_genre        VARCHAR(50),
+    website          VARCHAR(255),
+    instagram        VARCHAR(255),
+    artist_image     VARCHAR(255),
+    artist_image_alt VARCHAR(255)
+  );
+  
+  CREATE TABLE Band (
+    band_id         INT AUTO_INCREMENT PRIMARY KEY,
+    band_name       VARCHAR(100) NOT NULL,
+    formation_date  DATE NOT NULL,
+    music_genre     VARCHAR(50) NOT NULL,
+    sub_genre       VARCHAR(50),
+    website         VARCHAR(255),
+    instagram       VARCHAR(255),
+    band_image      VARCHAR(255),
+    band_image_alt  VARCHAR(255)
+  );
+  
+  CREATE TABLE Artist_Band (
+    artist_id_FK INT NOT NULL,
+    band_id_FK   INT NOT NULL,
+    join_date    DATE NOT NULL,
+    PRIMARY KEY (artist_id_FK, band_id_FK),
+    FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
+      ON UPDATE CASCADE ON DELETE CASCADE
+  );
+  
+  /* ─────────────────────────────────────────────
+     PERFORMANCE & LINKS
+     ─────────────────────────────────────────── */
+  CREATE TABLE Performance (
+    performance_id        INT AUTO_INCREMENT PRIMARY KEY,
+    event_id_FK           INT NOT NULL,
+    performance_type      VARCHAR(20) NOT NULL
+        CHECK (performance_type IN ('warm up','headline','special guest','main act')),
+    start_time            TIME NOT NULL,
+    end_time              TIME NOT NULL,
+    performance_image     VARCHAR(255),
+    performance_image_alt VARCHAR(255),
+    FOREIGN KEY (event_id_FK) REFERENCES Event(event_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    CHECK (end_time > start_time)
+  );
+  
+  CREATE TABLE Performance_Artist (
+    performance_id_FK INT NOT NULL,
+    artist_id_FK      INT NOT NULL,
+    band_id_FK        INT,
+    PRIMARY KEY (performance_id_FK, artist_id_FK),
+    FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
+      ON UPDATE CASCADE ON DELETE SET NULL
+  );
+  
+  CREATE TABLE Performance_Band (
+    performance_id_FK INT NOT NULL,
+    band_id_FK        INT NOT NULL,
+    artist_id_FK      INT,
+    PRIMARY KEY (performance_id_FK, band_id_FK),
+    FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
+      ON UPDATE CASCADE ON DELETE SET NULL
+  );
+  
+  /* ─────────────────────────────────────────────
+     VISITORS, TICKETS, RATINGS
+     ─────────────────────────────────────────── */
+  CREATE TABLE Visitor (
+    visitor_id   INT AUTO_INCREMENT PRIMARY KEY,
+    first_name   VARCHAR(50) NOT NULL,
+    last_name    VARCHAR(50) NOT NULL,
+    contact_info VARCHAR(255),
+    visitor_age  INT CHECK (visitor_age BETWEEN 0 AND 120)
+  );
+  
+  CREATE TABLE Ticket (
+    ticket_id        INT AUTO_INCREMENT PRIMARY KEY,
+    event_id_FK      INT NOT NULL,
+    visitor_id_FK    INT NOT NULL,
+    ticket_category  VARCHAR(10) NOT NULL
+        CHECK (ticket_category IN ('general','VIP','backstage')),
+    purchase_date    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    ticket_cost      DECIMAL(8,2) NOT NULL CHECK (ticket_cost >= 0),
+    purchase_method  VARCHAR(15) NOT NULL
+        CHECK (purchase_method IN ('credit_card','debit_card','bank_transfer','other')),
+    ean_code         CHAR(13) NOT NULL UNIQUE,
+    is_activated     TINYINT(1) NOT NULL DEFAULT 0,
+    FOREIGN KEY (event_id_FK)   REFERENCES Event(event_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (visitor_id_FK) REFERENCES Visitor(visitor_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    UNIQUE KEY uk_ticket_once (visitor_id_FK, event_id_FK)
+  );
+  
+  CREATE TABLE Rating (
+    rating_id             INT AUTO_INCREMENT PRIMARY KEY,
+    visitor_id_FK         INT NOT NULL,
+    performance_id_FK     INT NOT NULL,
+    rating_interpretation TINYINT NOT NULL CHECK (rating_interpretation BETWEEN 1 AND 5),
+    rating_sound_light    TINYINT NOT NULL CHECK (rating_sound_light    BETWEEN 1 AND 5),
+    rating_stage_presence TINYINT NOT NULL CHECK (rating_stage_presence BETWEEN 1 AND 5),
+    rating_organization   TINYINT NOT NULL CHECK (rating_organization   BETWEEN 1 AND 5),
+    rating_overall        TINYINT NOT NULL CHECK (rating_overall        BETWEEN 1 AND 5),
+    rating_date           DATE NOT NULL DEFAULT (CURRENT_DATE),
+    FOREIGN KEY (visitor_id_FK)     REFERENCES Visitor(visitor_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    UNIQUE KEY uk_visitor_performance (visitor_id_FK, performance_id_FK)
+  );
+  
+  /* ─────────────────────────────────────────────
+     STAFF & STAGE STAFF
+     ─────────────────────────────────────────── */
+  CREATE TABLE Staff (
+    staff_id        INT AUTO_INCREMENT PRIMARY KEY,
+    staff_name      VARCHAR(100) NOT NULL,
+    staff_age       INT  NOT NULL CHECK (staff_age >= 18),
+    staff_role      VARCHAR(10) NOT NULL
+        CHECK (staff_role IN ('tech','security','support')),
+    experience_level VARCHAR(12) NOT NULL
+        CHECK (experience_level IN ('intern','beginner','average','experienced','expert')),
+    staff_image     VARCHAR(255),
+    staff_image_alt VARCHAR(255)
+  );
+  
+  CREATE TABLE Stage_Staff (
+    stage_id_FK INT NOT NULL,
+    staff_id_FK INT NOT NULL,
+    start_date  DATE NOT NULL,
+    end_date    DATE NOT NULL,
+    PRIMARY KEY (stage_id_FK, staff_id_FK, start_date),
+    FOREIGN KEY (stage_id_FK) REFERENCES Stage(stage_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (staff_id_FK) REFERENCES Staff(staff_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+    CHECK (end_date >= start_date)
+  );
+  
+  /* ─────────────────────────────────────────────
+     RESALE QUEUE  (kept extended version – remove extras if unwanted)
+     ─────────────────────────────────────────── */
+  CREATE TABLE Resale_queue (
+    queue_id           INT AUTO_INCREMENT PRIMARY KEY,
+    ticket_id_FK       INT NOT NULL,
+    visitor_id_FK      INT NOT NULL,
+    event_id_FK        INT NOT NULL,
+    interest_type      VARCHAR(6) NOT NULL
+        CHECK (interest_type IN ('seller','buyer')),
+    interest_date      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    
+    FOREIGN KEY (ticket_id_FK)
+      REFERENCES Ticket(ticket_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (visitor_id_FK)
+      REFERENCES Visitor(visitor_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE,
+    FOREIGN KEY (event_id_FK)
+      REFERENCES Event(event_id)
+        ON UPDATE CASCADE
+        ON DELETE CASCADE
+  );
+  
+  
+  /* ─────────────────────────────────────────────
+     INDEXES
+     ─────────────────────────────────────────── */
+  CREATE INDEX idx_event_schedule       ON Event(event_date, start_time, end_time);
+  CREATE INDEX idx_performance_by_event ON Performance(event_id_FK, start_time);
+  CREATE INDEX idx_staff_role           ON Staff(staff_role);
+  
+  /* ─────────────────────────────────────────────
+     TRIGGER: STAFF QUOTAS  (unchanged)
+     ─────────────────────────────────────────── */
+  DROP TRIGGER IF EXISTS trg_staff_quota;
+  DELIMITER $$
+  CREATE TRIGGER trg_staff_quota
+  BEFORE INSERT ON Stage_Staff
+  FOR EACH ROW
+  BEGIN
+    DECLARE cap INT;
+    DECLARE role_txt VARCHAR(30);
+    DECLARE cnt INT;
+  
+    IF IFNULL(@bulk_load,0) = 0 THEN
+      SELECT capacity INTO cap
+        FROM Stage
+       WHERE stage_id = NEW.stage_id_FK;
+  
+      SELECT staff_role INTO role_txt
+        FROM Staff
+       WHERE staff_id = NEW.staff_id_FK;
+  
+      SELECT COUNT(*) INTO cnt
+        FROM Stage_Staff ss
+        JOIN Staff s ON s.staff_id = ss.staff_id_FK
+       WHERE ss.stage_id_FK = NEW.stage_id_FK
+         AND ss.start_date  = NEW.start_date
+         AND s.staff_role   = role_txt;
+  
+      IF role_txt = 'security' AND cnt + 1 < CEIL(cap * 0.05) THEN
+        SIGNAL SQLSTATE '45000'
+          SET MESSAGE_TEXT = 'Security staff below 5% of capacity';
+      ELSEIF role_txt = 'support' AND cnt + 1 < CEIL(cap * 0.02) THEN
+        SIGNAL SQLSTATE '45000'
+          SET MESSAGE_TEXT = 'Support staff below 2% of capacity';
+      END IF;
     END IF;
-  END IF;
-END$$
-DELIMITER ;
-\end{lstlisting}
-\subsection{Script Φόρτωσης Δεδομένων (\texttt{sql/load.sql})}
-
-\subsection{Script Φόρτωσης Δεδομένων (\texttt{sql/load.sql})}
-
+  END$$
+  DELIMITER ;
+  
+  \end{lstlisting}
+\subsection{Script Φόρτωσης Δεδομένων (\texttt{load.sql})}
 \begin{lstlisting}[language=SQL]
+  /* ===============================================================
+  LOAD_NEW.SQL  –  imports the “new‑schema” CSVs generated by data.py
+  =============================================================== */
+
+-- ---------------------------------------------------------------
+-- 0.  Empty all tables (order is irrelevant with FK checks off)
+-- ---------------------------------------------------------------
 SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE Resale_queue;
 TRUNCATE TABLE Rating;
 TRUNCATE TABLE Stage_Staff;
-TRUNCATE TABLE Staff;
 TRUNCATE TABLE Ticket;
-TRUNCATE TABLE Visitor;
 TRUNCATE TABLE Performance_Artist;
 TRUNCATE TABLE Performance_Band;
 TRUNCATE TABLE Performance;
 TRUNCATE TABLE Artist_Band;
+TRUNCATE TABLE Visitor;
+TRUNCATE TABLE Staff;
 TRUNCATE TABLE Band;
 TRUNCATE TABLE Artist;
 TRUNCATE TABLE Event;
@@ -595,407 +608,516 @@ TRUNCATE TABLE Location;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
-SELECT CONSTRAINT_NAME
-  INTO @cn
-  FROM information_schema.TABLE_CONSTRAINTS
- WHERE TABLE_SCHEMA = DATABASE()
-   AND TABLE_NAME   = 'Staff'
-   AND CONSTRAINT_TYPE = 'CHECK'
- LIMIT 1;
-
-SET @sql = CONCAT('ALTER TABLE Staff DROP CHECK ', @cn);
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
-
-/* Location */
+-- ===============================================================
+-- 1.  Location  (8 columns incl. *_alt)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Location.csv'
 INTO TABLE Location
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(location_id, address, city, country, continent, coordinates, location_image);
+(location_id,address,city,country,continent,coordinates,
+location_image,location_image_alt);
 
-/* Festival */
+-- ===============================================================
+-- 2.  Festival  (8 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Festival.csv'
 INTO TABLE Festival
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(festival_id, festival_name, festival_year, start_date, end_date, location_id_FK, festival_image);
+(festival_id,festival_name,festival_year,
+start_date,end_date,location_id_FK,
+festival_image,festival_image_alt);
 
-/* Stage */
+-- ===============================================================
+-- 3.  Stage  (8 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Stage.csv'
 INTO TABLE Stage
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(stage_id, stage_name, stage_description, capacity, tech_equipment, stage_image);
+(stage_id,stage_name,building_name,capacity,tech_equipment,
+stage_image,stage_image_alt,stage_description);
 
-/* Event */
+-- ===============================================================
+-- 4.  Event  (9 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Event.csv'
 INTO TABLE Event
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(event_id, event_name, festival_id_FK, stage_id_FK, event_start, event_end, event_image);
+(event_id,festival_id_FK,stage_id_FK,event_name,
+event_date,start_time,end_time,
+event_image,event_image_alt);
 
-/* Artist */
+-- ===============================================================
+-- 5.  Artist  (10 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Artist.csv'
 INTO TABLE Artist
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(artist_id, name, pseudonym, birth_date, main_genre, sub_genre, website, instagram, image_url);
+(artist_id,real_name,pseudonym,birth_date,
+music_genre,sub_genre,website,instagram,
+artist_image,artist_image_alt);
 
-/* Band */
+-- ===============================================================
+-- 6.  Band  (9 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Band.csv'
 INTO TABLE Band
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(band_id, band_name, formation_date, website, instagram, image_url);
+(band_id,band_name,formation_date,
+music_genre,sub_genre,website,instagram,
+band_image,band_image_alt);
 
-/* Artist_Band */
+-- ===============================================================
+-- 7.  Artist_Band  (3 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Artist_Band.csv'
 INTO TABLE Artist_Band
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(artist_id, band_id, join_date);
+(artist_id_FK,band_id_FK,join_date);
 
-/* Performance */
+-- ===============================================================
+-- 8.  Performance  (7 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Performance.csv'
 INTO TABLE Performance
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(performance_id, event_id_FK, performance_type, start_time, duration_minutes, performance_image);
+(performance_id,event_id_FK,performance_type,
+start_time,end_time,
+performance_image,performance_image_alt);
 
-/* Performance_Artist */
+-- ---------------------------------------------------------------
+-- 8a. Performance_Artist  – blank / \N / any non‑number → NULL
+-- ---------------------------------------------------------------
 LOAD DATA INFILE '/var/lib/mysql-files/Performance_Artist.csv'
 INTO TABLE Performance_Artist
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'     -- keep whatever ESCAPED BY you had
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(performance_id, artist_id);
+(@perf, @artist, @band)            -- same three variables as before
+SET performance_id_FK = @perf,
+   artist_id_FK      = @artist,
+   band_id_FK        = CASE
+                          WHEN @band REGEXP '^[0-9]+$' THEN @band
+                          ELSE NULL
+                       END;                     -- ← new logic
 
-/* Performance_Band */
+
+-- ---------------------------------------------------------------
+-- 8b. Performance_Band  – blank / \N / any non‑number → NULL
+-- ---------------------------------------------------------------
 LOAD DATA INFILE '/var/lib/mysql-files/Performance_Band.csv'
 INTO TABLE Performance_Band
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(performance_id, band_id);
+(@perf, @band, @artist)
+SET performance_id_FK = @perf,
+   band_id_FK        = @band,
+   artist_id_FK      = CASE
+                          WHEN @artist REGEXP '^[0-9]+$' THEN @artist
+                          ELSE NULL
+                       END;
 
-/* Visitor */
+
+
+-- ===============================================================
+-- 9.  Visitor  (5 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Visitor.csv'
 INTO TABLE Visitor
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(visitor_id, first_name, last_name, age, phone, email);
+(visitor_id,first_name,last_name,contact_info,visitor_age);
 
-/* Ticket */
+-- ===============================================================
+-- 10. Ticket  (9 columns – unchanged)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Ticket.csv'
 INTO TABLE Ticket
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(ticket_id, event_id_FK, visitor_id_FK, ticket_category,
- purchase_date, ticket_cost, purchase_method, ean_code, is_activated);
+(ticket_id,event_id_FK,visitor_id_FK,ticket_category,
+purchase_date,ticket_cost,purchase_method,
+ean_code,is_activated);
 
-/* Staff */
+-- ===============================================================
+-- 11. Rating  (9 columns incl. rating_date)
+-- ===============================================================
+LOAD DATA INFILE '/var/lib/mysql-files/Rating.csv'
+INTO TABLE Rating
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
+LINES TERMINATED BY '\n'
+IGNORE 1 LINES
+(rating_id,visitor_id_FK,performance_id_FK,
+rating_interpretation,rating_sound_light,
+rating_stage_presence,rating_organization,
+rating_overall,rating_date);
+
+-- ===============================================================
+-- 12. Staff  (7 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Staff.csv'
 INTO TABLE Staff
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(staff_id, staff_name, age, role, experience);
+(staff_id,staff_name,staff_age,staff_role,
+experience_level,staff_image,staff_image_alt);
 
-/* Stage_Staff */
+-- ---------------------------------------------------------------
+-- 12a. Stage_Staff  (4 columns – trigger muted)
+-- ---------------------------------------------------------------
 SET @bulk_load = 1;
 LOAD DATA INFILE '/var/lib/mysql-files/Stage_Staff.csv'
 INTO TABLE Stage_Staff
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(stage_id, staff_id, start_date, end_date);
+(stage_id_FK,staff_id_FK,start_date,end_date);
 SET @bulk_load = NULL;
 
-/* Rating */
-LOAD DATA INFILE '/var/lib/mysql-files/Rating.csv'
-INTO TABLE Rating
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
-LINES TERMINATED BY '\n'
-IGNORE 1 LINES
-(rating_id, visitor_id_FK, performance_id_FK,
- rating_interpretation, rating_sound_light,
- rating_stage_presence, rating_organization, rating_overall);
-
-/* Resale_queue */
+-- ===============================================================
+-- 13. Resale_queue  (10 columns)
+-- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Resale_queue.csv'
 INTO TABLE Resale_queue
-FIELDS TERMINATED BY ','
-ENCLOSED BY '"'
+FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(resale_id, ticket_id_FK, visitor_id_FK, interest_type, interest_date);
+(queue_id, ticket_id_FK, visitor_id_FK, event_id_FK,
+interest_type, interest_date);
 
+
+
+  \end{lstlisting}
+
+
+%--------------------------------------------------------------
+\subsection{Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
+\label{subsec:q4}
+%--------------------------------------------------------------
+
+Στόχος: να υπολογιστεί ο \textit{μέσος όρος} \emph{Interpretation} και
+\emph{Overall} για έναν συγκεκριμένο καλλιτέχνη (π.~χ.\ \verb|@p_artist_id = 5|).
+
+\begin{lstlisting}[caption={Αρχικό ερώτημα (σχ.\,\ref{lst:q4-base})},label={lst:q4-base}]
+SELECT  a.artist_id,
+        COALESCE(a.pseudonym,a.real_name) AS artist_name,
+        ROUND(AVG(r.rating_interpretation),2) AS avg_interpretation,
+        ROUND(AVG(r.rating_overall),2)        AS avg_overall
+FROM   Rating             r
+JOIN   Performance        p  ON p.performance_id     = r.performance_id_FK
+JOIN   Performance_Artist pa ON pa.performance_id_FK = p.performance_id
+JOIN   Artist             a  ON a.artist_id          = pa.artist_id_FK
+WHERE  a.artist_id = @p_artist_id
+GROUP  BY a.artist_id, artist_name;
 \end{lstlisting}
 
-\subsection{Ερώτημα 4: Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
-
-Για τον καλλιτέχνη με \verb|artist_id = 5| εκτελέστηκαν τα ακόλουθα ερωτήματα και αναλύθηκαν τρεις στρατηγικές join:
-
-\begin{enumerate}
-  \item \textbf{Βασικό Query}  
-  \begin{verbatim}
-SELECT
-  a.artist_id,
-  a.name                     AS artist_name,
-  AVG(r.rating_interpretation) AS avg_interpretation,
-  AVG(r.rating_overall)        AS avg_overall
-FROM Rating             AS r
-JOIN Performance_Artist AS pa
-  ON r.performance_id_FK = pa.performance_id
-JOIN Artist             AS a
-  ON pa.artist_id       = a.artist_id
-WHERE a.artist_id = 5
-GROUP BY a.artist_id;
-  \end{verbatim}
-  \textit{Αποτελέσματα:}
-  \begin{tabular}{l l r r}
-    \textbf{artist\_id} & \textbf{artist\_name} & \textbf{avg\_interpretation} & \textbf{avg\_overall} \\
-    \hline
-    5 & William Herrera & 3.8182 & 3.2727
-  \end{tabular}
-
-  \smallskip
-  \textit{EXPLAIN FORMAT=JSON (default plan): cost = 4.05}
-  \begin{verbatim}
-"nested_loop": [
-  { "table_name": "a", "access_type": "const", "key": "PRIMARY", … },
-  { "table_name": "pa","access_type": "ref",   "key": "artist_id", … },
-  { "table_name": "r", "access_type": "ref",   "key": "performance_id_FK", … }
-]
-  \end{verbatim}
-
-  \smallskip
-  \textit{Optimizer Trace (key steps):}
-  \begin{verbatim}
-"strategy": "ref_or_null" on r (2500 rows),
-then "unique_subquery" on pa and a (1 row each).
-  \end{verbatim}
-
-  \item \textbf{Forced Nested Loop Join (4.3)}  
-  \begin{verbatim}
-/*+ LOOP_JOIN(r pa) */
-SELECT … 
-FROM Rating AS r
-  FORCE INDEX (performance_id_FK)
-JOIN Performance_Artist AS pa
-  FORCE INDEX (PRIMARY)
-  /*+ LOOP_JOIN(r pa) */
-  ON r.performance_id_FK = pa.performance_id
-JOIN Artist AS a
-  FORCE INDEX (PRIMARY)
-  ON pa.artist_id = a.artist_id
-WHERE a.artist_id = 5
-GROUP BY a.artist_id;
-  \end{verbatim}
-  \textit{EXPLAIN FORMAT=JSON: cost = 27.22}
-  \begin{verbatim}
-"nested_loop": [
-  { "table_name": "a", "access_type": "const", "key": "PRIMARY", … },
-  { "table_name": "pa","access_type": "index", "key": "PRIMARY", … },
-  { "table_name": "r", "access_type": "ref",   "key": "performance_id_FK", … }
-]
-  \end{verbatim}
-
-  \item \textbf{Forced Hash Join (4.4)}  
-  \begin{verbatim}
-SET optimizer_switch='hash_join=on';
-/*+ HASH_JOIN(r pa) */
-SELECT …
-FROM Rating AS r
-  FORCE INDEX (performance_id_FK)
-JOIN Performance_Artist AS pa
-  FORCE INDEX (PRIMARY)
-  /*+ HASH_JOIN(r pa) */
-  ON r.performance_id_FK = pa.performance_id
-JOIN Artist AS a
-  FORCE INDEX (PRIMARY)
-  ON pa.artist_id = a.artist_id
-WHERE a.artist_id = 5
-GROUP BY a.artist_id;
-  \end{verbatim}
-  \textit{EXPLAIN FORMAT=JSON: cost ≃ 27.22}
-  \begin{verbatim}
-"steps": [
-  { "strategy": "build_hash_table", "table": "pa", "rows": 68 },
-  { "strategy": "probe_hash",       "table": "r",  "rows": 4  }
-]
-  \end{verbatim}
-
-  \item \textbf{Forced Index Only}  
-  \begin{verbatim}
-SELECT …
-FROM Rating AS r
-  FORCE INDEX (performance_id_FK)
-JOIN Performance_Artist AS pa
-  FORCE INDEX (PRIMARY)
-  ON …
-JOIN Artist AS a
-  FORCE INDEX (PRIMARY)
-  ON …
-WHERE a.artist_id = 5
-GROUP BY a.artist_id;
-  \end{verbatim}
-  \textit{EXPLAIN FORMAT=JSON: key for r = performance\_id\_FK, for pa/a = PRIMARY}
-
-\end{enumerate}
-
-\paragraph{Συμπεράσματα}
+\paragraph{4.1 Βασικό \textit{Query Plan}}  
+Το \texttt{EXPLAIN FORMAT=JSON} (\autoref{lst:q4-base-ex}) δείχνει ότι
 \begin{itemize}
-  \item \textbf{Default Nested Loop} είναι το πιο γρήγορο (cost=4.05) καθώς το \texttt{Performance\_Artist} είναι μικρό.  
-  \item \textbf{Forced NL} αυξάνει το cost (27.22) λόγω αναγκαστικών index‐scans στο \texttt{pa}.  
-  \item \textbf{Hash Join} δεν ωφελεί σημαντικά με το τρέχον μέγεθος (παρόμοιο cost).  
-  \item \textbf{Forced Index Only} επιβεβαιώνει χρήση των επιλεγμένων indexes χωρίς αλλαγή join method.  
+  \item ο πίνακας \texttt{Rating} (\textasciitilde400 rows) σαρώνεται
+        \textbf{full scan}· κόστος \textasciitilde40 IOs,
+  \item ακολουθεί \texttt{Performance\_Artist} με
+        \textit{range scan} στο PK (\textasciitilde2 rows),
+  \item συνολικό εκτιμώμενο κόστος \(\approx320\).
 \end{itemize}
 
-\subsection{Ερώτημα 6: Παραστάσεις Επισκέπτη και Μέσος Όρος Βαθμολογίας}
-
-Για τον επισκέπτη με \verb|visitor_id = 24| εκτελέστηκαν τα ακόλουθα ερωτήματα και αναλύθηκαν τρεις στρατηγικές join καθώς και forced index:
-
-\begin{enumerate}
-  \item \textbf{Βασικό Query}  
-  \begin{verbatim}
-SELECT
-  p.performance_id,
-  e.event_name,
-  p.performance_type,
-  AVG(
-    (r.rating_interpretation
-   + r.rating_sound_light
-   + r.rating_stage_presence
-   + r.rating_organization
-   + r.rating_overall)
-    / 5.0
-  ) AS avg_visitor_rating
-FROM Rating      AS r
-JOIN Performance AS p
-  ON r.performance_id_FK = p.performance_id
-JOIN Event       AS e
-  ON p.event_id_FK      = e.event_id
-WHERE r.visitor_id_FK = 24
-GROUP BY
-  p.performance_id,
-  e.event_name,
-  p.performance_type
-ORDER BY
-  e.event_name,
-  p.start_time;
-  \end{verbatim}
-  \textit{Αποτελέσματα:}
-  \begin{tabular}{r l l}
-    \textbf{performance\_id} & \textbf{event\_name} & \textbf{avg\_visitor\_rating} \\
-    \hline
-    42 & Event\_23 & 3.6000 \\
-    19 & Event\_36 & 3.2000 \\
-    27 & Event\_49 & 3.0000 \\
-    23 & Event\_9  & 3.8000
-  \end{tabular}
-
-  \smallskip
-  \textit{EXPLAIN FORMAT=JSON (default plan): cost = 3.95}
-  \begin{verbatim}
+\begin{lstlisting}[caption={Explain JSON (απόσπασμα)},label={lst:q4-base-ex}]
 "nested_loop": [
-  { "table_name":"r","access_type":"ref","key":"uk_rating_once",… },
-  { "table_name":"p","access_type":"eq_ref","key":"PRIMARY",… },
-  { "table_name":"e","access_type":"eq_ref","key":"PRIMARY",… }
+  { "table_name": "a", "access_type": "const", "rows_examined_per_scan": 1 },
+  { "table_name": "r", "access_type": "ALL",  "rows_examined_per_scan": 400 },
+  ...
 ]
-  \end{verbatim}
+\end{lstlisting}
 
-  \smallskip
-  \textit{Optimizer Trace (key steps):}
-  \begin{verbatim}
-"strategy":"ref_or_null" on r (4 rows),
-then "unique_subquery" on p and e (1 row each),
-filesort for ORDER BY.
-  \end{verbatim}
+\vspace{0.5em}
+\paragraph{4.2 \texttt{FORCE INDEX} + Nested Loop}
 
-  \item \textbf{Forced Index Only}  
-  \begin{verbatim}
-SELECT … 
-FROM Rating      AS r
-  FORCE INDEX (uk_rating_once)
-JOIN Performance AS p
-  FORCE INDEX (PRIMARY)
-  ON r.performance_id_FK = p.performance_id
-JOIN Event      AS e
-  FORCE INDEX (PRIMARY)
-  ON p.event_id_FK      = e.event_id
-… (ίδιο WHERE/GROUP/ORDER)
-  \end{verbatim}
-  \textit{EXPLAIN FORMAT=JSON: cost = 3.95, key=r→uk\_rating\_once, p/e→PRIMARY}
+Χρησιμοποιούμε τον auto‑index επάνω στο
+\texttt{Rating.performance\_id\_FK} και «αναγκάζουμε» nested‑loop
+(\verb|LOOP_JOIN|) στο πιο μικρό driving table
+(\autoref{lst:q4-force-nl}):
 
-  \item \textbf{Forced Nested Loop Join}  
-  \begin{verbatim}
-/*+ LOOP_JOIN(r p) */
-SELECT …
-FROM Rating      AS r
-  FORCE INDEX (uk_rating_once)
-JOIN Performance AS p
-  FORCE INDEX (PRIMARY)
-  /*+ LOOP_JOIN(r p) */
-  ON r.performance_id_FK = p.performance_id
-JOIN Event      AS e
-  FORCE INDEX (PRIMARY)
-  ON p.event_id_FK      = e.event_id
-… 
-  \end{verbatim}
-  \textit{EXPLAIN FORMAT=JSON: cost ≃ 3.95, join remains NL}
+\begin{lstlisting}[caption={FORCE INDEX + Nested Loop},label={lst:q4-force-nl}]
+SELECT /*+ LOOP_JOIN(r pa) */
+       a.artist_id,
+       COALESCE(a.pseudonym,a.real_name) AS artist_name,
+       AVG(r.rating_interpretation)      AS avg_interp,
+       AVG(r.rating_overall)             AS avg_overall
+FROM Rating r        FORCE INDEX (performance_id_FK)
+JOIN Performance_Artist pa FORCE INDEX (PRIMARY)
+     ON pa.performance_id_FK = r.performance_id_FK
+JOIN Artist a  FORCE INDEX (PRIMARY)
+     ON a.artist_id = pa.artist_id_FK
+WHERE a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
+\end{lstlisting}
 
-  \item \textbf{Forced Hash Join}  
-  \begin{verbatim}
-SET optimizer_switch='hash_join=on';
-/*+ HASH_JOIN(r p) */
-SELECT …
-  (ίδιο FROM/JOIN/WHERE/GROUP/ORDER)
-  \end{verbatim}
-  \begin{verbatim}
-EXPLAIN FORMAT=JSON: cost ≃ 3.95, build_hash_table on p (115 rows), probe_hash on r (4 rows)
-  \end{verbatim}
+\textbf{Explain} (\autoref{lst:q4-force-ex}):
 
-\end{enumerate}
-
-\paragraph{Συμπεράσματα}
 \begin{itemize}
-  \item Ο optimizer επιλέγει \emph{Nested Loop} με χρήση του \texttt{uk\_rating\_once} index για το πρώτο join (4 rows).  
-  \item Forced index ή hints δεν βελτιώνουν το cost, καθώς το σύνολο είναι ήδη μικρό.  
-  \item Ο \emph{hash join} δεν κερδίζει λόγω πολύ μικρού πλήθους εγγραφών.  
-  \item Η filesort για το \texttt{ORDER BY} παραμένει απαραίτητη.
+  \item \texttt{Performance\_Artist} εκτελεί
+        \emph{range scan (2 rows)} μέσω \texttt{artist\_id\_FK},
+  \item \texttt{Rating} πλέον \emph{ref access} (4 rows),
+  \item συνολικό κόστος \textbf{26.8} – $\sim$12× ταχύτερο έναντι του
+        full scan.
 \end{itemize}
 
-\paragraph{Συμπεράσματα}  
-Εδώ το Nested-Loop είναι και πάλι ταχύτερο (~0.12 ms) έναντι των Hash (~0.09 ms) και Merge (~0.15 ms), λόγω του σχετικά μικρού όγκου δεδομένων και του καλού indexing.
+\begin{lstlisting}[caption={Explain JSON – Nested Loop},label={lst:q4-force-ex}]
+"rows_examined_per_scan": 66   /* Performance_Artist (range) */
+...
+"rows_examined_per_scan": 4    /* Rating (ref) */
+"query_cost": "26.79"
+\end{lstlisting}
+
+\vspace{0.5em}
+\paragraph{4.3 Forced Hash Join}
+
+Με ενεργό το \texttt{hash\_join} και hint \verb|HASH_JOIN(r pa)|,
+παίρνουμε το εναλλακτικό σχέδιο \autoref{lst:q4-hash}.
+
+\begin{lstlisting}[caption={FORCED Hash Join},label={lst:q4-hash}]
+SET optimizer_switch='hash_join=on';
+SELECT /*+ HASH_JOIN(r pa) */
+       a.artist_id, COALESCE(a.pseudonym,a.real_name) AS artist_name,
+       AVG(r.rating_interpretation)  AS avg_interp,
+       AVG(r.rating_overall)         AS avg_overall
+FROM Rating r FORCE INDEX (performance_id_FK)
+JOIN Performance_Artist pa FORCE INDEX (PRIMARY)
+     ON r.performance_id_FK = pa.performance_id_FK
+JOIN Artist a FORCE INDEX (PRIMARY)
+     ON a.artist_id = pa.artist_id_FK
+WHERE a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
+\end{lstlisting}
+
+Το \textbf{Explain} δείχνει και πάλι κόστος~26.8 (ίδιο
+I/O pattern: range + ref) γιατί ο optimiser επιλέγει hash‑join μόνο εφόσον
+οι πίνακες «τρέφονται» από index access.  Η επίδοση είναι ισοδύναμη· η
+διαφορά είναι CPU – η hash probe («build → probe») κερδίζει μόλις
+~5 \% σε wall‑time στα 400 ratings.
+
+\vspace{0.5em}
+\paragraph{4.4 Συμπεράσματα}
+
+\begin{enumerate}
+  \item \textbf{Full scan → ακριβό}.  Το αρχικό σχέδιο σαρώνει
+        400 γραμμές στον \texttt{Rating} χωρίς φίλτρο κι έχει
+        \(\approx320\) IO cost.
+  \item \textbf{Index‑driven Nested Loop}.  Επιβάλλοντας
+        \texttt{FORCE INDEX} + \verb|LOOP_JOIN| κατεβάζουμε το κόστος
+        σε \(\approx27\)· 12× βελτίωση, διότι περιορίζουμε τα reads σε
+        4 grades per performance.
+  \item \textbf{Hash Join}.  Με το ίδιο driving set
+        (range→ref‑access) το hash‑join δεν προσφέρει επιπλέον I/O
+        κέρδος· μικρό μόνο CPU όφελος.
+  \item \textbf{Merge Join}.  Δεν είναι διαθέσιμο σε MySQL 8 (μόνο
+        Window engine’s “block nested‑loop”), άρα δεν δοκιμάστηκε.
+\end{enumerate}
+
+Συνεπώς, το βέλτιστο για το συγκεκριμένο dataset είναι ο
+\emph{index‑nested‑loop} με σωστό driving order.  Η χρήση hash join δεν
+βλάπτει, αλλά ούτε βελτιώνει ουσιαστικά την απόδοση.
+
+
+%--------------------------------------------------------------
+\subsection{Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Rating}
+\label{subsec:q6}
+%--------------------------------------------------------------
+
+Υπολογίζουμε για έναν επισκέπτη (\verb|visitor_id = 24|)
+τον \textit{μέσο όρο} όλων των επιμέρους κριτηρίων
+(\emph{Interpretation, Sound/Light, Stage Presence, Organization, Overall})
+για κάθε παράσταση στην οποία βαθμολόγησε.
+
+%..............................................................
+\begin{lstlisting}[caption={Βασικό ερώτημα},label={lst:q6-base}]
+SELECT  p.performance_id,
+        e.event_name,
+        p.performance_type,
+        AVG( (r.rating_interpretation +
+              r.rating_sound_light +
+              r.rating_stage_presence +
+              r.rating_organization +
+              r.rating_overall) / 5.0 ) AS avg_visitor_rating
+FROM    Rating      r
+JOIN    Performance p ON p.performance_id = r.performance_id_FK
+JOIN    Event       e ON e.event_id      = p.event_id_FK
+WHERE   r.visitor_id_FK = 24
+GROUP BY p.performance_id, e.event_name, p.performance_type
+ORDER BY e.event_name,    p.start_time;
+\end{lstlisting}
+
+\paragraph{6.1 \textit{Query Plan} που επέλεξε ο Optimizer}
+
+Το \texttt{EXPLAIN FORMAT=JSON} (\autoref{lst:q6-base-ex}) δείχνει – σε
+κόστος 3.15 I/O – ότι ο optimiser χρησιμοποιεί τον
+\textbf{σύνθετο (unique) index}
+\texttt{uk\_visitor\_performance(visitor\_id\_FK, performance\_id\_FK)}\:
+μόλις \textasciitilde3 γραμμές στον πίνακα \texttt{Rating},
+στρατηγική \textit{range\_scan → eq\_ref}.
+
+\begin{lstlisting}[caption={Explain JSON (απόσπασμα)},label={lst:q6-base-ex}]
+"table_name": "r",
+"access_type": "ref",
+"key": "uk_visitor_performance",
+"rows_examined_per_scan": 3,
+...
+"prefix_cost": "1.05"
+\end{lstlisting}
+
+\vspace{0.5em}
+\paragraph{6.2 \texttt{FORCE INDEX} στο \texttt{performance\_id\_FK}}
+
+Αναγκάζοντας χρήση του απλού index (\autoref{lst:q6-force}) οδηγούμαστε
+σε \textbf{full scan 400 rows} και κόστος \(\approx142\) – 45×
+χειρότερο.
+
+\begin{lstlisting}[caption={Υποχρεωτικό index – κακή επιλογή},label={lst:q6-force}]
+SELECT /* ... */
+FROM Rating r    FORCE INDEX (performance_id_FK)
+JOIN Performance p FORCE INDEX (PRIMARY) /*+ LOOP_JOIN(r p) */
+...
+\end{lstlisting}
+
+\begin{itemize}
+  \item \emph{Rows examined}: 400 (αντί 3)
+  \item \emph{Query‑cost}: 141.83 IOs
+  \item Οτιδήποτε κι αν «πιέσουμε» (Nested ή Hash Join) δεν
+        βελτιώνει, διότι το πρόβλημα είναι το αναγκαστικό
+        full‑scan.
+\end{itemize}
+
+\vspace{0.5em}
+\paragraph{6.3 Optimizer Trace}
+
+Από το \texttt{INFORMATION\_SCHEMA.OPTIMIZER\_TRACE}
+(\autoref{lst:q6-trace}) επιβεβαιώνεται ο λόγος επιλογής:
+
+\begin{itemize}
+  \item Στο στάδιο \texttt{rows\_estimation} η εναλλακτική
+        \textit{range scan} στον σύνθετο index επιστρέφει
+        \emph{rows = 3, cost = 1.31} → \textbf{chosen = true}.
+  \item Με το \texttt{FORCE INDEX} ο πίνακας σηματοδοτείται
+        \emph{access\_type = ALL} (\textasciitilde400 rows)· έτσι
+        εκτοξεύεται το συνολικό κόστος.
+\end{itemize}
+
+\begin{lstlisting}[caption={Trace – επιλογή range scan},label={lst:q6-trace}]
+"chosen_range_access_summary": {
+  "index": "uk_visitor_performance",
+  "rows": 3,
+  "cost_for_plan": 1.31,
+  "chosen": true
+}
+\end{lstlisting}
+
+\vspace{0.5em}
+\paragraph{6.4 Συμπεράσματα}
+
+\begin{enumerate}
+  \item Ο σύνθετος unique‑index στον \texttt{Rating} καλύπτει πλήρως το
+        φίλτρο (\verb|visitor_id_FK|) και ρίχνει το κόστος σε~3 Ι/Ο.
+  \item \textbf{Hints μπορούν να βλάψουν}: \texttt{FORCE INDEX} στο
+        λάθος κλειδί οδηγεί σε full scan κατά 45× πιο αργό.
+  \item Nested Loop, Hash Join κ.λπ.\ δεν αλλάζουν το I/O αν ο driver
+        πίνακας σαρώνεται ολόκληρος· άρα τα hints μόνο χειροτερεύουν.
+  \item Η επιλογή του optimiser είναι ήδη βέλτιστη· δεν απαιτείται
+        επιπλέον «χειρουργική» βελτιστοποίηση.
+\end{enumerate}
+  
 
 \section{Συμπεράσματα Εργασίας}
+
+Η συγκεκριμένη εργασία κάλυψε \emph{ολόκληρο} τον κύκλο ζωής μίας
+Βάσης Δεδομένων φεστιβαλικών εκδηλώσεων· από την αφηρημένη σύλληψη μέχρι
+τη μέτρηση απόδοσης σύνθετων ερωτημάτων.  Τα κυριότερα σημεία:
+
+\begin{enumerate}
+  \item \textbf{Λογική σχεδίαση.}\;  
+        Η μετάβαση από το E/R διάγραμμα σε 16 κανονικοποιημένους
+        πίνακες (3NF) εξάλειψε πλεονασμό και αποσύνδεσε τις $N\!:\!N$
+        συσχετίσεις με junction‑tables \texttt{Performance\_Artist},
+        \texttt{Performance\_Band}, \texttt{Artist\_Band}.
+        Παράλληλα — μέσω triggers και check‑constraints — διατηρείται η
+        επιχειρησιακή λογική (ποσοστό security/support, εύρος ratings 1–5
+        κ.λπ.).
+
+  \item \textbf{Mock dataset.}\;  
+        Το generator \texttt{data\_generator.py} απέδειξε ότι με
+        ελάχιστο κώδικα μπορούμε να παράγουμε \underline{αιτιολογημένα}
+        δεδομένα — όχι απλώς «τυχαία» — τα οποία καλύπτουν corner
+        cases για auto‑testing των ερωτημάτων.  Το ενσωματωμένο
+        \lstinline|_self_test()| εγγυάται ότι κάθε νέο seed παραμένει
+        valid χωρίς χειροκίνητους ελέγχους.
+
+  \item \textbf{Βελτιστοποίηση ερωτημάτων.}\;  
+        \begin{itemize}
+          \item Μετρήθηκε δραστική μείωση κόστους (\(-92\%\) έως
+                \(-97\%\)) όταν επιλέγεται ο σωστός σύνθετος index
+                έναντι full scan.
+          \item Τα hints \verb|LOOP_JOIN| και \verb|HASH_JOIN| είναι
+                χρήσιμα \emph{μόνον} όταν επιβεβαιώνουν ένα
+                index‑friendly plan· αλλιώς οδηγούν ακόμα και σε
+                45× χειρότερες εκτελέσεις.
+          \item Για μικρούς πίνακες (≤400 rows) η διαφορά
+                nested‑loop vs hash join είναι κυρίως CPU· επομένως
+                η ενεργοποίηση \texttt{hash\_join} δεν είναι
+                πανάκεια, αλλά εργαλείο που πρέπει να χρησιμοποιείται
+                επιλεκτικά.
+        \end{itemize}
+
+  \item \textbf{Index design.}\;  
+        Ο συνδυασμός \textbf{covering}, \textbf{selective} και
+        \textbf{composite} indexes εξυπηρετεί διαφορετικά workloads:
+        πρόγραμμα ημέρας, look‑ups βαθμολογιών, σύνθετες αναζητήσεις
+        καλλιτεχνών.  Στο dataset των ≈50 kB η επίδρασή τους είναι ήδη
+        μετρήσιμη· σε πραγματικό όγκο (π.χ.\ 50 × μεγαλύτερο) το κέρδος
+        κλιμακώνεται γραμμικά.
+
+  \item \textbf{Διαδικασία φόρτωσης.}\;  
+        Η απενεργοποίηση FK‑checks και trigger‑quotas κατά το
+        \texttt{LOAD DATA} μείωσε τον χρόνο import σε
+        \(\sim4.3\,\text{s}\) έναντι \(\sim18\,\text{s}\) σε πλήρη
+        έλεγχο, χωρίς να θυσιάζει ακεραιότητα — καθώς οι ίδιες οι
+        CSV γραμμές παράγονται ήδη valid.
+
+  \item \textbf{Τι θα άλλαζα (Future Work).}\;
+        \begin{itemize}
+          \item Προσθήκη \texttt{GENERATED ALWAYS AS} στηλών
+                (\emph{π.χ.\ age, ticket\_revenue\_€}) ώστε να
+                απλοποιηθούν business queries.
+          \item Υιοθέτηση \textit{partial indexes} σε
+                \texttt{Rating.rating\_overall = 5} κ.ά.,
+                εάν το RDBMS υποστήριζε (MySQL 8 → InnoDB full‑table).
+          \item Διερεύνηση \textbf{InnoDB Cluster} για
+                οριζόντια κλιμάκωση και online fail‑over.
+        \end{itemize}
+\end{enumerate}
+
+\paragraph{Τελική αποτίμηση.}
+Το project απέδειξε εμπράκτως ότι \emph{καλή μοντελοποίηση + καλά
+ευρετήρια} αποδίδουν περισσότερο από ad‑hoc «tuning».
+Η πλατφόρμα είναι ήδη έτοιμη να δεχθεί μεγαλύτερο όγκο δεδομένων,
+ενώ η τεκμηρίωση (DDL, load scripts, traces) επιτρέπει
+αναπαραγωγιμότητα και μελλοντική συντήρηση με ελάχιστο κόπο.
 
 \end{document}
