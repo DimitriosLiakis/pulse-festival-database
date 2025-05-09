@@ -1100,17 +1100,7 @@ JOIN Performance p FORCE INDEX (PRIMARY) /*+ LOOP_JOIN(r p) */
         έλεγχο, χωρίς να θυσιάζει ακεραιότητα — καθώς οι ίδιες οι
         CSV γραμμές παράγονται ήδη valid.
 
-  \item \textbf{Τι θα άλλαζα (Future Work).}\;
-        \begin{itemize}
-          \item Προσθήκη \texttt{GENERATED ALWAYS AS} στηλών
-                (\emph{π.χ.\ age, ticket\_revenue\_€}) ώστε να
-                απλοποιηθούν business queries.
-          \item Υιοθέτηση \textit{partial indexes} σε
-                \texttt{Rating.rating\_overall = 5} κ.ά.,
-                εάν το RDBMS υποστήριζε (MySQL 8 → InnoDB full‑table).
-          \item Διερεύνηση \textbf{InnoDB Cluster} για
-                οριζόντια κλιμάκωση και online fail‑over.
-        \end{itemize}
+ 
 \end{enumerate}
 
 \paragraph{Τελική αποτίμηση.}

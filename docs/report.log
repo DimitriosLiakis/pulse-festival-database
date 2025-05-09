@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  9 MAY 2025 21:27
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  9 MAY 2025 21:34
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1137,23 +1137,7 @@ Overfull \hbox (57.11353pt too wide) in paragraph at lines 1096--1102
  []
 
 
-Overfull \hbox (57.738pt too wide) in paragraph at lines 1105--1108
-[]\TU/NotoSerif(1)/m/n/12 Προσθήκη \TU/DejaVuSansMono(0)/m/n/12 GENERATED ALWAYS AS\TU/NotoSerif(1)/m/n/12  στηλών (\TU/NotoSerif(1)/m/it/12 π.χ. age, ticket_revenue_€\TU/NotoSerif(1)/m/n/12 )
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (7.2072pt too wide) in paragraph at lines 1108--1111
-[]\TU/NotoSerif(1)/m/n/12 Υιοθέτηση \TU/NotoSerif(1)/m/it/12 partial indexes \TU/NotoSerif(1)/m/n/12 σε \TU/DejaVuSansMono(0)/m/n/12 Rating.rating_overall = 5
- []
-
-
-Overfull \hbox (14.04802pt too wide) in paragraph at lines 1108--1111
-\TU/NotoSerif(1)/m/n/12 κ.ά., εάν το RDBMS υποστήριζε (MySQL 8 → InnoDB full‑table). 
- []
-
-
-Overfull \hbox (19.89604pt too wide) in paragraph at lines 1117--1122
+Overfull \hbox (19.89604pt too wide) in paragraph at lines 1107--1112
 \TU/NotoSerif(1)/m/it/12 λοποίηση + καλά ευρετήρια \TU/NotoSerif(1)/m/n/12 αποδίδουν περισσότερο από ad‑hoc «tuning».
  []
 
