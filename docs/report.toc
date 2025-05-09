@@ -2,8 +2,7 @@
 \selectlanguage *{greek}
 \contentsline {section}{\numberline {1}Σχεδίαση Βάσης Δεδομένων}{2}{section.1}%
 \contentsline {subsection}{\numberline {1.1}Διάγραμμα Οντοτήτων-Συσχετίσεων (E/R)}{2}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}Διάγραμμα E/R}{2}{subsection.1.2}%
-\contentsline {subsection}{\numberline {1.3}Σχεσιακό Σχήμα}{3}{subsection.1.3}%
+\contentsline {subsection}{\numberline {1.2}Σχεσιακό Σχήμα}{3}{subsection.1.2}%
 \contentsline {section}{\numberline {2}Σχεδίαση και Ανάπτυξη Σχήματος}{3}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Περιορισμοί που εξασφαλίζουν την Ορθότητα}{4}{subsection.2.1}%
 \contentsline {subsection}{\numberline {2.2}Ευρετήρια (Index Design) και Δικαιολόγηση}{5}{subsection.2.2}%
