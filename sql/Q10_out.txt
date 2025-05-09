@@ -1,4 +1,4 @@
-genre1	genre2	festival_appearances
-electronic	house	8
-alternative	rock	6
-boom bap	hip-hop	5
+genre1	genre2	appearances
+fusion	jazz	17
+hard rock	rock	6
+bebop	jazz	6

@@ -1,31 +1,31 @@
-stage_id,stage_name,stage_description,capacity,tech_equipment,stage_image
-1,Stage_1,Tree note responsibility defense material those.,669,"Lights, Speakers, Microphones",https://example.com/stage_1.jpg
-2,Stage_2,Central cause seat much section investment on gun young.,1757,"Lights, Speakers, Microphones",https://example.com/stage_2.jpg
-3,Stage_3,Meeting before another body physical society.,1880,"Lights, Speakers, Microphones",https://example.com/stage_3.jpg
-4,Stage_4,Others his other life edge network wall quite boy.,113,"Lights, Speakers, Microphones",https://example.com/stage_4.jpg
-5,Stage_5,Seem shoulder future fall citizen about reveal rest will seven.,1654,"Lights, Speakers, Microphones",https://example.com/stage_5.jpg
-6,Stage_6,Tree that fear police participant check several much single.,1750,"Lights, Speakers, Microphones",https://example.com/stage_6.jpg
-7,Stage_7,Truth out major born guy world southern dream drive note.,426,"Lights, Speakers, Microphones",https://example.com/stage_7.jpg
-8,Stage_8,Beat magazine attorney set she.,1529,"Lights, Speakers, Microphones",https://example.com/stage_8.jpg
-9,Stage_9,Process water close month parent who.,965,"Lights, Speakers, Microphones",https://example.com/stage_9.jpg
-10,Stage_10,Sense ready require human public health tonight later easy ask.,796,"Lights, Speakers, Microphones",https://example.com/stage_10.jpg
-11,Stage_11,Open discover detail audience.,669,"Lights, Speakers, Microphones",https://example.com/stage_11.jpg
-12,Stage_12,Arrive attack all form method everything magazine much rich think office.,418,"Lights, Speakers, Microphones",https://example.com/stage_12.jpg
-13,Stage_13,Six space couple best issue interest level.,540,"Lights, Speakers, Microphones",https://example.com/stage_13.jpg
-14,Stage_14,Pull worker better I fund.,1663,"Lights, Speakers, Microphones",https://example.com/stage_14.jpg
-15,Stage_15,Eat couple large instead everything.,789,"Lights, Speakers, Microphones",https://example.com/stage_15.jpg
-16,Stage_16,Themselves away space task better present music.,309,"Lights, Speakers, Microphones",https://example.com/stage_16.jpg
-17,Stage_17,Why unit support coach.,289,"Lights, Speakers, Microphones",https://example.com/stage_17.jpg
-18,Stage_18,Loss ten total clearly able hospital unit size expect.,878,"Lights, Speakers, Microphones",https://example.com/stage_18.jpg
-19,Stage_19,Product main couple design around save article finish anyone live.,298,"Lights, Speakers, Microphones",https://example.com/stage_19.jpg
-20,Stage_20,Church whether bag control organization push dog build three east.,835,"Lights, Speakers, Microphones",https://example.com/stage_20.jpg
-21,Stage_21,Always bank price north first end prove fire enter capital.,1835,"Lights, Speakers, Microphones",https://example.com/stage_21.jpg
-22,Stage_22,Lead upon very act perform none beyond.,804,"Lights, Speakers, Microphones",https://example.com/stage_22.jpg
-23,Stage_23,Defense enter value thing these hard citizen street region particularly.,1336,"Lights, Speakers, Microphones",https://example.com/stage_23.jpg
-24,Stage_24,Account stage federal professional voice care break blood network evening.,641,"Lights, Speakers, Microphones",https://example.com/stage_24.jpg
-25,Stage_25,Decision garden reach table measure economy traditional anything plant stop.,1752,"Lights, Speakers, Microphones",https://example.com/stage_25.jpg
-26,Stage_26,About side PM energy scientist.,188,"Lights, Speakers, Microphones",https://example.com/stage_26.jpg
-27,Stage_27,Relationship night born war real chance along hard need involve.,1594,"Lights, Speakers, Microphones",https://example.com/stage_27.jpg
-28,Stage_28,Final together someone team together.,1040,"Lights, Speakers, Microphones",https://example.com/stage_28.jpg
-29,Stage_29,Radio project government nice themselves wind.,1198,"Lights, Speakers, Microphones",https://example.com/stage_29.jpg
-30,Stage_30,Understand door class son computer include.,355,"Lights, Speakers, Microphones",https://example.com/stage_30.jpg
+stage_id,stage_name,building_name,capacity,tech_equipment,stage_image,stage_image_alt,stage_description
+1,Stage_1,Wish Hall,355,"Lights,Speakers,Microphones",https://example.com/stage_1.jpg,https://example.com/stage_1_alt.jpg,Detail food shoulder argue start source husband at tree note.
+2,Stage_2,Serious Hall,1988,"Lights,Speakers,Microphones",https://example.com/stage_2.jpg,https://example.com/stage_2_alt.jpg,Defense material those poor central cause seat much.
+3,Stage_3,Skin Hall,875,"Lights,Speakers,Microphones",https://example.com/stage_3.jpg,https://example.com/stage_3_alt.jpg,Investment on gun young catch management sense technology check civil.
+4,Stage_4,Response Hall,261,"Lights,Speakers,Microphones",https://example.com/stage_4.jpg,https://example.com/stage_4_alt.jpg,Others his other life edge network wall quite boy.
+5,Stage_5,Value Hall,1230,"Lights,Speakers,Microphones",https://example.com/stage_5.jpg,https://example.com/stage_5_alt.jpg,Seem shoulder future fall citizen about reveal rest will seven.
+6,Stage_6,Movement Hall,700,"Lights,Speakers,Microphones",https://example.com/stage_6.jpg,https://example.com/stage_6_alt.jpg,That fear police participant check.
+7,Stage_7,Sound Hall,1798,"Lights,Speakers,Microphones",https://example.com/stage_7.jpg,https://example.com/stage_7_alt.jpg,Much single morning a food affect.
+8,Stage_8,Woman Hall,1387,"Lights,Speakers,Microphones",https://example.com/stage_8.jpg,https://example.com/stage_8_alt.jpg,These story film around there water beat magazine.
+9,Stage_9,Authority Hall,1366,"Lights,Speakers,Microphones",https://example.com/stage_9.jpg,https://example.com/stage_9_alt.jpg,She campaign little near enter their institution deep much role.
+10,Stage_10,Deep Hall,1913,"Lights,Speakers,Microphones",https://example.com/stage_10.jpg,https://example.com/stage_10_alt.jpg,Human public health tonight later easy ask.
+11,Stage_11,Against Hall,1864,"Lights,Speakers,Microphones",https://example.com/stage_11.jpg,https://example.com/stage_11_alt.jpg,Network open according remain arrive attack all form method everything.
+12,Stage_12,Mention Hall,840,"Lights,Speakers,Microphones",https://example.com/stage_12.jpg,https://example.com/stage_12_alt.jpg,Much rich think office drug list.
+13,Stage_13,Investment Hall,1282,"Lights,Speakers,Microphones",https://example.com/stage_13.jpg,https://example.com/stage_13_alt.jpg,Behind probably great in tell approach.
+14,Stage_14,Ready Hall,493,"Lights,Speakers,Microphones",https://example.com/stage_14.jpg,https://example.com/stage_14_alt.jpg,Art rock song body court.
+15,Stage_15,Not Hall,1542,"Lights,Speakers,Microphones",https://example.com/stage_15.jpg,https://example.com/stage_15_alt.jpg,Cell contain leg themselves away space task better present.
+16,Stage_16,Now Hall,242,"Lights,Speakers,Microphones",https://example.com/stage_16.jpg,https://example.com/stage_16_alt.jpg,Why unit support coach.
+17,Stage_17,Mention Hall,193,"Lights,Speakers,Microphones",https://example.com/stage_17.jpg,https://example.com/stage_17_alt.jpg,Degree husband around her world enter six lawyer institution.
+18,Stage_18,Side Hall,1454,"Lights,Speakers,Microphones",https://example.com/stage_18.jpg,https://example.com/stage_18_alt.jpg,Product main couple design around save article finish anyone live.
+19,Stage_19,Wide Hall,566,"Lights,Speakers,Microphones",https://example.com/stage_19.jpg,https://example.com/stage_19_alt.jpg,Church whether bag control organization push dog build three east.
+20,Stage_20,Phone Hall,1683,"Lights,Speakers,Microphones",https://example.com/stage_20.jpg,https://example.com/stage_20_alt.jpg,People information on mission various.
+21,Stage_21,Democratic Hall,692,"Lights,Speakers,Microphones",https://example.com/stage_21.jpg,https://example.com/stage_21_alt.jpg,Draw how public feel first sell authority leader.
+22,Stage_22,Order Hall,263,"Lights,Speakers,Microphones",https://example.com/stage_22.jpg,https://example.com/stage_22_alt.jpg,Available defense enter value thing.
+23,Stage_23,Until Hall,1851,"Lights,Speakers,Microphones",https://example.com/stage_23.jpg,https://example.com/stage_23_alt.jpg,Hard citizen street region particularly would pressure.
+24,Stage_24,Across Hall,576,"Lights,Speakers,Microphones",https://example.com/stage_24.jpg,https://example.com/stage_24_alt.jpg,Federal professional voice care break blood network evening painting response.
+25,Stage_25,Democrat Hall,1874,"Lights,Speakers,Microphones",https://example.com/stage_25.jpg,https://example.com/stage_25_alt.jpg,Measure economy traditional anything plant stop analysis.
+26,Stage_26,Goal Hall,306,"Lights,Speakers,Microphones",https://example.com/stage_26.jpg,https://example.com/stage_26_alt.jpg,Pm energy scientist necessary into act.
+27,Stage_27,Bag Hall,878,"Lights,Speakers,Microphones",https://example.com/stage_27.jpg,https://example.com/stage_27_alt.jpg,Nation strong old challenge camera final.
+28,Stage_28,Way Hall,669,"Lights,Speakers,Microphones",https://example.com/stage_28.jpg,https://example.com/stage_28_alt.jpg,Together decide economic bill sister.
+29,Stage_29,Usually Hall,1028,"Lights,Speakers,Microphones",https://example.com/stage_29.jpg,https://example.com/stage_29_alt.jpg,Wind see understand door class son computer include.
+30,Stage_30,Country Hall,1401,"Lights,Speakers,Microphones",https://example.com/stage_30.jpg,https://example.com/stage_30_alt.jpg,Site in prove same easy city red him.

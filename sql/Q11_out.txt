@@ -1,12 +1,28 @@
-artist_id	artist_name	festival_count
-20	Ashley Coleman	1
-13	Carrie Carroll	1
-3	Courtney Velasquez	1
-6	Deborah Rodriguez	1
-12	James Phillips	1
-28	Jennifer Clark	1
-22	Joseph Hansen	1
-8	Kenneth Scott	1
-4	Matthew Ross	1
-11	Michelle Evans	1
-2	Nancy Wright	1
+artist_id	artist_name	appearances	top_appearances
+3	Raymond Bell	6	12
+11	Cameron Fisher	3	12
+21	Emily Fischer	3	12
+10	Eric Ortiz	3	12
+28	Lauren Dominguez	3	12
+8	Renee Mcdaniel	3	12
+24	Billy Mitchell	2	12
+20	Casey Marshall	2	12
+7	Cheryl Williams	2	12
+5	Debbie Carpenter	2	12
+23	Joanna Walton	2	12
+12	Joshua Smith	2	12
+25	Joshua Taylor	2	12
+13	Kevin Pena	2	12
+2	Matthew Ross	2	12
+30	Michael Yates	2	12
+29	Steven Houston	2	12
+22	Terry Griffin	2	12
+15	Anna Crane	1	12
+9	Erik Charles	1	12
+27	Jennifer Clark	1	12
+6	Jessica Joyce	1	12
+18	Michael Stafford	1	12
+26	Michelle Brown	1	12
+17	Miss Patricia Gibson	1	12
+16	Robert Hernandez	1	12
+4	Sarah Rivera	1	12

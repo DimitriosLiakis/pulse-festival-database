@@ -1,2 +1,2 @@
-main_genre	year1	year2	count_year1	count_year2
-rock	2023	2024	3	3
+genre	year1	count1	year2	count2
+rock	2023	3	2024	3

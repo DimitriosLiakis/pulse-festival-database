@@ -1,2 +1,4 @@
 artist_id	artist_name	age	festival_count
-23	Jessica Briggs	23	4
+21	Emily Fischer	23	3
+1	John Gonzalez	24	2
+18	Michael Stafford	25	1

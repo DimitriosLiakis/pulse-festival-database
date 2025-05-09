@@ -1,10 +1,7 @@
-artist_id	name	appeared_in_year
-13	Carrie Carroll	N
-30	Jamie Smith	N
-22	Joseph Hansen	Y
-8	Kenneth Scott	N
-10	Matthew Rivera	N
-4	Matthew Ross	N
-9	Natalie Lambert	N
-1	Tim Patton	Y
-16	Trevor Young	Y
+artist_id	artist_name	music_genre	participated
+3		rock	Y
+12		rock	Y
+24		rock	N
+27		rock	N
+8	michaeljones	rock	Y
+19	pwilliams	rock	N

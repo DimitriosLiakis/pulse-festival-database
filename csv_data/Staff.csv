@@ -1,31 +1,31 @@
-staff_id,staff_name,age,role,experience
-1,Amanda Olson,59,security,average
-2,Katherine Galloway,31,tech,expert
-3,Sheila Henry,48,tech,beginner
-4,Dr. Diana Walker,34,tech,average
-5,Amy Lloyd,32,tech,experienced
-6,Joshua Shaw,23,support,experienced
-7,Michael Thompson,43,tech,experienced
-8,Melissa Stevens,41,security,beginner
-9,Alexandra Clark,49,tech,intern
-10,Erika Salazar,58,tech,average
-11,Joshua Young,51,security,expert
-12,Louis Diaz,47,security,intern
-13,Mr. Michael Watson PhD,57,support,beginner
-14,Christopher Anderson,52,tech,experienced
-15,Crystal Garcia,48,security,intern
-16,David Reynolds,33,tech,experienced
-17,Charles Haley,21,support,intern
-18,Robert Thompson,56,support,experienced
-19,Dr. Samuel Holmes DDS,31,tech,experienced
-20,Elizabeth Hart,44,support,intern
-21,Jennifer Vaughn,54,security,expert
-22,Robert Woods,52,security,intern
-23,Joanna Cook,59,security,experienced
-24,Justin Frederick,24,support,expert
-25,Alejandro Martinez,54,security,beginner
-26,Tracey Gonzalez,40,support,beginner
-27,Mariah Thompson,24,security,intern
-28,Heather Nunez,27,support,expert
-29,Dr. Steve James,43,security,expert
-30,Mark Thomas,31,tech,experienced
+staff_id,staff_name,staff_age,staff_role,experience_level,staff_image,staff_image_alt
+1,Todd Johnson,44,tech,intern,https://example.com/staff_1.jpg,https://example.com/staff_1_alt.jpg
+2,Scott Parsons,31,security,average,https://example.com/staff_2.jpg,https://example.com/staff_2_alt.jpg
+3,Bryan Holmes,35,tech,average,https://example.com/staff_3.jpg,https://example.com/staff_3_alt.jpg
+4,Adam Craig,40,support,beginner,https://example.com/staff_4.jpg,https://example.com/staff_4_alt.jpg
+5,Brian Ward,24,security,intern,https://example.com/staff_5.jpg,https://example.com/staff_5_alt.jpg
+6,Chelsea Baker,27,support,expert,https://example.com/staff_6.jpg,https://example.com/staff_6_alt.jpg
+7,Tyler Cooper,24,support,average,https://example.com/staff_7.jpg,https://example.com/staff_7_alt.jpg
+8,Jeff Barnes,38,security,beginner,https://example.com/staff_8.jpg,https://example.com/staff_8_alt.jpg
+9,Holly Morales,51,tech,beginner,https://example.com/staff_9.jpg,https://example.com/staff_9_alt.jpg
+10,Kenneth Krause,54,security,experienced,https://example.com/staff_10.jpg,https://example.com/staff_10_alt.jpg
+11,Robin Le,38,security,intern,https://example.com/staff_11.jpg,https://example.com/staff_11_alt.jpg
+12,Kristi Chase,46,support,average,https://example.com/staff_12.jpg,https://example.com/staff_12_alt.jpg
+13,Robert Rodgers,55,support,expert,https://example.com/staff_13.jpg,https://example.com/staff_13_alt.jpg
+14,Adam Fisher,36,security,beginner,https://example.com/staff_14.jpg,https://example.com/staff_14_alt.jpg
+15,Steven Mccoy,42,tech,beginner,https://example.com/staff_15.jpg,https://example.com/staff_15_alt.jpg
+16,Emily Tucker,38,support,expert,https://example.com/staff_16.jpg,https://example.com/staff_16_alt.jpg
+17,Scott Williams,27,tech,beginner,https://example.com/staff_17.jpg,https://example.com/staff_17_alt.jpg
+18,Christopher Lewis,43,security,average,https://example.com/staff_18.jpg,https://example.com/staff_18_alt.jpg
+19,Ryan Davis,42,support,average,https://example.com/staff_19.jpg,https://example.com/staff_19_alt.jpg
+20,Debbie Ward,27,support,average,https://example.com/staff_20.jpg,https://example.com/staff_20_alt.jpg
+21,Rhonda Cooper,29,security,average,https://example.com/staff_21.jpg,https://example.com/staff_21_alt.jpg
+22,Gregory Frazier,50,support,average,https://example.com/staff_22.jpg,https://example.com/staff_22_alt.jpg
+23,Laura Santos,50,security,intern,https://example.com/staff_23.jpg,https://example.com/staff_23_alt.jpg
+24,Veronica Mitchell,45,security,intern,https://example.com/staff_24.jpg,https://example.com/staff_24_alt.jpg
+25,Jordan Hampton,23,tech,average,https://example.com/staff_25.jpg,https://example.com/staff_25_alt.jpg
+26,Blake Austin,21,security,beginner,https://example.com/staff_26.jpg,https://example.com/staff_26_alt.jpg
+27,Tyler Oneill,32,support,experienced,https://example.com/staff_27.jpg,https://example.com/staff_27_alt.jpg
+28,Tanya Fisher,47,security,beginner,https://example.com/staff_28.jpg,https://example.com/staff_28_alt.jpg
+29,Jennifer Meadows,42,security,average,https://example.com/staff_29.jpg,https://example.com/staff_29_alt.jpg
+30,Greg Edwards,46,tech,experienced,https://example.com/staff_30.jpg,https://example.com/staff_30_alt.jpg

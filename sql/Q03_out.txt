@@ -1,2 +1,2 @@
-festival_id	festival_name	artist_id	artist_name	warmup_count
-1	PulseFestival_2017	1	Tim Patton	3
+artist_id	artist_name	festival_id	festival_name	festival_year	warmup_cnt
+1	ybailey	1	PulseFestival_2017	2017	3

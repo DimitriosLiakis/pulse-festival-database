@@ -1,2 +1,2 @@
-festival_id	festival_name	festival_year	avg_tech_experience
-1	PulseFestival_2017	2017	3.00
+festival_id	festival_name	avg_tech_experience
+6	PulseFestival_2022	1.00

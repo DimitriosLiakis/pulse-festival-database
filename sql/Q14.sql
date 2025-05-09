@@ -1,28 +1,28 @@
-WITH genre_counts AS (
+-- 14. Μουσικά είδη με ίσο πλήθος εμφανίσεων σε δύο συνεχόμενες χρονιές
+--     (και τουλάχιστον 3 εμφανίσεις σε κάθε μία από αυτές)
+
+WITH GenreYearCounts AS (
+  -- Υπολογίζει αριθμό εμφανίσεων ανά είδος & έτος
   SELECT
-    a.main_genre,
-    YEAR(p.start_time) AS year,
-    COUNT(*)           AS cnt
-  FROM Performance p
-  JOIN Performance_Artist pa ON p.performance_id = pa.performance_id
-  JOIN Artist a              ON pa.artist_id   = a.artist_id
-  GROUP BY
-    a.main_genre,
-    YEAR(p.start_time)
-  HAVING
-    COUNT(*) >= 3
+    a.music_genre            AS genre,
+    YEAR(e.event_date)       AS yr,
+    COUNT(*)                 AS cnt
+  FROM   Performance_Artist pa
+  JOIN   Performance         p  ON p.performance_id   = pa.performance_id_FK
+  JOIN   Event               e  ON e.event_id         = p.event_id_FK
+  JOIN   Artist              a  ON a.artist_id        = pa.artist_id_FK
+  GROUP  BY genre, yr
+  HAVING COUNT(*) >= 3       -- τουλάχιστον 3 εμφανίσεις στο έτος
 )
 SELECT
-  g1.main_genre,
-  g1.year   AS year1,
-  g2.year   AS year2,
-  g1.cnt    AS count_year1,
-  g2.cnt    AS count_year2
-FROM genre_counts g1
-JOIN genre_counts g2
-  ON g1.main_genre = g2.main_genre
-  AND g2.year = g1.year + 1
-  AND g1.cnt  = g2.cnt
-ORDER BY
-  g1.main_genre,
-  g1.year;
+  g1.genre,
+  g1.yr      AS year1,
+  g1.cnt     AS count1,
+  g2.yr      AS year2,
+  g2.cnt     AS count2
+FROM   GenreYearCounts g1
+JOIN   GenreYearCounts g2
+  ON g1.genre = g2.genre
+ AND g2.yr   = g1.yr + 1    -- συνεχόμενο έτος
+ AND g2.cnt  = g1.cnt      -- ίδιο πλήθος εμφανίσεων
+ORDER  BY genre, year1;

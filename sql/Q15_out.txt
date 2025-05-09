@@ -1,6 +1,6 @@
-visitor_id	visitor_name	artist_id	artist_name	total_score
-178	Michael Rhodes	1	Tim Patton	5
-79	Richard Donovan	2	Nancy Wright	5
-51	Brett Castillo	3	Courtney Velasquez	5
-24	Katrina Becker	5	William Herrera	5
-109	Cheyenne Hart	5	William Herrera	5
+visitor_name	artist_name	total_score
+Tara Jones	Matthew Ross	34
+David Richardson	Joshua Smith	25
+Richard Johnson	Lauren Dominguez	25
+Karina Patterson	Cheryl Williams	23
+Stephen Meyer	Robert Hernandez	23

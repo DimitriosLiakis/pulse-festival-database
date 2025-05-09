@@ -1,6 +1,6 @@
-location_id,address,city,country,continent,coordinates,location_image
-1,433 Jill Springs,New Roberttown,Bermuda,Australia,POINT(-120.2296 81.6448),https://example.com/location_1.jpg
-2,386 Shane Harbors,Port Lindachester,Guam,Europe,POINT(-55.0911 -31.3098),https://example.com/location_2.jpg
-3,1161 Abbott Rapids,Lindsaymouth,Mauritania,Europe,POINT(-96.5276 -15.4095),https://example.com/location_3.jpg
-4,495 Janet Cape,Port Keith,Belgium,Australia,POINT(23.2241 -56.4922),https://example.com/location_4.jpg
-5,7525 Clark Grove Apt. 928,East Steven,Faroe Islands,Africa,POINT(-125.7753 -27.5107),https://example.com/location_5.jpg
+location_id,address,city,country,continent,coordinates,location_image,location_image_alt
+1,433 Jill Springs,New Roberttown,Bermuda,Australia,POINT(-120.2296 81.6448),https://example.com/location_1.jpg,https://example.com/location_1_alt.jpg
+2,386 Shane Harbors,Port Lindachester,Guam,Europe,POINT(-55.0911 -31.3098),https://example.com/location_2.jpg,https://example.com/location_2_alt.jpg
+3,1161 Abbott Rapids,Lindsaymouth,Mauritania,Europe,POINT(-96.5276 -15.4095),https://example.com/location_3.jpg,https://example.com/location_3_alt.jpg
+4,495 Janet Cape,Port Keith,Belgium,Australia,POINT(23.2241 -56.4922),https://example.com/location_4.jpg,https://example.com/location_4_alt.jpg
+5,7525 Clark Grove Apt. 928,East Steven,Faroe Islands,Africa,POINT(-125.7753 -27.5107),https://example.com/location_5.jpg,https://example.com/location_5_alt.jpg

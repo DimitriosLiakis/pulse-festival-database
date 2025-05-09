@@ -1,8 +1,7 @@
 performance_id	event_name	performance_type	avg_visitor_rating
-42	Event_23	special guest	3.60000000
-19	Event_36	main act	3.20000000
-27	Event_49	headline	3.00000000
-23	Event_9	headline	3.80000000
+19	Event_37	headline	3.20000000
+23	Event_45	warm up	3.80000000
+27	Event_47	special guest	3.00000000
 *************************** 1. row ***************************
                             QUERY: SELECT
   p.performance_id,
@@ -53,9 +52,9 @@ ORDER BY
                 1
               ],
               "columns": [
-                "pko.p.performance_id",
-                "pko.e.event_name",
-                "pko.p.performance_type"
+                "8new.p.performance_id",
+                "8new.e.event_name",
+                "8new.p.performance_type"
               ]
             }
           }
@@ -162,7 +161,7 @@ ORDER BY
                 "range_analysis": {
                   "table_scan": {
                     "rows": 400,
-                    "cost": 42.35
+                    "cost": 42.85
                   },
                   "potential_range_indexes": [
                     {
@@ -171,7 +170,7 @@ ORDER BY
                       "cause": "not_applicable"
                     },
                     {
-                      "index": "uk_rating_once",
+                      "index": "uk_visitor_performance",
                       "usable": true,
                       "key_parts": [
                         "visitor_id_FK",
@@ -197,7 +196,7 @@ ORDER BY
                   "analyzing_range_alternatives": {
                     "range_scan_alternatives": [
                       {
-                        "index": "uk_rating_once",
+                        "index": "uk_visitor_performance",
                         "ranges": [
                           "visitor_id_FK = 24"
                         ],
@@ -206,8 +205,8 @@ ORDER BY
                         "using_mrr": false,
                         "index_only": false,
                         "in_memory": 1,
-                        "rows": 4,
-                        "cost": 1.66,
+                        "rows": 3,
+                        "cost": 1.31,
                         "chosen": true
                       }
                     ],
@@ -219,14 +218,14 @@ ORDER BY
                   "chosen_range_access_summary": {
                     "range_access_plan": {
                       "type": "range_scan",
-                      "index": "uk_rating_once",
-                      "rows": 4,
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
                       "ranges": [
                         "visitor_id_FK = 24"
                       ]
                     },
-                    "rows_for_plan": 4,
-                    "cost_for_plan": 1.66,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 1.31,
                     "chosen": true
                   }
                 }
@@ -234,7 +233,7 @@ ORDER BY
               {
                 "table": "`Performance` `p`",
                 "table_scan": {
-                  "rows": 115,
+                  "rows": 114,
                   "cost": 0.25
                 }
               },
@@ -257,9 +256,9 @@ ORDER BY
                   "considered_access_paths": [
                     {
                       "access_type": "ref",
-                      "index": "uk_rating_once",
-                      "rows": 4,
-                      "cost": 1.15,
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "cost": 1.05,
                       "chosen": true
                     },
                     {
@@ -271,7 +270,7 @@ ORDER BY
                     {
                       "access_type": "range",
                       "range_details": {
-                        "used_index": "uk_rating_once"
+                        "used_index": "uk_visitor_performance"
                       },
                       "chosen": false,
                       "cause": "heuristic_index_cheaper"
@@ -279,8 +278,8 @@ ORDER BY
                   ]
                 },
                 "condition_filtering_pct": 100,
-                "rows_for_plan": 4,
-                "cost_for_plan": 1.15,
+                "rows_for_plan": 3,
+                "cost_for_plan": 1.05,
                 "rest_of_plan": [
                   {
                     "plan_prefix": [
@@ -304,14 +303,14 @@ ORDER BY
                           "using_join_cache": true,
                           "buffers_needed": 1,
                           "resulting_rows": 50,
-                          "cost": 20.25,
+                          "cost": 15.25,
                           "chosen": true
                         }
                       ]
                     },
                     "condition_filtering_pct": 100,
-                    "rows_for_plan": 200,
-                    "cost_for_plan": 21.4,
+                    "rows_for_plan": 150,
+                    "cost_for_plan": 16.3,
                     "rest_of_plan": [
                       {
                         "plan_prefix": [
@@ -325,27 +324,27 @@ ORDER BY
                               "access_type": "eq_ref",
                               "index": "PRIMARY",
                               "rows": 1,
-                              "cost": 21,
+                              "cost": 15.75,
                               "chosen": true,
                               "cause": "clustered_pk_chosen_by_heuristics"
                             },
                             {
-                              "rows_to_scan": 115,
+                              "rows_to_scan": 114,
                               "filtering_effect": [
                               ],
                               "final_filtering_effect": 1,
                               "access_type": "scan",
                               "using_join_cache": true,
                               "buffers_needed": 1,
-                              "resulting_rows": 115,
-                              "cost": 2300.33,
+                              "resulting_rows": 114,
+                              "cost": 1710.31,
                               "chosen": false
                             }
                           ]
                         },
                         "condition_filtering_pct": 100,
-                        "rows_for_plan": 200,
-                        "cost_for_plan": 42.4,
+                        "rows_for_plan": 150,
+                        "cost_for_plan": 32.05,
                         "chosen": true
                       }
                     ]
@@ -361,27 +360,27 @@ ORDER BY
                           "access_type": "eq_ref",
                           "index": "PRIMARY",
                           "rows": 1,
-                          "cost": 1.4,
+                          "cost": 1.05,
                           "chosen": true,
                           "cause": "clustered_pk_chosen_by_heuristics"
                         },
                         {
-                          "rows_to_scan": 115,
+                          "rows_to_scan": 114,
                           "filtering_effect": [
                           ],
                           "final_filtering_effect": 1,
                           "access_type": "scan",
                           "using_join_cache": true,
                           "buffers_needed": 1,
-                          "resulting_rows": 115,
-                          "cost": 46.25,
+                          "resulting_rows": 114,
+                          "cost": 34.45,
                           "chosen": false
                         }
                       ]
                     },
                     "condition_filtering_pct": 100,
-                    "rows_for_plan": 4,
-                    "cost_for_plan": 2.55,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 2.1,
                     "rest_of_plan": [
                       {
                         "plan_prefix": [
@@ -395,7 +394,7 @@ ORDER BY
                               "access_type": "eq_ref",
                               "index": "PRIMARY",
                               "rows": 1,
-                              "cost": 1.4,
+                              "cost": 1.05,
                               "chosen": true,
                               "cause": "clustered_pk_chosen_by_heuristics"
                             },
@@ -408,15 +407,15 @@ ORDER BY
                               "using_join_cache": true,
                               "buffers_needed": 1,
                               "resulting_rows": 50,
-                              "cost": 20.2506,
+                              "cost": 15.2503,
                               "chosen": false
                             }
                           ]
                         },
                         "added_to_eq_ref_extension": true,
                         "condition_filtering_pct": 100,
-                        "rows_for_plan": 4,
-                        "cost_for_plan": 3.95,
+                        "rows_for_plan": 3,
+                        "cost_for_plan": 3.15,
                         "chosen": true
                       }
                     ]
@@ -466,25 +465,25 @@ ORDER BY
                     },
                     {
                       "access_type": "ref",
-                      "index": "idx_performance_event",
+                      "index": "idx_performance_by_event",
                       "usable": false,
                       "chosen": false
                     },
                     {
-                      "rows_to_scan": 115,
+                      "rows_to_scan": 114,
                       "filtering_effect": [
                       ],
                       "final_filtering_effect": 1,
                       "access_type": "scan",
-                      "resulting_rows": 115,
-                      "cost": 11.75,
+                      "resulting_rows": 114,
+                      "cost": 11.65,
                       "chosen": true
                     }
                   ]
                 },
                 "condition_filtering_pct": 100,
-                "rows_for_plan": 115,
-                "cost_for_plan": 11.75,
+                "rows_for_plan": 114,
+                "cost_for_plan": 11.65,
                 "pruned_by_cost": true
               }
             ]
@@ -603,8 +602,8 @@ ORDER BY
                       "table": "<temporary>",
                       "in_plan_at_position": 3,
                       "columns": 5,
-                      "row_length": 559,
-                      "key_length": 528,
+                      "row_length": 517,
+                      "key_length": 488,
                       "unique_constraint": false,
                       "makes_grouped_rows": true,
                       "cannot_insert_duplicates": false,
@@ -636,10 +635,10 @@ ORDER BY
             "filesort_summary": {
               "memory_available": 262144,
               "key_size": 1616,
-              "row_size": 2179,
-              "max_rows_per_buffer": 119,
+              "row_size": 2137,
+              "max_rows_per_buffer": 122,
               "num_rows_estimate": 18446744073709551615,
-              "num_rows_found": 4,
+              "num_rows_found": 3,
               "num_initial_chunks_spilled_to_disk": 0,
               "peak_memory_used": 32800,
               "sort_algorithm": "std::sort",
@@ -654,7 +653,7 @@ ORDER BY
 MISSING_BYTES_BEYOND_MAX_MEM_SIZE: 0
           INSUFFICIENT_PRIVILEGES: 0
 EXPLAIN
-{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.95"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_rating_once",\n                "performance_id_FK"\n              ],\n              "key": "uk_rating_once",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 4,\n              "rows_produced_per_join": 4,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.40",\n                "prefix_cost": "1.15",\n                "data_read_per_join": "96"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "pko.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 4,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "1.00",\n                "eval_cost": "0.40",\n                "prefix_cost": "2.55",\n                "data_read_per_join": "4K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "pko.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 4,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "1.00",\n                "eval_cost": "0.40",\n                "prefix_cost": "3.95",\n                "data_read_per_join": "5K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.15"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_visitor_performance",\n                "performance_id_FK"\n              ],\n              "key": "uk_visitor_performance",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 3,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "1.05",\n                "data_read_per_join": "72"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_by_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "2.10",\n                "data_read_per_join": "6K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "3.15",\n                "data_read_per_join": "7K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
 *************************** 1. row ***************************
                             QUERY: EXPLAIN FORMAT=JSON
 
@@ -707,9 +706,9 @@ ORDER BY
                 1
               ],
               "columns": [
-                "pko.p.performance_id",
-                "pko.e.event_name",
-                "pko.p.performance_type"
+                "8new.p.performance_id",
+                "8new.e.event_name",
+                "8new.p.performance_type"
               ]
             }
           }
@@ -816,7 +815,7 @@ ORDER BY
                 "range_analysis": {
                   "table_scan": {
                     "rows": 400,
-                    "cost": 42.35
+                    "cost": 42.85
                   },
                   "potential_range_indexes": [
                     {
@@ -825,7 +824,7 @@ ORDER BY
                       "cause": "not_applicable"
                     },
                     {
-                      "index": "uk_rating_once",
+                      "index": "uk_visitor_performance",
                       "usable": true,
                       "key_parts": [
                         "visitor_id_FK",
@@ -851,7 +850,7 @@ ORDER BY
                   "analyzing_range_alternatives": {
                     "range_scan_alternatives": [
                       {
-                        "index": "uk_rating_once",
+                        "index": "uk_visitor_performance",
                         "ranges": [
                           "visitor_id_FK = 24"
                         ],
@@ -860,8 +859,8 @@ ORDER BY
                         "using_mrr": false,
                         "index_only": false,
                         "in_memory": 1,
-                        "rows": 4,
-                        "cost": 1.66,
+                        "rows": 3,
+                        "cost": 1.31,
                         "chosen": true
                       }
                     ],
@@ -873,14 +872,14 @@ ORDER BY
                   "chosen_range_access_summary": {
                     "range_access_plan": {
                       "type": "range_scan",
-                      "index": "uk_rating_once",
-                      "rows": 4,
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
                       "ranges": [
                         "visitor_id_FK = 24"
                       ]
                     },
-                    "rows_for_plan": 4,
-                    "cost_for_plan": 1.66,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 1.31,
                     "chosen": true
                   }
                 }
@@ -888,7 +887,7 @@ ORDER BY
               {
                 "table": "`Performance` `p`",
                 "table_scan": {
-                  "rows": 115,
+                  "rows": 114,
                   "cost": 0.25
                 }
               },
@@ -911,9 +910,9 @@ ORDER BY
                   "considered_access_paths": [
                     {
                       "access_type": "ref",
-                      "index": "uk_rating_once",
-                      "rows": 4,
-                      "cost": 1.15,
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "cost": 1.05,
                       "chosen": true
                     },
                     {
@@ -925,7 +924,7 @@ ORDER BY
                     {
                       "access_type": "range",
                       "range_details": {
-                        "used_index": "uk_rating_once"
+                        "used_index": "uk_visitor_performance"
                       },
                       "chosen": false,
                       "cause": "heuristic_index_cheaper"
@@ -933,8 +932,8 @@ ORDER BY
                   ]
                 },
                 "condition_filtering_pct": 100,
-                "rows_for_plan": 4,
-                "cost_for_plan": 1.15,
+                "rows_for_plan": 3,
+                "cost_for_plan": 1.05,
                 "rest_of_plan": [
                   {
                     "plan_prefix": [
@@ -958,14 +957,14 @@ ORDER BY
                           "using_join_cache": true,
                           "buffers_needed": 1,
                           "resulting_rows": 50,
-                          "cost": 20.25,
+                          "cost": 15.25,
                           "chosen": true
                         }
                       ]
                     },
                     "condition_filtering_pct": 100,
-                    "rows_for_plan": 200,
-                    "cost_for_plan": 21.4,
+                    "rows_for_plan": 150,
+                    "cost_for_plan": 16.3,
                     "rest_of_plan": [
                       {
                         "plan_prefix": [
@@ -979,27 +978,27 @@ ORDER BY
                               "access_type": "eq_ref",
                               "index": "PRIMARY",
                               "rows": 1,
-                              "cost": 21,
+                              "cost": 15.75,
                               "chosen": true,
                               "cause": "clustered_pk_chosen_by_heuristics"
                             },
                             {
-                              "rows_to_scan": 115,
+                              "rows_to_scan": 114,
                               "filtering_effect": [
                               ],
                               "final_filtering_effect": 1,
                               "access_type": "scan",
                               "using_join_cache": true,
                               "buffers_needed": 1,
-                              "resulting_rows": 115,
-                              "cost": 2300.33,
+                              "resulting_rows": 114,
+                              "cost": 1710.31,
                               "chosen": false
                             }
                           ]
                         },
                         "condition_filtering_pct": 5,
-                        "rows_for_plan": 10,
-                        "cost_for_plan": 42.4,
+                        "rows_for_plan": 7.5,
+                        "cost_for_plan": 32.05,
                         "chosen": true
                       }
                     ]
@@ -1015,27 +1014,27 @@ ORDER BY
                           "access_type": "eq_ref",
                           "index": "PRIMARY",
                           "rows": 1,
-                          "cost": 1.4,
+                          "cost": 1.05,
                           "chosen": true,
                           "cause": "clustered_pk_chosen_by_heuristics"
                         },
                         {
-                          "rows_to_scan": 115,
+                          "rows_to_scan": 114,
                           "filtering_effect": [
                           ],
                           "final_filtering_effect": 1,
                           "access_type": "scan",
                           "using_join_cache": true,
                           "buffers_needed": 1,
-                          "resulting_rows": 115,
-                          "cost": 46.25,
+                          "resulting_rows": 114,
+                          "cost": 34.45,
                           "chosen": false
                         }
                       ]
                     },
                     "condition_filtering_pct": 100,
-                    "rows_for_plan": 4,
-                    "cost_for_plan": 2.55,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 2.1,
                     "rest_of_plan": [
                       {
                         "plan_prefix": [
@@ -1049,7 +1048,7 @@ ORDER BY
                               "access_type": "eq_ref",
                               "index": "PRIMARY",
                               "rows": 1,
-                              "cost": 1.4,
+                              "cost": 1.05,
                               "chosen": true,
                               "cause": "clustered_pk_chosen_by_heuristics"
                             },
@@ -1062,15 +1061,15 @@ ORDER BY
                               "using_join_cache": true,
                               "buffers_needed": 1,
                               "resulting_rows": 50,
-                              "cost": 20.2506,
+                              "cost": 15.2503,
                               "chosen": false
                             }
                           ]
                         },
                         "added_to_eq_ref_extension": true,
                         "condition_filtering_pct": 100,
-                        "rows_for_plan": 4,
-                        "cost_for_plan": 3.95,
+                        "rows_for_plan": 3,
+                        "cost_for_plan": 3.15,
                         "chosen": true
                       }
                     ]
@@ -1120,25 +1119,25 @@ ORDER BY
                     },
                     {
                       "access_type": "ref",
-                      "index": "idx_performance_event",
+                      "index": "idx_performance_by_event",
                       "usable": false,
                       "chosen": false
                     },
                     {
-                      "rows_to_scan": 115,
+                      "rows_to_scan": 114,
                       "filtering_effect": [
                       ],
                       "final_filtering_effect": 1,
                       "access_type": "scan",
-                      "resulting_rows": 115,
-                      "cost": 11.75,
+                      "resulting_rows": 114,
+                      "cost": 11.65,
                       "chosen": true
                     }
                   ]
                 },
                 "condition_filtering_pct": 100,
-                "rows_for_plan": 115,
-                "cost_for_plan": 11.75,
+                "rows_for_plan": 114,
+                "cost_for_plan": 11.65,
                 "pruned_by_cost": true
               }
             ]

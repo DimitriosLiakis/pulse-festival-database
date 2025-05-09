@@ -1,30 +1,29 @@
-WITH artist_counts AS (
+-- 11. Καλλιτέχνες που συμμετείχαν τουλάχιστον 5 φορές λιγότερο
+--     από τον κορυφαίο σε εμφανίσεις σε φεστιβάλ.
+
+WITH ArtistCounts AS (
+  -- Μέτρηση εμφανίσεων (performances) ανά καλλιτέχνη
   SELECT
     a.artist_id,
-    a.name                          AS artist_name,
-    COUNT(DISTINCT f.festival_id)   AS festival_count
-  FROM Artist           AS a
-  JOIN Performance_Artist AS pa   ON a.artist_id = pa.artist_id
-  JOIN Performance       AS p     ON pa.performance_id = p.performance_id
-  JOIN Event             AS e     ON p.event_id_FK = e.event_id
-  JOIN Festival          AS f     ON e.festival_id_FK = f.festival_id
-  GROUP BY
-    a.artist_id,
-    a.name
+    a.real_name                                    AS artist_name,
+    COUNT(*)                                       AS cnt
+  FROM   Performance_Artist pa
+  JOIN   Performance         p  ON p.performance_id     = pa.performance_id_FK
+  JOIN   Event               e  ON e.event_id           = p.event_id_FK
+  JOIN   Artist              a  ON a.artist_id          = pa.artist_id_FK
+  GROUP  BY a.artist_id, artist_name
 ),
-max_count AS (
-  SELECT
-    MAX(festival_count) AS top_count
-  FROM artist_counts
+MaxCount AS (
+  -- Εύρεση της μέγιστης τιμής εμφανίσεων
+  SELECT MAX(cnt) AS max_cnt
+  FROM   ArtistCounts
 )
 SELECT
   ac.artist_id,
   ac.artist_name,
-  ac.festival_count
-FROM artist_counts AS ac
-CROSS JOIN max_count    AS mc
-WHERE
-  ac.festival_count <= mc.top_count - 5
-ORDER BY
-  ac.festival_count DESC,
-  ac.artist_name;
+  ac.cnt              AS appearances,
+  mc.max_cnt          AS top_appearances
+FROM   ArtistCounts AS ac
+CROSS  JOIN MaxCount  AS mc
+WHERE  ac.cnt <= mc.max_cnt - 5
+ORDER  BY ac.cnt DESC, ac.artist_name;
