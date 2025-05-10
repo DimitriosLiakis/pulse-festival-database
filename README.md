@@ -1,41 +1,118 @@
-# DatabasesNTUA24-25
-This repository is hosting the solution of the project for the course Databases of National Technical University of Athens for the academic year 2024-2025. 
-# Pulse University Festival Database
+Παρακάτω θα βρεις μια βελτιωμένη εκδοχή του README με ενιαίο ύφος, καθαρή δομή και χωρίς επαναλήψεις τίτλων· μπορείς να αντικαταστήσεις το υπάρχον αρχείο χωρίς άλλες αλλαγές.
 
-## Overview
+# Pulse Festival Database  
+Εξαμηνιαία Εργασία Βάσεων Δεδομένων (NTUA 2024‑2025)  
+**Φοιτητής:** Δημήτριος Λιάκης · ΑΜ 03120846
 
-This repository contains the schema definition (DDL) and sample data for the Pulse University annual music festival management system. The database supports managing locations, festivals, stages, events, performances, artists, bands, visitors, tickets, staff, ratings, and resale queues.
+---
+## Περιεχόμενα Repository
 
-## Assumptions
-
-Below is a table of assumptions made to fill gaps in the specification and to ensure all required queries and constraints operate correctly.
-
-| Assumption ID | Description                                                                                           | Affected Entities                      |
-| ------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------- |
-| A1            | EAN‑13 codes are 13-digit numeric strings, unique per ticket.                                         | Ticket.ean\_code                       |
-| A2            | VIP tickets are capped at 10% of a stage's capacity for each event.                                   | Ticket                                 |
-| A3            | Ticket pricing varies by day and category but is fixed per combination.                               | Ticket                                 |
-| A4            | Mandatory break between consecutive performances is enforced to be between 5 and 30 minutes.          | Event, Performance                     |
-| A5            | Artists and bands cannot have overlapping performances; schedule validation is application‑level.     | Performance\_Artist, Performance\_Band |
-| A6            | Artists/bands may not perform more than three consecutive years at the festival; enforced externally. | Festival, Artist\_Band                 |
-| A7            | Future festivals are those with festival\_year > 2025; sample data includes years up to 2027.         | Festival                               |
-| A8            | Geographic coordinates are stored as a single string in 'latitude,longitude' format.                  | Location.coordinates                   |
-| A9            | Staff quota percentages (5% security, 2% support) are rounded up to the nearest integer.              | Stage\_Staff trigger                   |
-| A10           | Resale queue processes buyers and sellers in strict FIFO order based on interest\_date.               | Resale\_queue                          |
-
-## Data Population
-
-* **Artists & Bands**: 50 entries combined, with artists linked to bands where applicable.
-* **Stages**: 30 distinct stages with varied capacities and equipment lists.
-* **Events & Performances**: 100 performances scheduled across 10 festival editions (including 2 future years).
-* **Visitors & Tickets**: 200 tickets covering general, VIP, and backstage categories.
-
-## Usage
-
-1. Run `schema.sql` to create the database and all tables.
-2. Run `data.sql` to insert sample data.
-3. Use the provided queries in `/sql` to test constraints, availability, scheduling, and reporting.
+| Φάκελος / Αρχείο | Περιγραφή |
+| ---------------- | --------- |
+| `report.tex` + εικόνες | Η τελική αναφορά (LaTeX). |
+| `sql/install.sql` | DDL – δημιουργία σχήματος, indexes, trigger. |
+| `sql/loaδ.sql` | Φόρτωση όλων των CSV. |
+| `csv_data/*.csv` | Mock data (δημιουργούνται από το script). |
+| `data.py` | Παραγωγή δειγματικών δεδομένων + self‑test. |
+| `queries/` | Τα 15 ερωτήματα και οι optimized παραλλαγές. |
+| `traces/` | JSON traces για Q04 και Q06. |
+| `README.md` | Το παρόν αρχείο. |
 
 ---
 
-*Pulse University Festival Database — Semestrial Assignment 2024-2025*
+## 1 . Overview
+
+Η βάση **Pulse Festival** υποστηρίζει:
+
+* Διαχείριση τοποθεσιών, φεστιβάλ, σκηνών, εκδηλώσεων, παραστάσεων  
+* Καλλιτέχνες & μπάντες, προσωπικό ασφαλείας/υποστήριξης/τεχνικούς  
+* Επισκέπτες, εισιτήρια, βαθμολογίες παραστάσεων, ουρά μεταπώλησης
+
+Ο σχεδιασμός είναι πλήρως 3NF, περιλαμβάνει 16 πίνακες και καλύπτει όλα τα ερωτήματα της εκφώνησης.
+
+---
+
+## 2 . Υποθέσεις Σχεδίασης
+
+| ID | Περιγραφή | Οντότητες που επηρεάζονται |
+| -- | --------- | ------------------------- |
+| **A1** | Οι κωδικοί EAN‑13 είναι μοναδικοί 13‑ψήφιοι χαρακτήρες. | `Ticket.ean_code` |
+| **A2** | Τα VIP εισιτήρια ≤ 10 % της χωρητικότητας σκηνής. | `Ticket` |
+| **A3** | Σταθερή τιμή εισιτηρίου ανά ημέρα & κατηγορία. | `Ticket` |
+| **A4** | Υποχρεωτικό διάλειμμα 5–30 min μεταξύ παραστάσεων. | `Event`, `Performance` |
+| **A5** | Καλλιτέχνες/μπάντες δεν επιτρέπεται να επικαλύπτονται χρονικά (ελέγχεται εφαρμογιακά). | `Performance_*` |
+| **A6** | Καλλιτέχνης/μπάντα ≤ 3 συνεχόμενα έτη εμφανίσεων (business rule, όχι trigger). | `Festival`, `Artist_Band` |
+| **A7** | “Μελλοντικά” φεστιβάλ: `festival_year > 2025`, δείγματα 2026‑2027. | `Festival` |
+| **A8** | Συντεταγμένες φυλάσσονται ως `POINT(lon lat)` string. | `Location.coordinates` |
+| **A9** | Ποσοστά quota staff στρογγυλοποιούνται προς τα πάνω (`CEIL`). | Trigger `trg_staff_quota` |
+| **A10** | Ουρά μεταπώλησης εξυπηρετείται αυστηρά FIFO βάσει `interest_date`. | `Resale_queue` |
+
+---
+
+## 3 . Mock Data
+
+| Οντότητα | Πλήθος | Σχόλιο |
+| -------- | ------ | ------ |
+| Locations | 5 | Ευρώπη, Ασία, κ.λπ. |
+| Festivals | 10 | 2017‑2026 |
+| Stages | 30 | Χωρητικότητα 100‑2 000 |
+| Events | 50 | ≥ 3 στο Festival #1 |
+| Performances | 100 | 30‑180 min |
+| Artists / Bands | 30 / 20 | Γένη από 5 είδη |
+| Visitors | 200 | 18‑70 ετών |
+| Tickets | 300 | VIP ≤ 10 % |
+| Staff | 30 | tech / security / support |
+| Ratings | 400 | 5 κριτήρια (1‑5) |
+| Resale queue | 50 | buyers & sellers |
+
+`data_generator.py` εγγυάται ειδικές “seed” περιπτώσεις για τα ερωτήματα 3, 7, 9, 14 και τερματίζει με **AssertionError** αν αποτύχουν.
+
+---
+
+## 4 . Εγκατάσταση
+
+```bash
+# Δημιουργία mock δεδομένων
+python data_generator.py
+
+# Δημιουργία schema
+mysql -u root -p < sql/install.sql
+
+# Φόρτωση CSV
+mysql -u root -p 10new < sql/load_new.sql
+```
+
+---
+
+## 5 . Εκτέλεση Ερωτημάτων
+
+```bash
+# Παράδειγμα: Query 4
+mysql -u root -p 10new < queries/Q04.sql
+
+# Query 6 με trace
+mysql -u root -p 10new < queries/Q06b.sql > traces/Q06_trace.json
+```
+
+---
+
+## 6 . Δείκτες & Βελτιστοποίηση
+
+* `idx_event_schedule (event_date, start_time)` — ημερολόγιο ημέρας.
+* `idx_performance_by_event (event_id_FK, start_time)` — driving set Q04, Q06.
+* `uk_visitor_performance` — μοναδικό + φιλτράρισμα 3 rows (Q06).
+* `idx_staff_role` — αναζητήσεις εμπειρίας ανά ρόλο (Q07).
+
+Πλήρης ανάλυση στις § 2.2, § 4 της αναφοράς.
+
+---
+
+## 7 . Άδειες
+
+* Κώδικας: **MIT**.
+* Mock δεδομένα: παράγονται με [Faker](https://faker.readthedocs.io/) (MIT).
+* Εικόνες: εικονικά URLs – καμία πραγματική εικόνα δεν περιλαμβάνεται.
+
+---
+
+*Pulse Festival Database · NTUA DB Course 2024‑2025*
