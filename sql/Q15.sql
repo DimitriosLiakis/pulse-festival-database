@@ -1,8 +1,6 @@
--- 15. Top‑5 επισκέπτες με το υψηλότερο συνολικό σκορ σε έναν καλλιτέχνη
-
 SELECT
     CONCAT(v.first_name, ' ', v.last_name)   AS visitor_name,
-    a.real_name                             AS artist_name,   -- μόνο real_name
+    a.real_name                             AS artist_name,   
     SUM(
         r.rating_interpretation
       + r.rating_sound_light

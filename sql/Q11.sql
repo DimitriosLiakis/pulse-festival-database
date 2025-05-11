@@ -1,8 +1,4 @@
--- 11. Καλλιτέχνες που συμμετείχαν τουλάχιστον 5 φορές λιγότερο
---     από τον κορυφαίο σε εμφανίσεις σε φεστιβάλ.
-
 WITH ArtistCounts AS (
-  -- Μέτρηση εμφανίσεων (performances) ανά καλλιτέχνη
   SELECT
     a.artist_id,
     a.real_name                                    AS artist_name,
@@ -14,7 +10,6 @@ WITH ArtistCounts AS (
   GROUP  BY a.artist_id, artist_name
 ),
 MaxCount AS (
-  -- Εύρεση της μέγιστης τιμής εμφανίσεων
   SELECT MAX(cnt) AS max_cnt
   FROM   ArtistCounts
 )

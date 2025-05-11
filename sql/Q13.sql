@@ -1,5 +1,3 @@
--- 13. Καλλιτέχνες που έχουν συμμετάσχει σε φεστιβάλ σε ≥ 3 διαφορετικές ηπείρους
-
 SELECT
     a.artist_id,
     COALESCE(a.real_name, a.real_name)   AS artist_name,

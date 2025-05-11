@@ -9,7 +9,7 @@ FROM        Rating              r
 JOIN        Performance         p   ON p.performance_id      = r.performance_id_FK
 JOIN        Performance_Artist  pa  ON pa.performance_id_FK  = p.performance_id
 JOIN        Artist              a   ON a.artist_id           = pa.artist_id_FK
-WHERE       a.artist_id = @p_artist_id        -- ← φιλτράρισμα με ID
+WHERE       a.artist_id = @p_artist_id        
 -- WHERE    (a.stage_name = @p_artist_name OR a.real_name = @p_artist_name)
 GROUP BY    a.artist_id, artist_name;
 
@@ -24,6 +24,6 @@ FROM        Rating              r
 JOIN        Performance         p   ON p.performance_id      = r.performance_id_FK
 JOIN        Performance_Artist  pa  ON pa.performance_id_FK  = p.performance_id
 JOIN        Artist              a   ON a.artist_id           = pa.artist_id_FK
-WHERE       a.artist_id = @p_artist_id        -- ← φιλτράρισμα με ID
+WHERE       a.artist_id = @p_artist_id        
 -- WHERE    (a.stage_name = @p_artist_name OR a.real_name = @p_artist_name)
 GROUP BY    a.artist_id, artist_name;

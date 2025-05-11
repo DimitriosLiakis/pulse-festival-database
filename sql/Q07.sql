@@ -1,8 +1,3 @@
--- 7. Ποιο φεστιβάλ είχε τον χαμηλότερο μέσο όρο εμπειρίας τεχνικού προσωπικού;
-
--- Διαβάζουμε τις εμπειρίες ως αριθμούς:
---   intern=1, beginner=2, average=3, experienced=4, expert=5
-
 SELECT
     f.festival_id,
     f.festival_name,

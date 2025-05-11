@@ -1,8 +1,5 @@
--- 12. Ανάλυση προσωπικού ανά ημέρα & ρόλο για κάθε φεστιβάλ
-
 WITH RECURSIVE
   FestivalDays AS (
-    -- Παράγουμε όλες τις ημερομηνίες για κάθε φεστιβάλ
     SELECT
       f.festival_id,
       f.festival_name,

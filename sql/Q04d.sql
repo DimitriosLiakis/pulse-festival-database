@@ -4,7 +4,7 @@ SET optimizer_switch = 'hash_join=on';
 
 SELECT
     a.artist_id,
-    COALESCE(a.pseudonym, a.real_name)   AS artist_name,  -- ← use pseudonym
+    COALESCE(a.pseudonym, a.real_name)   AS artist_name, 
     AVG(r.rating_interpretation)          AS avg_interpretation,
     AVG(r.rating_overall)                 AS avg_overall
 FROM   Rating             AS r
@@ -22,7 +22,7 @@ GROUP  BY a.artist_id, artist_name;
 EXPLAIN FORMAT=JSON
 SELECT
     a.artist_id,
-    COALESCE(a.pseudonym, a.real_name)   AS artist_name,  -- ← corrected here too
+    COALESCE(a.pseudonym, a.real_name)   AS artist_name,  
     AVG(r.rating_interpretation)          AS avg_interpretation,
     AVG(r.rating_overall)                 AS avg_overall
 FROM   Rating             AS r
