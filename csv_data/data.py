@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
-# -------------------------------------------------------------
-# NEW CSV generator  –  schema 2025‑05‑09
-# -------------------------------------------------------------
+
 import os, csv, random, math, warnings
 from datetime import datetime, timedelta, time
 from faker import Faker

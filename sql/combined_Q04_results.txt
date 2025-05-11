@@ -80,10 +80,11 @@ WHERE  a.artist_id = 5
 GROUP BY a.artist_id, artist_name;
 
 ===== RESULT =====
+mysql: [Warning] Using a password on the command line interface can be insecure.
 artist_id	artist_name	avg_interpretation	avg_overall
-5	benjamin96	2.4286	2.5714
+5		3.1429	3.2857
 EXPLAIN
-{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "26.79"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "stage_name"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 66,\n            "rows_produced_per_join": 2,\n            "filtered": "3.57",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "23.11",\n              "eval_cost": "0.24",\n              "prefix_cost": "23.35",\n              "data_read_per_join": "37"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`7new`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "7new.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 9,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "2.46",\n              "eval_cost": "0.98",\n              "prefix_cost": "26.79",\n              "data_read_per_join": "235"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "30.87"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 75,\n            "rows_produced_per_join": 2,\n            "filtered": "4.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "26.20",\n              "eval_cost": "0.30",\n              "prefix_cost": "26.50",\n              "data_read_per_join": "47"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`11new`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "11new.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 12,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "3.12",\n              "eval_cost": "1.25",\n              "prefix_cost": "30.87",\n              "data_read_per_join": "299"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
 
 =========================================
 
@@ -119,8 +120,9 @@ LIMIT  1\G
 SET optimizer_trace = 'enabled=off';
 
 ===== RESULT =====
+mysql: [Warning] Using a password on the command line interface can be insecure.
 artist_id	artist_name	avg_interpretation	avg_overall
-5	benjamin96	2.43	2.57
+5		3.14	3.29
 *************************** 1. row ***************************
 optimizer_trace: {
   "steps": [
@@ -128,11 +130,11 @@ optimizer_trace: {
       "join_preparation": {
         "steps": [
           {
-            "expanded_query": "/* select#1 */ select `a`.`artist_id` AS `artist_id`,coalesce(`a`.`stage_name`,`a`.`real_name`) AS `artist_name`,round(avg(`r`.`rating_interpretation`),2) AS `avg_interpretation`,round(avg(`r`.`rating_overall`),2) AS `avg_overall` from (((`Rating` `r` join `Performance` `p` on((`p`.`performance_id` = `r`.`performance_id_FK`))) join `Performance_Artist` `pa` on((`pa`.`performance_id_FK` = `p`.`performance_id`))) join `Artist` `a` on((`a`.`artist_id` = `pa`.`artist_id_FK`))) where (`a`.`artist_id` = (@`p_artist_id`)) group by `a`.`artist_id`,`artist_name`"
+            "expanded_query": "/* select#1 */ select `a`.`artist_id` AS `artist_id`,coalesce(`a`.`pseudonym`,`a`.`real_name`) AS `artist_name`,round(avg(`r`.`rating_interpretation`),2) AS `avg_interpretation`,round(avg(`r`.`rating_overall`),2) AS `avg_overall` from (((`Rating` `r` join `Performance` `p` on((`p`.`performance_id` = `r`.`performance_id_FK`))) join `Performance_Artist` `pa` on((`pa`.`performance_id_FK` = `p`.`performance_id`))) join `Artist` `a` on((`a`.`artist_id` = `pa`.`artist_id_FK`))) where (`a`.`artist_id` = (@`p_artist_id`)) group by `a`.`artist_id`,`artist_name`"
           },
           {
             "transformations_to_nested_joins": {
-              "expanded_query": "/* select#1 */ select `a`.`artist_id` AS `artist_id`,coalesce(`a`.`stage_name`,`a`.`real_name`) AS `artist_name`,round(avg(`r`.`rating_interpretation`),2) AS `avg_interpretation`,round(avg(`r`.`rating_overall`),2) AS `avg_overall` from `Rating` `r` join `Performance` `p` join `Performance_Artist` `pa` join `Artist` `a` where ((`a`.`artist_id` = (@`p_artist_id`)) and (`a`.`artist_id` = `pa`.`artist_id_FK`) and (`pa`.`performance_id_FK` = `p`.`performance_id`) and (`p`.`performance_id` = `r`.`performance_id_FK`)) group by `a`.`artist_id`,`artist_name`",
+              "expanded_query": "/* select#1 */ select `a`.`artist_id` AS `artist_id`,coalesce(`a`.`pseudonym`,`a`.`real_name`) AS `artist_name`,round(avg(`r`.`rating_interpretation`),2) AS `avg_interpretation`,round(avg(`r`.`rating_overall`),2) AS `avg_overall` from `Rating` `r` join `Performance` `p` join `Performance_Artist` `pa` join `Artist` `a` where ((`a`.`artist_id` = (@`p_artist_id`)) and (`a`.`artist_id` = `pa`.`artist_id_FK`) and (`pa`.`performance_id_FK` = `p`.`performance_id`) and (`p`.`performance_id` = `r`.`performance_id_FK`)) group by `a`.`artist_id`,`artist_name`",
               "transformations": [
                 "JOIN_condition_to_WHERE",
                 "parenthesis_removal"
@@ -280,15 +282,15 @@ optimizer_trace: {
                 "table": "`Performance` `p`",
                 "table_scan": {
                   "cost": 0.25,
-                  "rows": 114
+                  "rows": 117
                 }
               },
               {
                 "table": "`Performance_Artist` `pa`",
                 "range_analysis": {
                   "table_scan": {
-                    "cost": 8.95,
-                    "rows": 66
+                    "cost": 9.85,
+                    "rows": 75
                   },
                   "skip_scan_range": {
                     "cause": "not_single_table",
@@ -320,7 +322,7 @@ optimizer_trace: {
                     }
                   ],
                   "best_covering_index_scan": {
-                    "cost": 6.87379,
+                    "cost": 7.77709,
                     "index": "artist_id_FK",
                     "chosen": true
                   },
@@ -549,13 +551,13 @@ optimizer_trace: {
                       "`Artist` `a`",
                       "`Performance` `p`"
                     ],
-                    "cost_for_plan": 51.55,
-                    "rows_for_plan": 114,
+                    "cost_for_plan": 52.9,
+                    "rows_for_plan": 117,
                     "pruned_by_cost": true,
                     "best_access_path": {
                       "considered_access_paths": [
                         {
-                          "cost": 39.9,
+                          "cost": 40.95,
                           "rows": 1,
                           "cause": "clustered_pk_chosen_by_heuristics",
                           "index": "PRIMARY",
@@ -563,7 +565,7 @@ optimizer_trace: {
                           "access_type": "eq_ref"
                         },
                         {
-                          "cost": 75.2817,
+                          "cost": 77.2628,
                           "chosen": false,
                           "access_type": "range",
                           "rows_to_scan": 2,
@@ -584,20 +586,20 @@ optimizer_trace: {
                       "`Artist` `a`",
                       "`Performance` `p`"
                     ],
-                    "cost_for_plan": 177.9,
-                    "rows_for_plan": 475,
+                    "cost_for_plan": 182.575,
+                    "rows_for_plan": 487.5,
                     "pruned_by_cost": true,
                     "best_access_path": {
                       "considered_access_paths": [
                         {
-                          "cost": 166.25,
+                          "cost": 170.625,
                           "rows": 4.16667,
                           "index": "performance_id_FK",
                           "chosen": true,
                           "access_type": "ref"
                         },
                         {
-                          "cost": 4560.75,
+                          "cost": 4680.75,
                           "chosen": false,
                           "access_type": "scan",
                           "rows_to_scan": 400,
@@ -612,8 +614,8 @@ optimizer_trace: {
                     "condition_filtering_pct": 100
                   }
                 ],
-                "cost_for_plan": 11.65,
-                "rows_for_plan": 114,
+                "cost_for_plan": 11.95,
+                "rows_for_plan": 117,
                 "best_access_path": {
                   "considered_access_paths": [
                     {
@@ -623,11 +625,11 @@ optimizer_trace: {
                       "access_type": "ref"
                     },
                     {
-                      "cost": 11.65,
+                      "cost": 11.95,
                       "chosen": true,
                       "access_type": "scan",
-                      "rows_to_scan": 114,
-                      "resulting_rows": 114,
+                      "rows_to_scan": 117,
+                      "resulting_rows": 117,
                       "filtering_effect": [],
                       "final_filtering_effect": 1
                     }
@@ -695,7 +697,7 @@ optimizer_trace: {
                     "uses_only_constant_tables": true
                   },
                   {
-                    "item": "coalesce('benjamin96','Debbie Carpenter')",
+                    "item": "coalesce('','Stephanie Dalton')",
                     "uses_only_constant_tables": true
                   }
                 ],
@@ -791,10 +793,11 @@ WHERE a.artist_id = 5
 GROUP BY a.artist_id, artist_name;
 
 ===== RESULT =====
+mysql: [Warning] Using a password on the command line interface can be insecure.
 artist_id	artist_name	avg_interpretation	avg_overall
-5	benjamin96	2.4286	2.5714
+5		3.1429	3.2857
 EXPLAIN
-{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "26.79"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "stage_name"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 66,\n            "rows_produced_per_join": 2,\n            "filtered": "3.57",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "23.11",\n              "eval_cost": "0.24",\n              "prefix_cost": "23.35",\n              "data_read_per_join": "37"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`7new`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "7new.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 9,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "2.46",\n              "eval_cost": "0.98",\n              "prefix_cost": "26.79",\n              "data_read_per_join": "235"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "30.87"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 75,\n            "rows_produced_per_join": 2,\n            "filtered": "4.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "26.20",\n              "eval_cost": "0.30",\n              "prefix_cost": "26.50",\n              "data_read_per_join": "47"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`11new`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "11new.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 12,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "3.12",\n              "eval_cost": "1.25",\n              "prefix_cost": "30.87",\n              "data_read_per_join": "299"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
 
 =========================================
 
@@ -839,10 +842,11 @@ WHERE  a.artist_id = 5
 GROUP  BY a.artist_id, artist_name;
 
 ===== RESULT =====
+mysql: [Warning] Using a password on the command line interface can be insecure.
 artist_id	artist_name	avg_interpretation	avg_overall
-5	benjamin96	2.4286	2.5714
+5		3.1429	3.2857
 EXPLAIN
-{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "26.79"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 66,\n            "rows_produced_per_join": 2,\n            "filtered": "3.57",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "23.11",\n              "eval_cost": "0.24",\n              "prefix_cost": "23.35",\n              "data_read_per_join": "37"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`8new`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "8new.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 9,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "2.46",\n              "eval_cost": "0.98",\n              "prefix_cost": "26.79",\n              "data_read_per_join": "235"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "30.87"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 75,\n            "rows_produced_per_join": 2,\n            "filtered": "4.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "26.20",\n              "eval_cost": "0.30",\n              "prefix_cost": "26.50",\n              "data_read_per_join": "47"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`11new`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "11new.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 12,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "3.12",\n              "eval_cost": "1.25",\n              "prefix_cost": "30.87",\n              "data_read_per_join": "299"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
 
 =========================================
 
