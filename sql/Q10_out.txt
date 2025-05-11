@@ -1,4 +1,4 @@
 genre1	genre2	appearances
-fusion	jazz	17
-hard rock	rock	6
-bebop	jazz	6
+hard rock	rock	20
+electronic	techno	10
+indie rock	rock	10

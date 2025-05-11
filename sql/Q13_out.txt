@@ -1,3 +1,5 @@
 artist_id	artist_name	continent_count
-10	Eric Ortiz	3
-3	Raymond Bell	3
+1	Frances Cardenas	3
+15	Shannon Cannon	3
+16	Steven Houston	3
+23	Zoe Bell	3

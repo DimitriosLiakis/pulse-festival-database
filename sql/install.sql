@@ -1,9 +1,9 @@
 
-DROP DATABASE IF EXISTS 10new;
-CREATE DATABASE 10new
+DROP DATABASE IF EXISTS 11new;
+CREATE DATABASE 11new
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_0900_ai_ci;
-USE 10new;
+USE 11new;
 
 /* ─────────────────────────────────────────────
    REFERENCE TABLES

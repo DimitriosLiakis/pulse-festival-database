@@ -4,3 +4,8 @@ location_id,address,city,country,continent,coordinates,location_image,location_i
 3,1161 Abbott Rapids,Lindsaymouth,Mauritania,Europe,POINT(-96.5276 -15.4095),https://example.com/location_3.jpg,https://example.com/location_3_alt.jpg
 4,495 Janet Cape,Port Keith,Belgium,Australia,POINT(23.2241 -56.4922),https://example.com/location_4.jpg,https://example.com/location_4_alt.jpg
 5,7525 Clark Grove Apt. 928,East Steven,Faroe Islands,Africa,POINT(-125.7753 -27.5107),https://example.com/location_5.jpg,https://example.com/location_5_alt.jpg
+6,503 Linda Locks,Carlshire,Turkey,Asia,POINT(119.0101 81.7986),https://example.com/location_6.jpg,https://example.com/location_6_alt.jpg
+7,7242 Julie Plain Suite 969,Coxberg,Malawi,Asia,POINT(-65.8470 -5.5293),https://example.com/location_7.jpg,https://example.com/location_7_alt.jpg
+8,22691 James Mountain,Tashatown,Pitcairn Islands,Asia,POINT(-131.1934 42.4771),https://example.com/location_8.jpg,https://example.com/location_8_alt.jpg
+9,514 Moore Alley Suite 828,Port Colleenhaven,New Caledonia,Australia,POINT(108.2838 -59.2503),https://example.com/location_9.jpg,https://example.com/location_9_alt.jpg
+10,88095 Smith Lake Suite 303,North Jessicaland,Senegal,Europe,POINT(-97.9450 -36.6052),https://example.com/location_10.jpg,https://example.com/location_10_alt.jpg

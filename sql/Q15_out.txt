@@ -1,6 +1,6 @@
 visitor_name	artist_name	total_score
-Tara Jones	Matthew Ross	34
-David Richardson	Joshua Smith	25
-Richard Johnson	Lauren Dominguez	25
-Karina Patterson	Cheryl Williams	23
-Stephen Meyer	Robert Hernandez	23
+Nicholas Rojas	Darlene Miller	32
+Joshua Martinez	Shannon Cannon	32
+Alan Buck	Rebecca Hurst	30
+Alyssa Sanders	Marissa Webster	25
+Michael Ortiz	Kari Allen	23

@@ -1,4 +1,4 @@
 artist_id	artist_name	age	festival_count
-21	Emily Fischer	23	3
-1	John Gonzalez	24	2
-18	Michael Stafford	25	1
+24	Marissa Webster	20	3
+5	Stephanie Dalton	24	2
+9	Stephanie Simmons	25	1

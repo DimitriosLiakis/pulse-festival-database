@@ -1,7 +1,8 @@
+mysql: [Warning] Using a password on the command line interface can be insecure.
 performance_id	event_name	performance_type	avg_visitor_rating
-19	Event_37	headline	3.20000000
-23	Event_45	warm up	3.80000000
-27	Event_47	special guest	3.00000000
+23	Event_1	main act	3.80000000
+19	Event_20	main act	3.20000000
+27	Event_49	special guest	3.00000000
 *************************** 1. row ***************************
                             QUERY: SELECT
   p.performance_id,
@@ -52,9 +53,9 @@ ORDER BY
                 1
               ],
               "columns": [
-                "8new.p.performance_id",
-                "8new.e.event_name",
-                "8new.p.performance_type"
+                "11new.p.performance_id",
+                "11new.e.event_name",
+                "11new.p.performance_type"
               ]
             }
           }
@@ -233,7 +234,7 @@ ORDER BY
               {
                 "table": "`Performance` `p`",
                 "table_scan": {
-                  "rows": 114,
+                  "rows": 117,
                   "cost": 0.25
                 }
               },
@@ -329,15 +330,15 @@ ORDER BY
                               "cause": "clustered_pk_chosen_by_heuristics"
                             },
                             {
-                              "rows_to_scan": 114,
+                              "rows_to_scan": 117,
                               "filtering_effect": [
                               ],
                               "final_filtering_effect": 1,
                               "access_type": "scan",
                               "using_join_cache": true,
                               "buffers_needed": 1,
-                              "resulting_rows": 114,
-                              "cost": 1710.31,
+                              "resulting_rows": 117,
+                              "cost": 1755.31,
                               "chosen": false
                             }
                           ]
@@ -365,15 +366,15 @@ ORDER BY
                           "cause": "clustered_pk_chosen_by_heuristics"
                         },
                         {
-                          "rows_to_scan": 114,
+                          "rows_to_scan": 117,
                           "filtering_effect": [
                           ],
                           "final_filtering_effect": 1,
                           "access_type": "scan",
                           "using_join_cache": true,
                           "buffers_needed": 1,
-                          "resulting_rows": 114,
-                          "cost": 34.45,
+                          "resulting_rows": 117,
+                          "cost": 35.35,
                           "chosen": false
                         }
                       ]
@@ -470,20 +471,20 @@ ORDER BY
                       "chosen": false
                     },
                     {
-                      "rows_to_scan": 114,
+                      "rows_to_scan": 117,
                       "filtering_effect": [
                       ],
                       "final_filtering_effect": 1,
                       "access_type": "scan",
-                      "resulting_rows": 114,
-                      "cost": 11.65,
+                      "resulting_rows": 117,
+                      "cost": 11.95,
                       "chosen": true
                     }
                   ]
                 },
                 "condition_filtering_pct": 100,
-                "rows_for_plan": 114,
-                "cost_for_plan": 11.65,
+                "rows_for_plan": 117,
+                "cost_for_plan": 11.95,
                 "pruned_by_cost": true
               }
             ]
@@ -653,7 +654,7 @@ ORDER BY
 MISSING_BYTES_BEYOND_MAX_MEM_SIZE: 0
           INSUFFICIENT_PRIVILEGES: 0
 EXPLAIN
-{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.15"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_visitor_performance",\n                "performance_id_FK"\n              ],\n              "key": "uk_visitor_performance",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 3,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "1.05",\n                "data_read_per_join": "72"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_by_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "2.10",\n                "data_read_per_join": "6K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "8new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "3.15",\n                "data_read_per_join": "7K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.15"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_visitor_performance",\n                "performance_id_FK"\n              ],\n              "key": "uk_visitor_performance",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 3,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "1.05",\n                "data_read_per_join": "72"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_by_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "11new.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "2.10",\n                "data_read_per_join": "6K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "11new.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "3.15",\n                "data_read_per_join": "7K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
 *************************** 1. row ***************************
                             QUERY: EXPLAIN FORMAT=JSON
 
@@ -706,9 +707,9 @@ ORDER BY
                 1
               ],
               "columns": [
-                "8new.p.performance_id",
-                "8new.e.event_name",
-                "8new.p.performance_type"
+                "11new.p.performance_id",
+                "11new.e.event_name",
+                "11new.p.performance_type"
               ]
             }
           }
@@ -887,7 +888,7 @@ ORDER BY
               {
                 "table": "`Performance` `p`",
                 "table_scan": {
-                  "rows": 114,
+                  "rows": 117,
                   "cost": 0.25
                 }
               },
@@ -983,15 +984,15 @@ ORDER BY
                               "cause": "clustered_pk_chosen_by_heuristics"
                             },
                             {
-                              "rows_to_scan": 114,
+                              "rows_to_scan": 117,
                               "filtering_effect": [
                               ],
                               "final_filtering_effect": 1,
                               "access_type": "scan",
                               "using_join_cache": true,
                               "buffers_needed": 1,
-                              "resulting_rows": 114,
-                              "cost": 1710.31,
+                              "resulting_rows": 117,
+                              "cost": 1755.31,
                               "chosen": false
                             }
                           ]
@@ -1019,15 +1020,15 @@ ORDER BY
                           "cause": "clustered_pk_chosen_by_heuristics"
                         },
                         {
-                          "rows_to_scan": 114,
+                          "rows_to_scan": 117,
                           "filtering_effect": [
                           ],
                           "final_filtering_effect": 1,
                           "access_type": "scan",
                           "using_join_cache": true,
                           "buffers_needed": 1,
-                          "resulting_rows": 114,
-                          "cost": 34.45,
+                          "resulting_rows": 117,
+                          "cost": 35.35,
                           "chosen": false
                         }
                       ]
@@ -1124,20 +1125,20 @@ ORDER BY
                       "chosen": false
                     },
                     {
-                      "rows_to_scan": 114,
+                      "rows_to_scan": 117,
                       "filtering_effect": [
                       ],
                       "final_filtering_effect": 1,
                       "access_type": "scan",
-                      "resulting_rows": 114,
-                      "cost": 11.65,
+                      "resulting_rows": 117,
+                      "cost": 11.95,
                       "chosen": true
                     }
                   ]
                 },
                 "condition_filtering_pct": 100,
-                "rows_for_plan": 114,
-                "cost_for_plan": 11.65,
+                "rows_for_plan": 117,
+                "cost_for_plan": 11.95,
                 "pruned_by_cost": true
               }
             ]

@@ -1,31 +1,31 @@
 artist_id,real_name,pseudonym,birth_date,music_genre,sub_genre,website,instagram,artist_image,artist_image_alt
-1,John Gonzalez,ybailey,2000-07-13,jazz,fusion,https://www.ybailey.com,https://instagram.com/ybailey,https://example.com/artist_1.jpg,https://example.com/artist_1_alt.jpg
-2,Matthew Ross,,1969-02-12,pop,dance-pop,https://www.matthewross.com,https://instagram.com/matthewross,https://example.com/artist_2.jpg,https://example.com/artist_2_alt.jpg
-3,Raymond Bell,,1981-05-08,rock,hard rock,https://www.raymondbell.com,https://instagram.com/raymondbell,https://example.com/artist_3.jpg,https://example.com/artist_3_alt.jpg
-4,Sarah Rivera,,1955-10-25,pop,synth-pop,https://www.sarahrivera.com,https://instagram.com/sarahrivera,https://example.com/artist_4.jpg,https://example.com/artist_4_alt.jpg
-5,Debbie Carpenter,benjamin96,1972-09-02,jazz,fusion,https://www.benjamin96.com,https://instagram.com/benjamin96,https://example.com/artist_5.jpg,https://example.com/artist_5_alt.jpg
-6,Jessica Joyce,,1960-06-24,jazz,fusion,https://www.jessicajoyce.com,https://instagram.com/jessicajoyce,https://example.com/artist_6.jpg,https://example.com/artist_6_alt.jpg
-7,Cheryl Williams,,1977-06-18,hip-hop,lo-fi,https://www.cherylwilliams.com,https://instagram.com/cherylwilliams,https://example.com/artist_7.jpg,https://example.com/artist_7_alt.jpg
-8,Renee Mcdaniel,michaeljones,1989-07-22,rock,alternative,https://www.michaeljones.com,https://instagram.com/michaeljones,https://example.com/artist_8.jpg,https://example.com/artist_8_alt.jpg
-9,Erik Charles,,1992-07-01,electronic,house,https://www.erikcharles.com,https://instagram.com/erikcharles,https://example.com/artist_9.jpg,https://example.com/artist_9_alt.jpg
-10,Eric Ortiz,,1975-09-05,electronic,drum&bass,https://www.ericortiz.com,https://instagram.com/ericortiz,https://example.com/artist_10.jpg,https://example.com/artist_10_alt.jpg
-11,Cameron Fisher,lbyrd,1986-12-22,jazz,bebop,https://www.lbyrd.com,https://instagram.com/lbyrd,https://example.com/artist_11.jpg,https://example.com/artist_11_alt.jpg
-12,Joshua Smith,,1969-07-23,rock,indie rock,https://www.joshuasmith.com,https://instagram.com/joshuasmith,https://example.com/artist_12.jpg,https://example.com/artist_12_alt.jpg
-13,Kevin Pena,rramos,1965-09-04,jazz,fusion,https://www.rramos.com,https://instagram.com/rramos,https://example.com/artist_13.jpg,https://example.com/artist_13_alt.jpg
-14,Steven Flynn,donnacampbell,1989-07-14,electronic,techno,https://www.donnacampbell.com,https://instagram.com/donnacampbell,https://example.com/artist_14.jpg,https://example.com/artist_14_alt.jpg
-15,Anna Crane,,1966-10-19,jazz,bebop,https://www.annacrane.com,https://instagram.com/annacrane,https://example.com/artist_15.jpg,https://example.com/artist_15_alt.jpg
-16,Robert Hernandez,,1956-10-19,jazz,smooth jazz,https://www.roberthernandez.com,https://instagram.com/roberthernandez,https://example.com/artist_16.jpg,https://example.com/artist_16_alt.jpg
-17,Miss Patricia Gibson,jennifercruz,1975-07-14,pop,electro-pop,https://www.jennifercruz.com,https://instagram.com/jennifercruz,https://example.com/artist_17.jpg,https://example.com/artist_17_alt.jpg
-18,Michael Stafford,,1999-12-15,jazz,smooth jazz,https://www.michaelstafford.com,https://instagram.com/michaelstafford,https://example.com/artist_18.jpg,https://example.com/artist_18_alt.jpg
-19,Paula Robinson,pwilliams,2002-12-23,rock,indie rock,https://www.pwilliams.com,https://instagram.com/pwilliams,https://example.com/artist_19.jpg,https://example.com/artist_19_alt.jpg
-20,Casey Marshall,,1982-07-02,hip-hop,trap,https://www.caseymarshall.com,https://instagram.com/caseymarshall,https://example.com/artist_20.jpg,https://example.com/artist_20_alt.jpg
-21,Emily Fischer,usalazar,2001-08-17,hip-hop,boom bap,https://www.usalazar.com,https://instagram.com/usalazar,https://example.com/artist_21.jpg,https://example.com/artist_21_alt.jpg
-22,Terry Griffin,,1962-10-14,jazz,bebop,https://www.terrygriffin.com,https://instagram.com/terrygriffin,https://example.com/artist_22.jpg,https://example.com/artist_22_alt.jpg
-23,Joanna Walton,katie87,1987-07-27,jazz,smooth jazz,https://www.katie87.com,https://instagram.com/katie87,https://example.com/artist_23.jpg,https://example.com/artist_23_alt.jpg
-24,Billy Mitchell,,1968-10-01,rock,indie rock,https://www.billymitchell.com,https://instagram.com/billymitchell,https://example.com/artist_24.jpg,https://example.com/artist_24_alt.jpg
-25,Joshua Taylor,,1966-08-10,electronic,techno,https://www.joshuataylor.com,https://instagram.com/joshuataylor,https://example.com/artist_25.jpg,https://example.com/artist_25_alt.jpg
-26,Michelle Brown,,1975-12-15,electronic,techno,https://www.michellebrown.com,https://instagram.com/michellebrown,https://example.com/artist_26.jpg,https://example.com/artist_26_alt.jpg
-27,Jennifer Clark,,1976-08-14,rock,indie rock,https://www.jenniferclark.com,https://instagram.com/jenniferclark,https://example.com/artist_27.jpg,https://example.com/artist_27_alt.jpg
-28,Lauren Dominguez,wwoods,1970-03-06,pop,synth-pop,https://www.wwoods.com,https://instagram.com/wwoods,https://example.com/artist_28.jpg,https://example.com/artist_28_alt.jpg
-29,Steven Houston,tracynelson,1980-02-03,hip-hop,boom bap,https://www.tracynelson.com,https://instagram.com/tracynelson,https://example.com/artist_29.jpg,https://example.com/artist_29_alt.jpg
-30,Michael Yates,,1992-09-24,pop,electro-pop,https://www.michaelyates.com,https://instagram.com/michaelyates,https://example.com/artist_30.jpg,https://example.com/artist_30_alt.jpg
+1,Frances Cardenas,,1994-03-02,rock,hard rock,https://www.francescardenas.com,https://instagram.com/francescardenas,https://example.com/artist_1.jpg,https://example.com/artist_1_alt.jpg
+2,Courtney Gonzalez,,1955-08-26,pop,synth-pop,https://www.courtneygonzalez.com,https://instagram.com/courtneygonzalez,https://example.com/artist_2.jpg,https://example.com/artist_2_alt.jpg
+3,John Atkinson,gibsonolivia,1984-11-12,jazz,fusion,https://www.gibsonolivia.com,https://instagram.com/gibsonolivia,https://example.com/artist_3.jpg,https://example.com/artist_3_alt.jpg
+4,Janet Ross,,1962-03-06,jazz,fusion,https://www.janetross.com,https://instagram.com/janetross,https://example.com/artist_4.jpg,https://example.com/artist_4_alt.jpg
+5,Stephanie Dalton,,2001-04-14,hip-hop,lo-fi,https://www.stephaniedalton.com,https://instagram.com/stephaniedalton,https://example.com/artist_5.jpg,https://example.com/artist_5_alt.jpg
+6,Colleen Brock,pwilliams,2002-12-25,rock,alternative,https://www.pwilliams.com,https://instagram.com/pwilliams,https://example.com/artist_6.jpg,https://example.com/artist_6_alt.jpg
+7,Casey Marshall,,1982-07-04,electronic,house,https://www.caseymarshall.com,https://instagram.com/caseymarshall,https://example.com/artist_7.jpg,https://example.com/artist_7_alt.jpg
+8,Emily Fischer,,1977-10-24,electronic,drum&bass,https://www.emilyfischer.com,https://instagram.com/emilyfischer,https://example.com/artist_8.jpg,https://example.com/artist_8_alt.jpg
+9,Stephanie Simmons,vmerritt,2000-01-06,jazz,bebop,https://www.vmerritt.com,https://instagram.com/vmerritt,https://example.com/artist_9.jpg,https://example.com/artist_9_alt.jpg
+10,Paul Larsen,,1969-01-20,rock,indie rock,https://www.paullarsen.com,https://instagram.com/paullarsen,https://example.com/artist_10.jpg,https://example.com/artist_10_alt.jpg
+11,Kari Allen,sjones,1966-10-14,jazz,fusion,https://www.sjones.com,https://instagram.com/sjones,https://example.com/artist_11.jpg,https://example.com/artist_11_alt.jpg
+12,Steven Miller,jessebenson,1991-10-18,electronic,techno,https://www.jessebenson.com,https://instagram.com/jessebenson,https://example.com/artist_12.jpg,https://example.com/artist_12_alt.jpg
+13,Jason Daniels,,1976-05-23,jazz,bebop,https://www.jasondaniels.com,https://instagram.com/jasondaniels,https://example.com/artist_13.jpg,https://example.com/artist_13_alt.jpg
+14,Jason Stein,,1985-04-24,jazz,smooth jazz,https://www.jasonstein.com,https://instagram.com/jasonstein,https://example.com/artist_14.jpg,https://example.com/artist_14_alt.jpg
+15,Shannon Cannon,wwoods,1970-03-08,pop,electro-pop,https://www.wwoods.com,https://instagram.com/wwoods,https://example.com/artist_15.jpg,https://example.com/artist_15_alt.jpg
+16,Steven Houston,,1982-11-18,jazz,smooth jazz,https://www.stevenhouston.com,https://instagram.com/stevenhouston,https://example.com/artist_16.jpg,https://example.com/artist_16_alt.jpg
+17,Rebecca Hurst,brobinson,1980-02-05,rock,indie rock,https://www.brobinson.com,https://instagram.com/brobinson,https://example.com/artist_17.jpg,https://example.com/artist_17_alt.jpg
+18,Michael Yates,,1992-09-26,hip-hop,trap,https://www.michaelyates.com,https://instagram.com/michaelyates,https://example.com/artist_18.jpg,https://example.com/artist_18_alt.jpg
+19,Tamara Hooper,meadowsbrittany,1989-06-30,hip-hop,boom bap,https://www.meadowsbrittany.com,https://instagram.com/meadowsbrittany,https://example.com/artist_19.jpg,https://example.com/artist_19_alt.jpg
+20,Jeffrey Camacho,,1963-12-27,jazz,bebop,https://www.jeffreycamacho.com,https://instagram.com/jeffreycamacho,https://example.com/artist_20.jpg,https://example.com/artist_20_alt.jpg
+21,Garrett Gibson,kathleen64,1994-03-19,jazz,smooth jazz,https://www.kathleen64.com,https://instagram.com/kathleen64,https://example.com/artist_21.jpg,https://example.com/artist_21_alt.jpg
+22,Darlene Miller,,1955-05-21,rock,indie rock,https://www.darlenemiller.com,https://instagram.com/darlenemiller,https://example.com/artist_22.jpg,https://example.com/artist_22_alt.jpg
+23,Zoe Bell,,1988-10-24,electronic,techno,https://www.zoebell.com,https://instagram.com/zoebell,https://example.com/artist_23.jpg,https://example.com/artist_23_alt.jpg
+24,Marissa Webster,,2004-09-07,electronic,techno,https://www.marissawebster.com,https://instagram.com/marissawebster,https://example.com/artist_24.jpg,https://example.com/artist_24_alt.jpg
+25,Alex Hernandez,,1961-01-17,rock,indie rock,https://www.alexhernandez.com,https://instagram.com/alexhernandez,https://example.com/artist_25.jpg,https://example.com/artist_25_alt.jpg
+26,Kristy Robinson,katie29,1986-07-17,pop,synth-pop,https://www.katie29.com,https://instagram.com/katie29,https://example.com/artist_26.jpg,https://example.com/artist_26_alt.jpg
+27,Ashley Weiss,daniel04,1984-11-15,hip-hop,boom bap,https://www.daniel04.com,https://instagram.com/daniel04,https://example.com/artist_27.jpg,https://example.com/artist_27_alt.jpg
+28,Jaime David,,1964-11-13,pop,electro-pop,https://www.jaimedavid.com,https://instagram.com/jaimedavid,https://example.com/artist_28.jpg,https://example.com/artist_28_alt.jpg
+29,Sandra Sanchez,,1991-04-23,electronic,house,https://www.sandrasanchez.com,https://instagram.com/sandrasanchez,https://example.com/artist_29.jpg,https://example.com/artist_29_alt.jpg
+30,Michael Trujillo,,1996-07-22,electronic,house,https://www.michaeltrujillo.com,https://instagram.com/michaeltrujillo,https://example.com/artist_30.jpg,https://example.com/artist_30_alt.jpg

@@ -11,7 +11,7 @@ OUT_DIR = "csv_data"
 os.makedirs(OUT_DIR, exist_ok=True)
 
 # ---------------------------- parameters ----------------------------
-NUM_LOCATIONS, NUM_FESTIVALS, NUM_STAGES   = 5, 10, 30
+NUM_LOCATIONS, NUM_FESTIVALS, NUM_STAGES   = 10, 10, 30
 NUM_EVENTS,    NUM_ARTISTS,  NUM_BANDS     = 50, 30, 20
 NUM_PERFORMANCES, NUM_VISITORS             = 100, 200
 NUM_TICKETS,  NUM_STAFF, NUM_RATINGS       = 300, 30, 400
@@ -68,18 +68,25 @@ with open(f"{OUT_DIR}/Location.csv", "w", newline="", encoding="utf‑8") as f:
 # ------------------------------------------------------------- 2) FESTIVAL
 YEAR_POOL = list(range(2017, 2027))
 festival_dates = {}
-with open(f"{OUT_DIR}/Festival.csv", "w", newline="", encoding="utf‑8") as f:
+with open(f"{OUT_DIR}/Festival.csv", "w", newline="", encoding="utf-8") as f:
     w = csv.writer(f)
-    w.writerow(["festival_id","festival_name","festival_year","start_date",
-                "end_date","location_id_FK","festival_image","festival_image_alt"])
+    w.writerow([
+        "festival_id","festival_name","festival_year","start_date",
+        "end_date","location_id_FK","festival_image","festival_image_alt"
+    ])
     for fid, yr in zip(festival_ids, YEAR_POOL):
+        # 1:1 mapping: festival i → location_ids[i-1]
         sd = datetime(yr, random.randint(5, 8), random.randint(1, 5)).date()
         ed = sd + timedelta(days=random.randint(1, 4))
         festival_dates[fid] = (sd, ed)
-        w.writerow([fid, f"PulseFestival_{yr}", yr, sd, ed,
-                    random.choice(location_ids),
-                    f"https://example.com/fest_{fid}.jpg",
-                    f"https://example.com/fest_{fid}_alt.jpg"])
+        loc_id = location_ids[fid - 1]
+        w.writerow([
+            fid, f"PulseFestival_{yr}", yr, sd, ed,
+            loc_id,
+            f"https://example.com/fest_{fid}.jpg",
+            f"https://example.com/fest_{fid}_alt.jpg"
+        ])
+
 
 # ------------------------------------------------------------- 3) STAGE
 with open(f"{OUT_DIR}/Stage.csv", "w", newline="", encoding="utf‑8") as f:

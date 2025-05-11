@@ -1,2 +1,2 @@
 artist_id	artist_name	festival_id	festival_name	festival_year	warmup_cnt
-1	ybailey	1	PulseFestival_2017	2017	3
+1		1	PulseFestival_2017	2017	3
