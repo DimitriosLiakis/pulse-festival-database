@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  12 MAY 2025 21:30
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  12 MAY 2025 21:49
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -826,8 +826,8 @@ Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script
 Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 
-Overfull \hbox (6.82404pt too wide) in paragraph at lines 927--934
-[]\TU/NotoSerif(1)/b/n/12 Τελικός Απολογισμός \TU/NotoSerif(1)/m/n/12 Καλοσχεδιασμένα ευρετήρια μειώνουν δρα-
+Overfull \hbox (185.33688pt too wide) in paragraph at lines 927--934
+\TU/NotoSerif(1)/m/n/12 (‑90% και ‑97.9% στα δύο απαιτητικότερα queries) η μεθοδολογία design → generate → measure → refine
  []
 
 [24] (./report.aux)
