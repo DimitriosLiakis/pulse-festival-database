@@ -1,18 +1,17 @@
 /* 4.3 Forced Nested Loop Join (updated for revised schema) */
-
 SELECT
     a.artist_id,
     COALESCE(a.pseudonym, a.real_name)   AS artist_name,
     AVG(r.rating_interpretation)          AS avg_interpretation,
     AVG(r.rating_overall)                 AS avg_overall
 FROM Rating             AS r
-    FORCE INDEX (`performance_id_FK`)    -- force use of FK index
+    FORCE INDEX (`performance_id_FK`)    
 JOIN Performance_Artist AS pa
-    FORCE INDEX (PRIMARY)                -- force use of primary key index on the mapping table
-    /*+ LOOP_JOIN(r pa) */               -- optimizer hint for nested‑loop join
+    FORCE INDEX (PRIMARY)                
+    /*+ LOOP_JOIN(r pa) */               
     ON r.performance_id_FK = pa.performance_id_FK
 JOIN Artist             AS a
-    FORCE INDEX (PRIMARY)                -- force use of primary key index on Artist
+    FORCE INDEX (PRIMARY)                
     ON pa.artist_id_FK = a.artist_id
 WHERE a.artist_id = 5
 GROUP BY a.artist_id, artist_name;

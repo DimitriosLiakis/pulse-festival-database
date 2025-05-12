@@ -1,4 +1,3 @@
-
 DROP DATABASE IF EXISTS music_festival;
 CREATE DATABASE music_festival
   CHARACTER SET utf8mb4

@@ -50,9 +50,7 @@
 \begin{center}
   \includegraphics[width=\textwidth]{relational.png}
 \end{center}
-% ================================================================
-% 2  ΣΧΕΔΙΑΣΗ ΚΑΙ ΑΝΑΠΤΥΞΗ ΒΑΣΗΣ ΔΕΔΟΜΕΝΩΝ
-% ================================================================
+
 \section{Σχεδίαση και Ανάπτυξη Σχήματος}
 
 Η λογική σχεδίαση βασίστηκε στο Διάγραμμα E/R (Εικόνα~\ref{fig:er}) και
@@ -79,25 +77,31 @@
 ενώ σε «shared» οντότητες (\texttt{Location}, \texttt{Staff}) χρησιμοποιούμε
 \texttt{RESTRICT} ή \texttt{SET NULL} για να αποφύγουμε ορφανές εγγραφές.
 
+
 \begin{table}[h]
-\centering
-\caption{Βασικά Ξένα Κλειδιά και κανόνες ενημέρωσης}
-\label{tab:fks}
-\begin{tabular}{@{}lllcc@{}}
-\toprule
-\textbf{Πίνακας Παιδί} & \textbf{FK στήλη} & \textbf{Πίνακας Γονέας}
-    & \texttt{ON UPDATE} & \texttt{ON DELETE} \\* \midrule
-\texttt{Festival}           & \texttt{location\_id\_FK} & Location & CASCADE & RESTRICT \\
-\texttt{Event}              & \texttt{festival\_id\_FK} & Festival & CASCADE & CASCADE  \\
-\texttt{Event}              & \texttt{stage\_id\_FK}    & Stage    & CASCADE & CASCADE  \\
-\texttt{Performance}        & \texttt{event\_id\_FK}    & Event    & CASCADE & CASCADE  \\
-\texttt{Performance\_Artist}& \texttt{artist\_id\_FK}   & Artist   & CASCADE & CASCADE  \\
-\texttt{Performance\_Band}  & \texttt{band\_id\_FK}     & Band     & CASCADE & CASCADE  \\
-\texttt{Ticket}             & \texttt{visitor\_id\_FK}  & Visitor  & CASCADE & CASCADE  \\
-\texttt{Rating}             & \texttt{performance\_id\_FK} & Performance & CASCADE & CASCADE \\
-\texttt{Resale\_queue}      & \texttt{ticket\_id\_FK}   & Ticket   & CASCADE & CASCADE  \\* \bottomrule
-\end{tabular}
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}lllcc@{}}
+      \toprule
+      \textbf{Πίνακας Παιδί} & \textbf{FK στήλη} & \textbf{Πίνακας Γονέας}
+          & \texttt{ON UPDATE} & \texttt{ON DELETE} \\ 
+      \midrule
+      \texttt{Festival}           & \texttt{location\_id\_FK} & Location & CASCADE & RESTRICT \\
+      \texttt{Event}              & \texttt{festival\_id\_FK} & Festival & CASCADE & CASCADE  \\
+      \texttt{Event}              & \texttt{stage\_id\_FK}    & Stage    & CASCADE & CASCADE  \\
+      \texttt{Performance}        & \texttt{event\_id\_FK}    & Event    & CASCADE & CASCADE  \\
+      \texttt{Performance\_Artist}& \texttt{artist\_id\_FK}   & Artist   & CASCADE & CASCADE  \\
+      \texttt{Performance\_Band}  & \texttt{band\_id\_FK}     & Band     & CASCADE & CASCADE  \\
+      \texttt{Ticket}             & \texttt{visitor\_id\_FK}  & Visitor  & CASCADE & CASCADE  \\
+      \texttt{Rating}             & \texttt{performance\_id\_FK} & Performance & CASCADE & CASCADE \\
+      \texttt{Resale\_queue}      & \texttt{ticket\_id\_FK}   & Ticket   & CASCADE & CASCADE  \\
+      \bottomrule
+    \end{tabular}%
+  }
+  \caption{Βασικά Ξένα Κλειδιά και κανόνες ενημέρωσης}
+  \label{tab:fks}
 \end{table}
+
 
 \subsubsection*{3.~Ακεραιότητα Πεδίου Τιμών (Domain Integrity)}
 \begin{itemize}
@@ -279,313 +283,282 @@ Index & Στήλες & Χρησιμότητα / Ερωτήματα \\* \midrule
 
 \subsection{Script Δημιουργίας Σχήματος (\texttt{install.sql})}
 \begin{lstlisting}[language=SQL]
+DROP DATABASE IF EXISTS music_festival;
+CREATE DATABASE music_festival
+  CHARACTER SET utf8mb4
+  COLLATE utf8mb4_0900_ai_ci;
+USE music_festival;
 
-  DROP DATABASE IF EXISTS 10new;
-  CREATE DATABASE 10new
-    CHARACTER SET utf8mb4
-    COLLATE utf8mb4_0900_ai_ci;
-  USE 10new;
+CREATE TABLE Location (
+  location_id        INT AUTO_INCREMENT PRIMARY KEY,
+  address            VARCHAR(255) NOT NULL,
+  city               VARCHAR(100) NOT NULL,
+  country            VARCHAR(100) NOT NULL,
+  continent          VARCHAR(50)  NOT NULL,
+  coordinates        VARCHAR(50),
+  location_image     VARCHAR(255),
+  location_image_alt VARCHAR(255)
+);
+
+CREATE TABLE Festival (
+  festival_id        INT AUTO_INCREMENT PRIMARY KEY,
+  festival_name      VARCHAR(100) NOT NULL,
+  festival_year      YEAR         NOT NULL,
+  start_date         DATE         NOT NULL,
+  end_date           DATE         NOT NULL,
+  location_id_FK     INT          NOT NULL,
+  festival_image     VARCHAR(255),
+  festival_image_alt VARCHAR(255),
+  CONSTRAINT fk_festival_location
+    FOREIGN KEY (location_id_FK)
+    REFERENCES Location(location_id)
+      ON UPDATE CASCADE
+      ON DELETE RESTRICT,
+  CONSTRAINT ck_festival_dates CHECK (end_date >= start_date)
+);
+
+CREATE TABLE Stage (
+  stage_id           INT AUTO_INCREMENT PRIMARY KEY,
+  stage_name         VARCHAR(100) NOT NULL,
+  building_name      VARCHAR(100),
+  capacity           INT NOT NULL CHECK (capacity > 0),
+  tech_equipment     VARCHAR(255),
+  stage_image        VARCHAR(255),
+  stage_image_alt    VARCHAR(255),
+  stage_description  TEXT
+);
+
+CREATE TABLE Event (
+  event_id         INT AUTO_INCREMENT PRIMARY KEY,
+  festival_id_FK   INT NOT NULL,
+  stage_id_FK      INT NOT NULL,
+  event_name       VARCHAR(100) NOT NULL,
+  event_date       DATE NOT NULL,
+  start_time       TIME NOT NULL,
+  end_time         TIME NOT NULL,
+  event_image      VARCHAR(255),
+  event_image_alt  VARCHAR(255),
+  FOREIGN KEY (festival_id_FK) REFERENCES Festival(festival_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (stage_id_FK)    REFERENCES Stage(stage_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  CONSTRAINT ck_event_time CHECK (end_time > start_time)
+);
+
+CREATE TABLE Artist (
+  artist_id        INT AUTO_INCREMENT PRIMARY KEY,
+  real_name        VARCHAR(100) NOT NULL,
+  pseudonym       VARCHAR(100),
+  birth_date       DATE NOT NULL,
+  music_genre      VARCHAR(50) NOT NULL,
+  sub_genre        VARCHAR(50),
+  website          VARCHAR(255),
+  instagram        VARCHAR(255),
+  artist_image     VARCHAR(255),
+  artist_image_alt VARCHAR(255)
+);
+
+CREATE TABLE Band (
+  band_id         INT AUTO_INCREMENT PRIMARY KEY,
+  band_name       VARCHAR(100) NOT NULL,
+  formation_date  DATE NOT NULL,
+  music_genre     VARCHAR(50) NOT NULL,
+  sub_genre       VARCHAR(50),
+  website         VARCHAR(255),
+  instagram       VARCHAR(255),
+  band_image      VARCHAR(255),
+  band_image_alt  VARCHAR(255)
+);
+
+CREATE TABLE Artist_Band (
+  artist_id_FK INT NOT NULL,
+  band_id_FK   INT NOT NULL,
+  join_date    DATE NOT NULL,
+  PRIMARY KEY (artist_id_FK, band_id_FK),
+  FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
+    ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE Performance (
+  performance_id        INT AUTO_INCREMENT PRIMARY KEY,
+  event_id_FK           INT NOT NULL,
+  performance_type      VARCHAR(20) NOT NULL
+      CHECK (performance_type IN ('warm up','headline','special guest','main act')),
+  start_time            TIME NOT NULL,
+  end_time              TIME NOT NULL,
+  performance_image     VARCHAR(255),
+  performance_image_alt VARCHAR(255),
+  FOREIGN KEY (event_id_FK) REFERENCES Event(event_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  CHECK (end_time > start_time)
+);
+
+CREATE TABLE Performance_Artist (
+  performance_id_FK INT NOT NULL,
+  artist_id_FK      INT NOT NULL,
+  band_id_FK        INT,
+  PRIMARY KEY (performance_id_FK, artist_id_FK),
+  FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
+    ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+CREATE TABLE Performance_Band (
+  performance_id_FK INT NOT NULL,
+  band_id_FK        INT NOT NULL,
+  artist_id_FK      INT,
+  PRIMARY KEY (performance_id_FK, band_id_FK),
+  FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
+    ON UPDATE CASCADE ON DELETE SET NULL
+);
+
+CREATE TABLE Visitor (
+  visitor_id   INT AUTO_INCREMENT PRIMARY KEY,
+  first_name   VARCHAR(50) NOT NULL,
+  last_name    VARCHAR(50) NOT NULL,
+  contact_info VARCHAR(255),
+  visitor_age  INT CHECK (visitor_age BETWEEN 0 AND 120)
+);
+
+CREATE TABLE Ticket (
+  ticket_id        INT AUTO_INCREMENT PRIMARY KEY,
+  event_id_FK      INT NOT NULL,
+  visitor_id_FK    INT NOT NULL,
+  ticket_category  VARCHAR(10) NOT NULL
+      CHECK (ticket_category IN ('general','VIP','backstage')),
+  purchase_date    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  ticket_cost      DECIMAL(8,2) NOT NULL CHECK (ticket_cost >= 0),
+  purchase_method  VARCHAR(15) NOT NULL
+      CHECK (purchase_method IN ('credit_card','debit_card','bank_transfer','other')),
+  ean_code         CHAR(13) NOT NULL UNIQUE,
+  is_activated     TINYINT(1) NOT NULL DEFAULT 0,
+  FOREIGN KEY (event_id_FK)   REFERENCES Event(event_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (visitor_id_FK) REFERENCES Visitor(visitor_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  UNIQUE KEY uk_ticket_once (visitor_id_FK, event_id_FK)
+);
+
+CREATE TABLE Rating (
+  rating_id             INT AUTO_INCREMENT PRIMARY KEY,
+  visitor_id_FK         INT NOT NULL,
+  performance_id_FK     INT NOT NULL,
+  rating_interpretation TINYINT NOT NULL CHECK (rating_interpretation BETWEEN 1 AND 5),
+  rating_sound_light    TINYINT NOT NULL CHECK (rating_sound_light    BETWEEN 1 AND 5),
+  rating_stage_presence TINYINT NOT NULL CHECK (rating_stage_presence BETWEEN 1 AND 5),
+  rating_organization   TINYINT NOT NULL CHECK (rating_organization   BETWEEN 1 AND 5),
+  rating_overall        TINYINT NOT NULL CHECK (rating_overall        BETWEEN 1 AND 5),
+  rating_date           DATE NOT NULL DEFAULT (CURRENT_DATE),
+  FOREIGN KEY (visitor_id_FK)     REFERENCES Visitor(visitor_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  UNIQUE KEY uk_visitor_performance (visitor_id_FK, performance_id_FK)
+);
+
+CREATE TABLE Staff (
+  staff_id        INT AUTO_INCREMENT PRIMARY KEY,
+  staff_name      VARCHAR(100) NOT NULL,
+  staff_age       INT  NOT NULL CHECK (staff_age >= 18),
+  staff_role      VARCHAR(10) NOT NULL
+      CHECK (staff_role IN ('tech','security','support')),
+  experience_level VARCHAR(12) NOT NULL
+      CHECK (experience_level IN ('intern','beginner','average','experienced','expert')),
+  staff_image     VARCHAR(255),
+  staff_image_alt VARCHAR(255)
+);
+
+CREATE TABLE Stage_Staff (
+  stage_id_FK INT NOT NULL,
+  staff_id_FK INT NOT NULL,
+  start_date  DATE NOT NULL,
+  end_date    DATE NOT NULL,
+  PRIMARY KEY (stage_id_FK, staff_id_FK, start_date),
+  FOREIGN KEY (stage_id_FK) REFERENCES Stage(stage_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (staff_id_FK) REFERENCES Staff(staff_id)
+    ON UPDATE CASCADE ON DELETE CASCADE,
+  CHECK (end_date >= start_date)
+);
+
+CREATE TABLE Resale_queue (
+  queue_id           INT AUTO_INCREMENT PRIMARY KEY,
+  ticket_id_FK       INT NOT NULL,
+  visitor_id_FK      INT NOT NULL,
+  event_id_FK        INT NOT NULL,
+  interest_type      VARCHAR(6) NOT NULL
+      CHECK (interest_type IN ('seller','buyer')),
+  interest_date      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   
-  /* ─────────────────────────────────────────────
-     REFERENCE TABLES
-     ─────────────────────────────────────────── */
-  CREATE TABLE Location (
-    location_id        INT AUTO_INCREMENT PRIMARY KEY,
-    address            VARCHAR(255) NOT NULL,
-    city               VARCHAR(100) NOT NULL,
-    country            VARCHAR(100) NOT NULL,
-    continent          VARCHAR(50)  NOT NULL,
-    coordinates        VARCHAR(50),
-    location_image     VARCHAR(255),
-    location_image_alt VARCHAR(255)
-  );
-  
-  CREATE TABLE Festival (
-    festival_id        INT AUTO_INCREMENT PRIMARY KEY,
-    festival_name      VARCHAR(100) NOT NULL,
-    festival_year      YEAR         NOT NULL,
-    start_date         DATE         NOT NULL,
-    end_date           DATE         NOT NULL,
-    location_id_FK     INT          NOT NULL,
-    festival_image     VARCHAR(255),
-    festival_image_alt VARCHAR(255),
-    CONSTRAINT fk_festival_location
-      FOREIGN KEY (location_id_FK)
-      REFERENCES Location(location_id)
-        ON UPDATE CASCADE
-        ON DELETE RESTRICT,
-    CONSTRAINT ck_festival_dates CHECK (end_date >= start_date)
-  );
-  
-  CREATE TABLE Stage (
-    stage_id           INT AUTO_INCREMENT PRIMARY KEY,
-    stage_name         VARCHAR(100) NOT NULL,
-    building_name      VARCHAR(100),
-    capacity           INT NOT NULL CHECK (capacity > 0),
-    tech_equipment     VARCHAR(255),
-    stage_image        VARCHAR(255),
-    stage_image_alt    VARCHAR(255),
-    stage_description  TEXT
-  );
-  
-  CREATE TABLE Event (
-    event_id         INT AUTO_INCREMENT PRIMARY KEY,
-    festival_id_FK   INT NOT NULL,
-    stage_id_FK      INT NOT NULL,
-    event_name       VARCHAR(100) NOT NULL,
-    event_date       DATE NOT NULL,
-    start_time       TIME NOT NULL,
-    end_time         TIME NOT NULL,
-    event_image      VARCHAR(255),
-    event_image_alt  VARCHAR(255),
-    FOREIGN KEY (festival_id_FK) REFERENCES Festival(festival_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (stage_id_FK)    REFERENCES Stage(stage_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    CONSTRAINT ck_event_time CHECK (end_time > start_time)
-  );
-  
-  /* ─────────────────────────────────────────────
-     ARTIST / BAND
-     ─────────────────────────────────────────── */
-  CREATE TABLE Artist (
-    artist_id        INT AUTO_INCREMENT PRIMARY KEY,
-    real_name        VARCHAR(100) NOT NULL,
-    pseudonym       VARCHAR(100),
-    birth_date       DATE NOT NULL,
-    music_genre      VARCHAR(50) NOT NULL,
-    sub_genre        VARCHAR(50),
-    website          VARCHAR(255),
-    instagram        VARCHAR(255),
-    artist_image     VARCHAR(255),
-    artist_image_alt VARCHAR(255)
-  );
-  
-  CREATE TABLE Band (
-    band_id         INT AUTO_INCREMENT PRIMARY KEY,
-    band_name       VARCHAR(100) NOT NULL,
-    formation_date  DATE NOT NULL,
-    music_genre     VARCHAR(50) NOT NULL,
-    sub_genre       VARCHAR(50),
-    website         VARCHAR(255),
-    instagram       VARCHAR(255),
-    band_image      VARCHAR(255),
-    band_image_alt  VARCHAR(255)
-  );
-  
-  CREATE TABLE Artist_Band (
-    artist_id_FK INT NOT NULL,
-    band_id_FK   INT NOT NULL,
-    join_date    DATE NOT NULL,
-    PRIMARY KEY (artist_id_FK, band_id_FK),
-    FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
-      ON UPDATE CASCADE ON DELETE CASCADE
-  );
-  
-  /* ─────────────────────────────────────────────
-     PERFORMANCE & LINKS
-     ─────────────────────────────────────────── */
-  CREATE TABLE Performance (
-    performance_id        INT AUTO_INCREMENT PRIMARY KEY,
-    event_id_FK           INT NOT NULL,
-    performance_type      VARCHAR(20) NOT NULL
-        CHECK (performance_type IN ('warm up','headline','special guest','main act')),
-    start_time            TIME NOT NULL,
-    end_time              TIME NOT NULL,
-    performance_image     VARCHAR(255),
-    performance_image_alt VARCHAR(255),
-    FOREIGN KEY (event_id_FK) REFERENCES Event(event_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    CHECK (end_time > start_time)
-  );
-  
-  CREATE TABLE Performance_Artist (
-    performance_id_FK INT NOT NULL,
-    artist_id_FK      INT NOT NULL,
-    band_id_FK        INT,
-    PRIMARY KEY (performance_id_FK, artist_id_FK),
-    FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
-      ON UPDATE CASCADE ON DELETE SET NULL
-  );
-  
-  CREATE TABLE Performance_Band (
-    performance_id_FK INT NOT NULL,
-    band_id_FK        INT NOT NULL,
-    artist_id_FK      INT,
-    PRIMARY KEY (performance_id_FK, band_id_FK),
-    FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (band_id_FK)   REFERENCES Band(band_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (artist_id_FK) REFERENCES Artist(artist_id)
-      ON UPDATE CASCADE ON DELETE SET NULL
-  );
-  
-  /* ─────────────────────────────────────────────
-     VISITORS, TICKETS, RATINGS
-     ─────────────────────────────────────────── */
-  CREATE TABLE Visitor (
-    visitor_id   INT AUTO_INCREMENT PRIMARY KEY,
-    first_name   VARCHAR(50) NOT NULL,
-    last_name    VARCHAR(50) NOT NULL,
-    contact_info VARCHAR(255),
-    visitor_age  INT CHECK (visitor_age BETWEEN 0 AND 120)
-  );
-  
-  CREATE TABLE Ticket (
-    ticket_id        INT AUTO_INCREMENT PRIMARY KEY,
-    event_id_FK      INT NOT NULL,
-    visitor_id_FK    INT NOT NULL,
-    ticket_category  VARCHAR(10) NOT NULL
-        CHECK (ticket_category IN ('general','VIP','backstage')),
-    purchase_date    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    ticket_cost      DECIMAL(8,2) NOT NULL CHECK (ticket_cost >= 0),
-    purchase_method  VARCHAR(15) NOT NULL
-        CHECK (purchase_method IN ('credit_card','debit_card','bank_transfer','other')),
-    ean_code         CHAR(13) NOT NULL UNIQUE,
-    is_activated     TINYINT(1) NOT NULL DEFAULT 0,
-    FOREIGN KEY (event_id_FK)   REFERENCES Event(event_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (visitor_id_FK) REFERENCES Visitor(visitor_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    UNIQUE KEY uk_ticket_once (visitor_id_FK, event_id_FK)
-  );
-  
-  CREATE TABLE Rating (
-    rating_id             INT AUTO_INCREMENT PRIMARY KEY,
-    visitor_id_FK         INT NOT NULL,
-    performance_id_FK     INT NOT NULL,
-    rating_interpretation TINYINT NOT NULL CHECK (rating_interpretation BETWEEN 1 AND 5),
-    rating_sound_light    TINYINT NOT NULL CHECK (rating_sound_light    BETWEEN 1 AND 5),
-    rating_stage_presence TINYINT NOT NULL CHECK (rating_stage_presence BETWEEN 1 AND 5),
-    rating_organization   TINYINT NOT NULL CHECK (rating_organization   BETWEEN 1 AND 5),
-    rating_overall        TINYINT NOT NULL CHECK (rating_overall        BETWEEN 1 AND 5),
-    rating_date           DATE NOT NULL DEFAULT (CURRENT_DATE),
-    FOREIGN KEY (visitor_id_FK)     REFERENCES Visitor(visitor_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    UNIQUE KEY uk_visitor_performance (visitor_id_FK, performance_id_FK)
-  );
-  
-  /* ─────────────────────────────────────────────
-     STAFF & STAGE STAFF
-     ─────────────────────────────────────────── */
-  CREATE TABLE Staff (
-    staff_id        INT AUTO_INCREMENT PRIMARY KEY,
-    staff_name      VARCHAR(100) NOT NULL,
-    staff_age       INT  NOT NULL CHECK (staff_age >= 18),
-    staff_role      VARCHAR(10) NOT NULL
-        CHECK (staff_role IN ('tech','security','support')),
-    experience_level VARCHAR(12) NOT NULL
-        CHECK (experience_level IN ('intern','beginner','average','experienced','expert')),
-    staff_image     VARCHAR(255),
-    staff_image_alt VARCHAR(255)
-  );
-  
-  CREATE TABLE Stage_Staff (
-    stage_id_FK INT NOT NULL,
-    staff_id_FK INT NOT NULL,
-    start_date  DATE NOT NULL,
-    end_date    DATE NOT NULL,
-    PRIMARY KEY (stage_id_FK, staff_id_FK, start_date),
-    FOREIGN KEY (stage_id_FK) REFERENCES Stage(stage_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    FOREIGN KEY (staff_id_FK) REFERENCES Staff(staff_id)
-      ON UPDATE CASCADE ON DELETE CASCADE,
-    CHECK (end_date >= start_date)
-  );
-  
-  /* ─────────────────────────────────────────────
-     RESALE QUEUE  (kept extended version – remove extras if unwanted)
-     ─────────────────────────────────────────── */
-  CREATE TABLE Resale_queue (
-    queue_id           INT AUTO_INCREMENT PRIMARY KEY,
-    ticket_id_FK       INT NOT NULL,
-    visitor_id_FK      INT NOT NULL,
-    event_id_FK        INT NOT NULL,
-    interest_type      VARCHAR(6) NOT NULL
-        CHECK (interest_type IN ('seller','buyer')),
-    interest_date      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    
-    FOREIGN KEY (ticket_id_FK)
-      REFERENCES Ticket(ticket_id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    FOREIGN KEY (visitor_id_FK)
-      REFERENCES Visitor(visitor_id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE,
-    FOREIGN KEY (event_id_FK)
-      REFERENCES Event(event_id)
-        ON UPDATE CASCADE
-        ON DELETE CASCADE
-  );
-  
-  
-  /* ─────────────────────────────────────────────
-     INDEXES
-     ─────────────────────────────────────────── */
-  CREATE INDEX idx_event_schedule       ON Event(event_date, start_time, end_time);
-  CREATE INDEX idx_performance_by_event ON Performance(event_id_FK, start_time);
-  CREATE INDEX idx_staff_role           ON Staff(staff_role);
-  
-  /* ─────────────────────────────────────────────
-     TRIGGER: STAFF QUOTAS  (unchanged)
-     ─────────────────────────────────────────── */
-  DROP TRIGGER IF EXISTS trg_staff_quota;
-  DELIMITER $$
-  CREATE TRIGGER trg_staff_quota
-  BEFORE INSERT ON Stage_Staff
-  FOR EACH ROW
-  BEGIN
-    DECLARE cap INT;
-    DECLARE role_txt VARCHAR(30);
-    DECLARE cnt INT;
-  
-    IF IFNULL(@bulk_load,0) = 0 THEN
-      SELECT capacity INTO cap
-        FROM Stage
-       WHERE stage_id = NEW.stage_id_FK;
-  
-      SELECT staff_role INTO role_txt
-        FROM Staff
-       WHERE staff_id = NEW.staff_id_FK;
-  
-      SELECT COUNT(*) INTO cnt
-        FROM Stage_Staff ss
-        JOIN Staff s ON s.staff_id = ss.staff_id_FK
-       WHERE ss.stage_id_FK = NEW.stage_id_FK
-         AND ss.start_date  = NEW.start_date
-         AND s.staff_role   = role_txt;
-  
-      IF role_txt = 'security' AND cnt + 1 < CEIL(cap * 0.05) THEN
-        SIGNAL SQLSTATE '45000'
-          SET MESSAGE_TEXT = 'Security staff below 5% of capacity';
-      ELSEIF role_txt = 'support' AND cnt + 1 < CEIL(cap * 0.02) THEN
-        SIGNAL SQLSTATE '45000'
-          SET MESSAGE_TEXT = 'Support staff below 2% of capacity';
-      END IF;
+  FOREIGN KEY (ticket_id_FK)
+    REFERENCES Ticket(ticket_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE,
+  FOREIGN KEY (visitor_id_FK)
+    REFERENCES Visitor(visitor_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE,
+  FOREIGN KEY (event_id_FK)
+    REFERENCES Event(event_id)
+      ON UPDATE CASCADE
+      ON DELETE CASCADE
+);
+
+-- INDEXES
+CREATE INDEX idx_event_schedule       ON Event(event_date, start_time, end_time);
+CREATE INDEX idx_performance_by_event ON Performance(event_id_FK, start_time);
+CREATE INDEX idx_staff_role           ON Staff(staff_role);
+
+-- TRIGGERS
+DROP TRIGGER IF EXISTS trg_staff_quota;
+DELIMITER $$
+CREATE TRIGGER trg_staff_quota
+BEFORE INSERT ON Stage_Staff
+FOR EACH ROW
+BEGIN
+  DECLARE cap INT;
+  DECLARE role_txt VARCHAR(30);
+  DECLARE cnt INT;
+
+  IF IFNULL(@bulk_load,0) = 0 THEN
+    SELECT capacity INTO cap
+      FROM Stage
+     WHERE stage_id = NEW.stage_id_FK;
+
+    SELECT staff_role INTO role_txt
+      FROM Staff
+     WHERE staff_id = NEW.staff_id_FK;
+
+    SELECT COUNT(*) INTO cnt
+      FROM Stage_Staff ss
+      JOIN Staff s ON s.staff_id = ss.staff_id_FK
+     WHERE ss.stage_id_FK = NEW.stage_id_FK
+       AND ss.start_date  = NEW.start_date
+       AND s.staff_role   = role_txt;
+
+    IF role_txt = 'security' AND cnt + 1 < CEIL(cap * 0.05) THEN
+      SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Security staff below 5% of capacity';
+    ELSEIF role_txt = 'support' AND cnt + 1 < CEIL(cap * 0.02) THEN
+      SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Support staff below 2% of capacity';
     END IF;
-  END$$
-  DELIMITER ;
-  
+  END IF;
+END$$
+DELIMITER ;
+
   \end{lstlisting}
 \subsection{Script Φόρτωσης Δεδομένων (\texttt{load.sql})}
 \begin{lstlisting}[language=SQL]
-  /* ===============================================================
-  LOAD_NEW.SQL  –  imports the “new‑schema” CSVs generated by data.py
-  =============================================================== */
-
--- ---------------------------------------------------------------
--- 0.  Empty all tables (order is irrelevant with FK checks off)
--- ---------------------------------------------------------------
 SET FOREIGN_KEY_CHECKS = 0;
 
 TRUNCATE TABLE Resale_queue;
@@ -607,79 +580,58 @@ TRUNCATE TABLE Location;
 
 SET FOREIGN_KEY_CHECKS = 1;
 
--- ===============================================================
--- 1.  Location  (8 columns incl. *_alt)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Location.csv'
 INTO TABLE Location
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (location_id,address,city,country,continent,coordinates,
-location_image,location_image_alt);
+ location_image,location_image_alt);
 
--- ===============================================================
--- 2.  Festival  (8 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Festival.csv'
 INTO TABLE Festival
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (festival_id,festival_name,festival_year,
-start_date,end_date,location_id_FK,
-festival_image,festival_image_alt);
+ start_date,end_date,location_id_FK,
+ festival_image,festival_image_alt);
 
--- ===============================================================
--- 3.  Stage  (8 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Stage.csv'
 INTO TABLE Stage
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (stage_id,stage_name,building_name,capacity,tech_equipment,
-stage_image,stage_image_alt,stage_description);
+ stage_image,stage_image_alt,stage_description);
 
--- ===============================================================
--- 4.  Event  (9 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Event.csv'
 INTO TABLE Event
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (event_id,festival_id_FK,stage_id_FK,event_name,
-event_date,start_time,end_time,
-event_image,event_image_alt);
+ event_date,start_time,end_time,
+ event_image,event_image_alt);
 
--- ===============================================================
--- 5.  Artist  (10 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Artist.csv'
 INTO TABLE Artist
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (artist_id,real_name,pseudonym,birth_date,
-music_genre,sub_genre,website,instagram,
-artist_image,artist_image_alt);
+ music_genre,sub_genre,website,instagram,
+ artist_image,artist_image_alt);
 
--- ===============================================================
--- 6.  Band  (9 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Band.csv'
 INTO TABLE Band
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (band_id,band_name,formation_date,
-music_genre,sub_genre,website,instagram,
-band_image,band_image_alt);
+ music_genre,sub_genre,website,instagram,
+ band_image,band_image_alt);
 
--- ===============================================================
--- 7.  Artist_Band  (3 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Artist_Band.csv'
 INTO TABLE Artist_Band
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
@@ -687,38 +639,28 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (artist_id_FK,band_id_FK,join_date);
 
--- ===============================================================
--- 8.  Performance  (7 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Performance.csv'
 INTO TABLE Performance
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (performance_id,event_id_FK,performance_type,
-start_time,end_time,
-performance_image,performance_image_alt);
+ start_time,end_time,
+ performance_image,performance_image_alt);
 
--- ---------------------------------------------------------------
--- 8a. Performance_Artist  – blank / \N / any non‑number → NULL
--- ---------------------------------------------------------------
 LOAD DATA INFILE '/var/lib/mysql-files/Performance_Artist.csv'
 INTO TABLE Performance_Artist
-FIELDS TERMINATED BY ',' ENCLOSED BY '"'     -- keep whatever ESCAPED BY you had
+FIELDS TERMINATED BY ',' ENCLOSED BY '"'     
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
-(@perf, @artist, @band)            -- same three variables as before
+(@perf, @artist, @band)            
 SET performance_id_FK = @perf,
-   artist_id_FK      = @artist,
-   band_id_FK        = CASE
-                          WHEN @band REGEXP '^[0-9]+$' THEN @band
-                          ELSE NULL
-                       END;                     -- ← new logic
+    artist_id_FK      = @artist,
+    band_id_FK        = CASE
+                           WHEN @band REGEXP '^[0-9]+$' THEN @band
+                           ELSE NULL
+                        END;                     
 
-
--- ---------------------------------------------------------------
--- 8b. Performance_Band  – blank / \N / any non‑number → NULL
--- ---------------------------------------------------------------
 LOAD DATA INFILE '/var/lib/mysql-files/Performance_Band.csv'
 INTO TABLE Performance_Band
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
@@ -726,17 +668,12 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (@perf, @band, @artist)
 SET performance_id_FK = @perf,
-   band_id_FK        = @band,
-   artist_id_FK      = CASE
-                          WHEN @artist REGEXP '^[0-9]+$' THEN @artist
-                          ELSE NULL
-                       END;
+    band_id_FK        = @band,
+    artist_id_FK      = CASE
+                           WHEN @artist REGEXP '^[0-9]+$' THEN @artist
+                           ELSE NULL
+                        END;
 
-
-
--- ===============================================================
--- 9.  Visitor  (5 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Visitor.csv'
 INTO TABLE Visitor
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
@@ -744,45 +681,33 @@ LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (visitor_id,first_name,last_name,contact_info,visitor_age);
 
--- ===============================================================
--- 10. Ticket  (9 columns – unchanged)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Ticket.csv'
 INTO TABLE Ticket
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (ticket_id,event_id_FK,visitor_id_FK,ticket_category,
-purchase_date,ticket_cost,purchase_method,
-ean_code,is_activated);
+ purchase_date,ticket_cost,purchase_method,
+ ean_code,is_activated);
 
--- ===============================================================
--- 11. Rating  (9 columns incl. rating_date)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Rating.csv'
 INTO TABLE Rating
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (rating_id,visitor_id_FK,performance_id_FK,
-rating_interpretation,rating_sound_light,
-rating_stage_presence,rating_organization,
-rating_overall,rating_date);
+ rating_interpretation,rating_sound_light,
+ rating_stage_presence,rating_organization,
+ rating_overall,rating_date);
 
--- ===============================================================
--- 12. Staff  (7 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Staff.csv'
 INTO TABLE Staff
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (staff_id,staff_name,staff_age,staff_role,
-experience_level,staff_image,staff_image_alt);
+ experience_level,staff_image,staff_image_alt);
 
--- ---------------------------------------------------------------
--- 12a. Stage_Staff  (4 columns – trigger muted)
--- ---------------------------------------------------------------
 SET @bulk_load = 1;
 LOAD DATA INFILE '/var/lib/mysql-files/Stage_Staff.csv'
 INTO TABLE Stage_Staff
@@ -792,19 +717,13 @@ IGNORE 1 LINES
 (stage_id_FK,staff_id_FK,start_date,end_date);
 SET @bulk_load = NULL;
 
--- ===============================================================
--- 13. Resale_queue  (10 columns)
--- ===============================================================
 LOAD DATA INFILE '/var/lib/mysql-files/Resale_queue.csv'
 INTO TABLE Resale_queue
 FIELDS TERMINATED BY ',' ENCLOSED BY '"' 
 LINES TERMINATED BY '\n'
 IGNORE 1 LINES
 (queue_id, ticket_id_FK, visitor_id_FK, event_id_FK,
-interest_type, interest_date);
-
-
-
+ interest_type, interest_date);
   \end{lstlisting}
 
 

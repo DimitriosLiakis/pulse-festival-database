@@ -2,7 +2,7 @@
 
 DB_USER="root"
 DB_PASS="2001"
-DB_NAME="11new"
+DB_NAME="music_festival"
 SQL_DIR="."
 
 # Loop through each SQL file

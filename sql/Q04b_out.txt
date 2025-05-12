@@ -5,6 +5,9 @@ artist_id	artist_name	avg_interpretation	avg_overall
 optimizer_trace: {
   "steps": [
     {
+      "IN_uses_bisection": true
+    },
+    {
       "join_preparation": {
         "steps": [
           {

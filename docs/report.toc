@@ -11,17 +11,17 @@
 \contentsline {subsection}{\numberline {2.3}Mock data}{6}{subsection.2.3}%
 \contentsline {section}{\numberline {3}Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}{8}{section.3}%
 \contentsline {subsection}{\numberline {3.1}Script Δημιουργίας Σχήματος (\texttt {install.sql})}{8}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Script Φόρτωσης Δεδομένων (\texttt {load.sql})}{16}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{23}{subsection.3.3}%
-\contentsline {paragraph}{4.1 Βασικό \textit {Query Plan}}{24}{section*.9}%
-\contentsline {paragraph}{4.2 \texttt {FORCE INDEX} + Nested Loop}{24}{section*.10}%
-\contentsline {paragraph}{4.3 Forced Hash Join}{25}{section*.11}%
-\contentsline {paragraph}{4.4 Συμπεράσματα}{25}{section*.12}%
-\contentsline {subsection}{\numberline {3.4}Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Rating}{26}{subsection.3.4}%
-\contentsline {paragraph}{6.1 \textit {Query Plan} που επέλεξε ο Optimizer}{26}{section*.13}%
-\contentsline {paragraph}{6.2 \texttt {FORCE INDEX} στο \texttt {performance\_id\_FK}}{27}{section*.14}%
-\contentsline {paragraph}{6.3 Optimizer Trace}{27}{section*.15}%
-\contentsline {paragraph}{6.4 Συμπεράσματα}{28}{section*.16}%
-\contentsline {section}{\numberline {4}Συμπεράσματα Εργασίας}{28}{section.4}%
-\contentsline {paragraph}{Τελική αποτίμηση.}{29}{section*.17}%
+\contentsline {subsection}{\numberline {3.2}Script Φόρτωσης Δεδομένων (\texttt {load.sql})}{15}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{19}{subsection.3.3}%
+\contentsline {paragraph}{4.1 Βασικό \textit {Query Plan}}{20}{section*.9}%
+\contentsline {paragraph}{4.2 \texttt {FORCE INDEX} + Nested Loop}{20}{section*.10}%
+\contentsline {paragraph}{4.3 Forced Hash Join}{21}{section*.11}%
+\contentsline {paragraph}{4.4 Συμπεράσματα}{21}{section*.12}%
+\contentsline {subsection}{\numberline {3.4}Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Rating}{22}{subsection.3.4}%
+\contentsline {paragraph}{6.1 \textit {Query Plan} που επέλεξε ο Optimizer}{22}{section*.13}%
+\contentsline {paragraph}{6.2 \texttt {FORCE INDEX} στο \texttt {performance\_id\_FK}}{23}{section*.14}%
+\contentsline {paragraph}{6.3 Optimizer Trace}{23}{section*.15}%
+\contentsline {paragraph}{6.4 Συμπεράσματα}{24}{section*.16}%
+\contentsline {section}{\numberline {4}Συμπεράσματα Εργασίας}{24}{section.4}%
+\contentsline {paragraph}{Τελική αποτίμηση.}{25}{section*.17}%
 \xpginauxfilefalse 

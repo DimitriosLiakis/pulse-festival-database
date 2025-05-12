@@ -1,4 +1,4 @@
-/*  Forced Index Only */
+-- FORCE INDEX
 SELECT
   p.performance_id,
   e.event_name,
@@ -12,9 +12,9 @@ SELECT
     / 5.0
   ) AS avg_visitor_rating
 FROM Rating      AS r
-  FORCE INDEX (performance_id_FK)    -- αναγκαστική χρήση index στο FK
+  FORCE INDEX (performance_id_FK)    
 JOIN Performance AS p
-  FORCE INDEX (PRIMARY)              -- αναγκαστική χρήση PK index
+  FORCE INDEX (PRIMARY)              
   ON r.performance_id_FK = p.performance_id
 JOIN Event      AS e
   FORCE INDEX (PRIMARY)
@@ -42,9 +42,9 @@ SELECT
     / 5.0
   ) AS avg_visitor_rating
 FROM Rating      AS r
-  FORCE INDEX (performance_id_FK)    -- αναγκαστική χρήση index στο FK
+  FORCE INDEX (performance_id_FK)    
 JOIN Performance AS p
-  FORCE INDEX (PRIMARY)              -- αναγκαστική χρήση PK index
+  FORCE INDEX (PRIMARY)              
   ON r.performance_id_FK = p.performance_id
 JOIN Event      AS e
   FORCE INDEX (PRIMARY)
