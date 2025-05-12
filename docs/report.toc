@@ -1,27 +1,29 @@
 \xpginauxfiletrue 
 \selectlanguage *{greek}
-\contentsline {section}{\numberline {1}Σχεδίαση Βάσης Δεδομένων}{2}{section.1}%
-\contentsline {subsection}{\numberline {1.1}Διάγραμμα Οντοτήτων-Συσχετίσεων (E/R)}{2}{subsection.1.1}%
-\contentsline {subsection}{\numberline {1.2}Σχεσιακό Σχήμα}{3}{subsection.1.2}%
-\contentsline {section}{\numberline {2}Σχεδίαση και Ανάπτυξη Σχήματος}{3}{section.2}%
-\contentsline {subsection}{\numberline {2.1}Περιορισμοί που εξασφαλίζουν την Ορθότητα}{4}{subsection.2.1}%
-\contentsline {subsection}{\numberline {2.2}Ευρετήρια (Index Design) και Δικαιολόγηση}{5}{subsection.2.2}%
-\contentsline {paragraph}{Απόδειξη βελτίωσης.}{6}{section*.7}%
-\contentsline {paragraph}{Επεξήγηση τύπου JOIN.}{6}{section*.8}%
-\contentsline {subsection}{\numberline {2.3}Mock data}{6}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}{8}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Script Δημιουργίας Σχήματος (\texttt {install.sql})}{8}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Script Φόρτωσης Δεδομένων (\texttt {load.sql})}{15}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{19}{subsection.3.3}%
-\contentsline {paragraph}{4.1 Βασικό \textit {Query Plan}}{20}{section*.9}%
-\contentsline {paragraph}{4.2 \texttt {FORCE INDEX} + Nested Loop}{20}{section*.10}%
-\contentsline {paragraph}{4.3 Forced Hash Join}{21}{section*.11}%
-\contentsline {paragraph}{4.4 Συμπεράσματα}{21}{section*.12}%
-\contentsline {subsection}{\numberline {3.4}Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Rating}{22}{subsection.3.4}%
-\contentsline {paragraph}{6.1 \textit {Query Plan} που επέλεξε ο Optimizer}{22}{section*.13}%
-\contentsline {paragraph}{6.2 \texttt {FORCE INDEX} στο \texttt {performance\_id\_FK}}{23}{section*.14}%
-\contentsline {paragraph}{6.3 Optimizer Trace}{23}{section*.15}%
-\contentsline {paragraph}{6.4 Συμπεράσματα}{24}{section*.16}%
-\contentsline {section}{\numberline {4}Συμπεράσματα Εργασίας}{24}{section.4}%
-\contentsline {paragraph}{Τελική αποτίμηση.}{25}{section*.17}%
+\contentsline {section}{\numberline {1}Σχεδίαση Βάσης Δεδομένων}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Διάγραμμα Οντοτήτων-Συσχετίσεων (E/R)}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Σχεσιακό Σχήμα}{4}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Σχεδίαση και Ανάπτυξη Σχήματος}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Περιορισμοί που εξασφαλίζουν την Ορθότητα}{5}{subsection.2.1}%
+\contentsline {subsection}{\numberline {2.2}Ευρετήρια (Index Design) και Δικαιολόγηση}{6}{subsection.2.2}%
+\contentsline {paragraph}{Απόδειξη βελτίωσης.}{7}{section*.7}%
+\contentsline {paragraph}{Επεξήγηση τύπου JOIN.}{7}{section*.8}%
+\contentsline {subsection}{\numberline {2.3}Mock data}{7}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Script Δημιουργίας Σχήματος (\texttt {install.sql})}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Script Φόρτωσης Δεδομένων (\texttt {load.sql})}{16}{subsection.3.2}%
+\contentsline {section}{\numberline {4}Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{20}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Βασική εκδοχή (Q04.sql)}{20}{subsection.4.1}%
+\contentsline {paragraph}{Σχέδιο εκτέλεσης (σύνοψη)}{21}{lstlisting.-4}%
+\contentsline {subsection}{\numberline {4.2}Βελτιστοποίηση με \texttt {FORCE INDEX} (Q04a.sql)}{21}{subsection.4.2}%
+\contentsline {paragraph}{Σχέδιο εκτέλεσης – Nested Loop}{21}{lstlisting.-6}%
+\contentsline {subsection}{\numberline {4.3}Forced Hash Join (Q04d.sql)}{22}{subsection.4.3}%
+\contentsline {subsection}{\numberline {4.4}Συμπέρασμα Ερώτημα 4}{22}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Ratings}{22}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Βασική εκδοχή (Q06.sql)}{22}{subsection.5.1}%
+\contentsline {paragraph}{Σχέδιο εκτέλεσης (σύνοψη)}{23}{lstlisting.-10}%
+\contentsline {subsection}{\numberline {5.2}Λάθος \texttt {FORCE INDEX} (Q06a.sql)}{23}{subsection.5.2}%
+\contentsline {subsection}{\numberline {5.3}Συμπέρασμα Ερώτημα 6}{23}{subsection.5.3}%
+\contentsline {subsection}{\numberline {5.4}Συμπέρασμα Ερώτημα 6}{23}{subsection.5.4}%
+\contentsline {section}{\numberline {6}Συμπεράσματα Εργασίας}{24}{section.6}%
 \xpginauxfilefalse 

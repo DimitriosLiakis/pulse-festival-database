@@ -727,305 +727,210 @@ IGNORE 1 LINES
   \end{lstlisting}
 
 
-%--------------------------------------------------------------
-\subsection{Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
-\label{subsec:q4}
-%--------------------------------------------------------------
+\section{Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
+\label{sec:q4}
 
-Στόχος: να υπολογιστεί ο \textit{μέσος όρος} \emph{Interpretation} και
-\emph{Overall} για έναν συγκεκριμένο καλλιτέχνη (π.~χ.\ \verb|@p_artist_id = 5|).
+Η ερώτηση μετρά τον μέσο όρο δύο κριτηρίων (\emph{Interpretation, Overall}) για έναν καλλιτέχνη.
 
-\begin{lstlisting}[caption={Αρχικό ερώτημα (σχ.\,\ref{lst:q4-base})},label={lst:q4-base}]
+\subsection{Βασική εκδοχή (Q04.sql)}
+\begin{lstlisting}[language=SQL]
+SET @p_artist_id = 5;
+
 SELECT  a.artist_id,
-        COALESCE(a.pseudonym,a.real_name) AS artist_name,
-        ROUND(AVG(r.rating_interpretation),2) AS avg_interpretation,
-        ROUND(AVG(r.rating_overall),2)        AS avg_overall
-FROM   Rating             r
-JOIN   Performance        p  ON p.performance_id     = r.performance_id_FK
-JOIN   Performance_Artist pa ON pa.performance_id_FK = p.performance_id
-JOIN   Artist             a  ON a.artist_id          = pa.artist_id_FK
-WHERE  a.artist_id = @p_artist_id
-GROUP  BY a.artist_id, artist_name;
+        COALESCE(a.pseudonym, a.real_name) AS artist_name,
+        ROUND(AVG(r.rating_interpretation), 2) AS avg_interpretation,
+        ROUND(AVG(r.rating_overall),        2) AS avg_overall
+FROM        Rating              r
+JOIN        Performance         p   ON p.performance_id      = r.performance_id_FK
+JOIN        Performance_Artist  pa  ON pa.performance_id_FK  = p.performance_id
+JOIN        Artist              a   ON a.artist_id           = pa.artist_id_FK
+WHERE       a.artist_id = @p_artist_id        
+GROUP BY    a.artist_id, artist_name;
 \end{lstlisting}
 
-\paragraph{4.1 Βασικό \textit{Query Plan}}  
-Το \texttt{EXPLAIN FORMAT=JSON} (\autoref{lst:q4-base-ex}) δείχνει ότι
-\begin{itemize}
-  \item ο πίνακας \texttt{Rating} (\textasciitilde400 rows) σαρώνεται
-        \textbf{full scan}· κόστος \textasciitilde40 IOs,
-  \item ακολουθεί \texttt{Performance\_Artist} με
-        \textit{range scan} στο PK (\textasciitilde2 rows),
-  \item συνολικό εκτιμώμενο κόστος \(\approx320\).
-\end{itemize}
-
-\begin{lstlisting}[caption={Explain JSON (απόσπασμα)},label={lst:q4-base-ex}]
+\paragraph{Σχέδιο εκτέλεσης (σύνοψη)}
+\begin{lstlisting}
+"query_cost": "320.25",
 "nested_loop": [
-  { "table_name": "a", "access_type": "const", "rows_examined_per_scan": 1 },
-  { "table_name": "r", "access_type": "ALL",  "rows_examined_per_scan": 400 },
-  ...
+  { "table_name":"r",  "access_type":"ALL",  "rows":400 },
+  { "table_name":"pa", "access_type":"eq_ref" },
+  { "table_name":"p",  "access_type":"eq_ref" }
 ]
 \end{lstlisting}
 
-\vspace{0.5em}
-\paragraph{4.2 \texttt{FORCE INDEX} + Nested Loop}
+\textbf{Παρατήρηση.} Ο πίνακας \texttt{Rating} (≈400 γραμμές) σαρώνεται πλήρως∙ το υψηλό I/O (320) οφείλεται αποκλειστικά εκεί.
 
-Χρησιμοποιούμε τον auto‑index επάνω στο
-\texttt{Rating.performance\_id\_FK} και «αναγκάζουμε» nested‑loop
-(\verb|LOOP_JOIN|) στο πιο μικρό driving table
-(\autoref{lst:q4-force-nl}):
-
-\begin{lstlisting}[caption={FORCE INDEX + Nested Loop},label={lst:q4-force-nl}]
-SELECT /*+ LOOP_JOIN(r pa) */
-       a.artist_id,
-       COALESCE(a.pseudonym,a.real_name) AS artist_name,
-       AVG(r.rating_interpretation)      AS avg_interp,
-       AVG(r.rating_overall)             AS avg_overall
-FROM Rating r        FORCE INDEX (performance_id_FK)
-JOIN Performance_Artist pa FORCE INDEX (PRIMARY)
-     ON pa.performance_id_FK = r.performance_id_FK
-JOIN Artist a  FORCE INDEX (PRIMARY)
-     ON a.artist_id = pa.artist_id_FK
-WHERE a.artist_id = 5
-GROUP BY a.artist_id, artist_name;
+\subsection{Βελτιστοποίηση με \texttt{FORCE INDEX} (Q04a.sql)}
+\begin{lstlisting}[language=SQL]
+SELECT  a.artist_id,
+        COALESCE(a.pseudonym, a.real_name) AS artist_name,
+        AVG(r.rating_interpretation)       AS avg_interpretation,
+        AVG(r.rating_overall)              AS avg_overall
+FROM   Rating             r  FORCE INDEX (performance_id_FK)
+JOIN   Performance_Artist pa FORCE INDEX (PRIMARY)
+         ON pa.performance_id_FK = r.performance_id_FK
+JOIN   Artist             a  FORCE INDEX (PRIMARY)
+         ON a.artist_id      = pa.artist_id_FK
+WHERE  a.artist_id = 5
+GROUP  BY a.artist_id, artist_name;
 \end{lstlisting}
 
-\textbf{Explain} (\autoref{lst:q4-force-ex}):
-
-\begin{itemize}
-  \item \texttt{Performance\_Artist} εκτελεί
-        \emph{range scan (2 rows)} μέσω \texttt{artist\_id\_FK},
-  \item \texttt{Rating} πλέον \emph{ref access} (4 rows),
-  \item συνολικό κόστος \textbf{26.8} – $\sim$12× ταχύτερο έναντι του
-        full scan.
-\end{itemize}
-
-\begin{lstlisting}[caption={Explain JSON – Nested Loop},label={lst:q4-force-ex}]
-"rows_examined_per_scan": 66   /* Performance_Artist (range) */
-...
-"rows_examined_per_scan": 4    /* Rating (ref) */
-"query_cost": "26.79"
+\paragraph{Σχέδιο εκτέλεσης – Nested Loop}
+\begin{lstlisting}
+"query_cost": "30.87",
+"nested_loop":[
+  { "table_name":"pa", "access_type":"index", "rows":75 },
+  { "table_name":"r",  "access_type":"ref",   "rows":4  }
+]
 \end{lstlisting}
 
-\vspace{0.5em}
-\paragraph{4.3 Forced Hash Join}
+\textbf{Ανάλυση.}  
+Με το ευρετήριο \texttt{performance\_id\_FK} ο \texttt{Rating} διαβάζει 4 γραμμές/βρόχο∙ το κόστος πέφτει από 320 → 31 I/O (‑90 \%).
 
-Με ενεργό το \texttt{hash\_join} και hint \verb|HASH_JOIN(r pa)|,
-παίρνουμε το εναλλακτικό σχέδιο \autoref{lst:q4-hash}.
-
-\begin{lstlisting}[caption={FORCED Hash Join},label={lst:q4-hash}]
+\subsection{Forced Hash Join (Q04d.sql)}
+\begin{lstlisting}[language=SQL]
 SET optimizer_switch='hash_join=on';
-SELECT /*+ HASH_JOIN(r pa) */
-       a.artist_id, COALESCE(a.pseudonym,a.real_name) AS artist_name,
-       AVG(r.rating_interpretation)  AS avg_interp,
-       AVG(r.rating_overall)         AS avg_overall
-FROM Rating r FORCE INDEX (performance_id_FK)
-JOIN Performance_Artist pa FORCE INDEX (PRIMARY)
-     ON r.performance_id_FK = pa.performance_id_FK
-JOIN Artist a FORCE INDEX (PRIMARY)
-     ON a.artist_id = pa.artist_id_FK
-WHERE a.artist_id = 5
-GROUP BY a.artist_id, artist_name;
+/*+ HASH_JOIN(r pa) */
+-- ίδιο SELECT με το Q04a.sql
 \end{lstlisting}
 
-Το \textbf{Explain} δείχνει και πάλι κόστος~26.8 (ίδιο
-I/O pattern: range + ref) γιατί ο optimiser επιλέγει hash‑join μόνο εφόσον
-οι πίνακες «τρέφονται» από index access.  Η επίδοση είναι ισοδύναμη· η
-διαφορά είναι CPU – η hash probe («build → probe») κερδίζει μόλις
-~5 \% σε wall‑time στα 400 ratings.
-
-\vspace{0.5em}
-\paragraph{4.4 Συμπεράσματα}
-
-\begin{enumerate}
-  \item \textbf{Full scan → ακριβό}.  Το αρχικό σχέδιο σαρώνει
-        400 γραμμές στον \texttt{Rating} χωρίς φίλτρο κι έχει
-        \(\approx320\) IO cost.
-  \item \textbf{Index‑driven Nested Loop}.  Επιβάλλοντας
-        \texttt{FORCE INDEX} + \verb|LOOP_JOIN| κατεβάζουμε το κόστος
-        σε \(\approx27\)· 12× βελτίωση, διότι περιορίζουμε τα reads σε
-        4 grades per performance.
-  \item \textbf{Hash Join}.  Με το ίδιο driving set
-        (range→ref‑access) το hash‑join δεν προσφέρει επιπλέον I/O
-        κέρδος· μικρό μόνο CPU όφελος.
-  \item \textbf{Merge Join}.  Δεν είναι διαθέσιμο σε MySQL 8 (μόνο
-        Window engine’s “block nested‑loop”), άρα δεν δοκιμάστηκε.
-\end{enumerate}
-
-Συνεπώς, το βέλτιστο για το συγκεκριμένο dataset είναι ο
-\emph{index‑nested‑loop} με σωστό driving order.  Η χρήση hash join δεν
-βλάπτει, αλλά ούτε βελτιώνει ουσιαστικά την απόδοση.
-
-
-%--------------------------------------------------------------
-\subsection{Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Rating}
-\label{subsec:q6}
-%--------------------------------------------------------------
-
-Υπολογίζουμε για έναν επισκέπτη (\verb|visitor_id = 24|)
-τον \textit{μέσο όρο} όλων των επιμέρους κριτηρίων
-(\emph{Interpretation, Sound/Light, Stage Presence, Organization, Overall})
-για κάθε παράσταση στην οποία βαθμολόγησε.
-
-%..............................................................
-\begin{lstlisting}[caption={Βασικό ερώτημα},label={lst:q6-base}]
-SELECT  p.performance_id,
-        e.event_name,
-        p.performance_type,
-        AVG( (r.rating_interpretation +
-              r.rating_sound_light +
-              r.rating_stage_presence +
-              r.rating_organization +
-              r.rating_overall) / 5.0 ) AS avg_visitor_rating
-FROM    Rating      r
-JOIN    Performance p ON p.performance_id = r.performance_id_FK
-JOIN    Event       e ON e.event_id      = p.event_id_FK
-WHERE   r.visitor_id_FK = 24
-GROUP BY p.performance_id, e.event_name, p.performance_type
-ORDER BY e.event_name,    p.start_time;
+\begin{lstlisting}
+"query_cost": "30.87"   % ίδιο I/O, μικρό (~5 %) CPU κέρδος
 \end{lstlisting}
 
-\paragraph{6.1 \textit{Query Plan} που επέλεξε ο Optimizer}
+\subsection{Συμπέρασμα Ερώτημα 4}
+Το bottle‑neck ήταν το full scan στον \texttt{Rating}.  
+Με το ευρετήριο \texttt{performance\_id\_FK} το κόστος μειώθηκε
+από 320 → 31 I/O (≈‑90 %).  \emph{Index‑nested‑loop} παραμένει το
+ταχύτερο σχέδιο· τα hints δεν αλλάζουν το I/O όταν το driving set
+έχει ήδη περιοριστεί.
 
-Το \texttt{EXPLAIN FORMAT=JSON} (\autoref{lst:q6-base-ex}) δείχνει – σε
-κόστος 3.15 I/O – ότι ο optimiser χρησιμοποιεί τον
-\textbf{σύνθετο (unique) index}
-\texttt{uk\_visitor\_performance(visitor\_id\_FK, performance\_id\_FK)}\:
-μόλις \textasciitilde3 γραμμές στον πίνακα \texttt{Rating},
-στρατηγική \textit{range\_scan → eq\_ref}.
+\bigskip
 
-\begin{lstlisting}[caption={Explain JSON (απόσπασμα)},label={lst:q6-base-ex}]
-"table_name": "r",
-"access_type": "ref",
-"key": "uk_visitor_performance",
-"rows_examined_per_scan": 3,
-...
-"prefix_cost": "1.05"
+
+\section{Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Ratings}
+\label{sec:q6}
+
+Σκοπός: ο μέσος βαθμός ενός επισκέπτη για κάθε παράσταση που
+βαθμολόγησε.
+
+% -------------------------------------------------------------
+\subsection{Βασική εκδοχή (Q06.sql)}
+\begin{lstlisting}[language=SQL]
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG((r.rating_interpretation +
+            r.rating_sound_light +
+            r.rating_stage_presence +
+            r.rating_organization +
+            r.rating_overall)/5.0) AS avg_visitor_rating
+FROM   Rating      r
+JOIN   Performance p ON r.performance_id_FK = p.performance_id
+JOIN   Event       e ON p.event_id_FK      = e.event_id
+WHERE  r.visitor_id_FK = 24
+GROUP  BY p.performance_id, e.event_name, p.performance_type
 \end{lstlisting}
 
-\vspace{0.5em}
-\paragraph{6.2 \texttt{FORCE INDEX} στο \texttt{performance\_id\_FK}}
-
-Αναγκάζοντας χρήση του απλού index (\autoref{lst:q6-force}) οδηγούμαστε
-σε \textbf{full scan 400 rows} και κόστος \(\approx142\) – 45×
-χειρότερο.
-
-\begin{lstlisting}[caption={Υποχρεωτικό index – κακή επιλογή},label={lst:q6-force}]
-SELECT /* ... */
-FROM Rating r    FORCE INDEX (performance_id_FK)
-JOIN Performance p FORCE INDEX (PRIMARY) /*+ LOOP_JOIN(r p) */
-...
+\paragraph{Σχέδιο εκτέλεσης (σύνοψη)}
+\begin{lstlisting}
+"query_cost":"3.15",
+"table_name":"r",
+"access_type":"ref",
+"access_type":"ref",
+"key":"uk_visitor_performance", "rows":3
 \end{lstlisting}
 
-\begin{itemize}
-  \item \emph{Rows examined}: 400 (αντί 3)
-  \item \emph{Query‑cost}: 141.83 IOs
-  \item Οτιδήποτε κι αν «πιέσουμε» (Nested ή Hash Join) δεν
-        βελτιώνει, διότι το πρόβλημα είναι το αναγκαστικό
-        full‑scan.
-\end{itemize}
+\textbf{Παρατήρηση.}  
+Ο σύνθετος unique‑index
+\texttt{uk\_visitor\_performance(visitor\_id\_FK, performance\_id\_FK)}
+περιορίζει τον \texttt{Rating} σε 3 σειρές∙ πολύ φθηνό σχέδιο (3.15 I/O).
 
-\vspace{0.5em}
-\paragraph{6.3 Optimizer Trace}
-
-Από το \texttt{INFORMATION\_SCHEMA.OPTIMIZER\_TRACE}
-(\autoref{lst:q6-trace}) επιβεβαιώνεται ο λόγος επιλογής:
-
-\begin{itemize}
-  \item Στο στάδιο \texttt{rows\_estimation} η εναλλακτική
-        \textit{range scan} στον σύνθετο index επιστρέφει
-        \emph{rows = 3, cost = 1.31} → \textbf{chosen = true}.
-  \item Με το \texttt{FORCE INDEX} ο πίνακας σηματοδοτείται
-        \emph{access\_type = ALL} (\textasciitilde400 rows)· έτσι
-        εκτοξεύεται το συνολικό κόστος.
-\end{itemize}
-
-\begin{lstlisting}[caption={Trace – επιλογή range scan},label={lst:q6-trace}]
-"chosen_range_access_summary": {
-  "index": "uk_visitor_performance",
-  "rows": 3,
-  "cost_for_plan": 1.31,
-  "chosen": true
-}
+\subsection{Λάθος \texttt{FORCE INDEX} (Q06a.sql)}
+\begin{lstlisting}[language=SQL]
+SELECT ...           -- ίδιο SELECT
+FROM   Rating      r FORCE INDEX (performance_id_FK)
+JOIN   Performance p FORCE INDEX (PRIMARY)
+JOIN   Event       e FORCE INDEX (PRIMARY)
+WHERE  r.visitor_id_FK = 24
+GROUP  BY ...
+ORDER  BY ...;
 \end{lstlisting}
 
-\vspace{0.5em}
-\paragraph{6.4 Συμπεράσματα}
+\begin{lstlisting}
+"query_cost":"141.83",
+\end{lstlisting}
 
-\begin{enumerate}
-  \item Ο σύνθετος unique‑index στον \texttt{Rating} καλύπτει πλήρως το
-        φίλτρο (\verb|visitor_id_FK|) και ρίχνει το κόστος σε~3 Ι/Ο.
-  \item \textbf{Hints μπορούν να βλάψουν}: \texttt{FORCE INDEX} στο
-        λάθος κλειδί οδηγεί σε full scan κατά 45× πιο αργό.
-  \item Nested Loop, Hash Join κ.λπ.\ δεν αλλάζουν το I/O αν ο driver
-        πίνακας σαρώνεται ολόκληρος· άρα τα hints μόνο χειροτερεύουν.
-  \item Η επιλογή του optimiser είναι ήδη βέλτιστη· δεν απαιτείται
-        επιπλέον «χειρουργική» βελτιστοποίηση.
-\end{enumerate}
-  
+\textbf{Αποτέλεσμα.}  Full scan 400 γραμμών· το κόστος
+εκτοξεύεται σε 142 I/O (≈45 × πιο αργό).
 
+\subsection{Συμπέρασμα Ερώτημα 6}
+\subsection{Συμπέρασμα Ερώτημα 6}
+Ο composite index καλύπτει το φίλτρο επισκέπτη και
+κρατά το κόστος στα 3 I/O.  
+Αναγκάζοντας λάθος δείκτη ο πίνακας σαρώνεται ολόκληρος
+→ 141 I/O (‑97.9 \% χειρότερα).  
+Πρώτα επιλέγουμε σωστό ευρετήριο· τα join‑hints δεν σώζουν ένα
+σχέδιο που ήδη κάνει full scan.
+
+\bigskip
+
+%==============================================================
+%  Συμπεράσματα Εργασίας
+%==============================================================
 \section{Συμπεράσματα Εργασίας}
+\label{sec:conclusions}
 
-Η συγκεκριμένη εργασία κάλυψε \emph{ολόκληρο} τον κύκλο ζωής μίας
-Βάσης Δεδομένων φεστιβαλικών εκδηλώσεων· από την αφηρημένη σύλληψη μέχρι
-τη μέτρηση απόδοσης σύνθετων ερωτημάτων.  Τα κυριότερα σημεία:
+Η μελέτη κάλυψε πλήρη κύκλο BΔ: από μοντελοποίηση και παραγωγή
+δοκιμαστικών δεδομένων μέχρι βελτιστοποίηση ερωτημάτων.  
+Ακολουθούν τα κύρια σημεία σε ενιαίο πλαίσιο.
 
-\begin{enumerate}
-  \item \textbf{Λογική σχεδίαση.}\;  
-        Η μετάβαση από το E/R διάγραμμα σε 16 κανονικοποιημένους
-        πίνακες (3NF) εξάλειψε πλεονασμό και αποσύνδεσε τις $N\!:\!N$
-        συσχετίσεις με junction‑tables \texttt{Performance\_Artist},
-        \texttt{Performance\_Band}, \texttt{Artist\_Band}.
-        Παράλληλα — μέσω triggers και check‑constraints — διατηρείται η
-        επιχειρησιακή λογική (ποσοστό security/support, εύρος ratings 1–5
-        κ.λπ.).
+\bigskip
+\textbf{Κύρια Ευρήματα}
+\begin{itemize}
+  \item \emph{Λογική Σχεδίαση}.  
+        16 πίνακες σε 3NF με 28 \texttt{CHECK}, 9 triggers και 25 ξένα
+        κλειδιά· καλύπτουν πλήρως την επιχειρησιακή λογική.
+  \item \emph{Mock dataset}.  
+        1 300 εγγραφές παράγονται επαναλήψιμα μέσω
+        \texttt{Faker.seed(42)} και επαληθεύονται με ενσωματωμένο
+        self‑test.
+  \item \emph{Απόδοση ερωτημάτων}.  
+        \begin{description}
+          \item[Q 04] 320 → 31 I/O (‑90 \%) με το index
+                       \texttt{performance\_id\_FK}.
+          \item[Q 06] 142 → 3 I/O  (‑97.9 \%) με το σύνθετο
+                       \texttt{uk\_visitor\_performance}.
+        \end{description}
+        Το είδος join (Nested / Hash) είχε οριακό κέρδος (< 5 \%) μετά
+        την εφαρμογή του σωστού index — άρα το I/O είναι ο
+        καθοριστικός παράγοντας.
+  \item \emph{Φόρτωση Δεδομένων}.  
+        Προσωρινή απενεργοποίηση FK checks + triggers έριξε το
+        \texttt{LOAD DATA} σε 4.3 s από 18 s (‑76 \%).
+\end{itemize}
 
-  \item \textbf{Mock dataset.}\;  
-        Το generator \texttt{data\_generator.py} απέδειξε ότι με
-        ελάχιστο κώδικα μπορούμε να παράγουμε \underline{αιτιολογημένα}
-        δεδομένα — όχι απλώς «τυχαία» — τα οποία καλύπτουν corner
-        cases για auto‑testing των ερωτημάτων.  Το ενσωματωμένο
-        \lstinline|_self_test()| εγγυάται ότι κάθε νέο seed παραμένει
-        valid χωρίς χειροκίνητους ελέγχους.
+\bigskip
+\textbf{Βέλτιστες Πρακτικές}
+\begin{itemize}
+  \item Συνδυασμός \textbf{composite} και \textbf{covering} indexes για
+        φίλτρα πολλαπλών πεδίων και ημερολογιακές αναζητήσεις.
+  \item \textbf{Triggers με bypass} σε bulk imports — τηρούν κανόνες
+        παραγωγής χωρίς κόστος στην αρχική φόρτωση.
+  \item \textbf{Deterministic data} → εύκολα regression tests και
+        αξιόπιστη μέτρηση βελτιώσεων.
+\end{itemize}
 
-  \item \textbf{Βελτιστοποίηση ερωτημάτων.}\;  
-        \begin{itemize}
-          \item Μετρήθηκε δραστική μείωση κόστους (\(-92\%\) έως
-                \(-97\%\)) όταν επιλέγεται ο σωστός σύνθετος index
-                έναντι full scan.
-          \item Τα hints \verb|LOOP_JOIN| και \verb|HASH_JOIN| είναι
-                χρήσιμα \emph{μόνον} όταν επιβεβαιώνουν ένα
-                index‑friendly plan· αλλιώς οδηγούν ακόμα και σε
-                45× χειρότερες εκτελέσεις.
-          \item Για μικρούς πίνακες (≤400 rows) η διαφορά
-                nested‑loop vs hash join είναι κυρίως CPU· επομένως
-                η ενεργοποίηση \texttt{hash\_join} δεν είναι
-                πανάκεια, αλλά εργαλείο που πρέπει να χρησιμοποιείται
-                επιλεκτικά.
-        \end{itemize}
 
-  \item \textbf{Index design.}\;  
-        Ο συνδυασμός \textbf{covering}, \textbf{selective} και
-        \textbf{composite} indexes εξυπηρετεί διαφορετικά workloads:
-        πρόγραμμα ημέρας, look‑ups βαθμολογιών, σύνθετες αναζητήσεις
-        καλλιτεχνών.  Στο dataset των ≈50 kB η επίδρασή τους είναι ήδη
-        μετρήσιμη· σε πραγματικό όγκο (π.χ.\ 50 × μεγαλύτερο) το κέρδος
-        κλιμακώνεται γραμμικά.
+\bigskip
+\textbf{Τελικός Απολογισμός}  
+Καλοσχεδιασμένα ευρετήρια μειώνουν δραστικά το I/O
+(‑90 % και ‑97.9 % στα δύο απαιτητικότερα queries)•  
+η μεθοδολογία design → generate → measure → refine παρέχει
+αναπαραγωγιμότητα και κλιμακώνεται χωρίς εκπλήξεις σε μεγαλύτερα
+datasets.  Η εργασία αποδεικνύει ότι η σωστή μοντελοποίηση και τα
+στοχευμένα indexes είναι πιο αποδοτικά από ad‑hoc tuning με hints.
 
-  \item \textbf{Διαδικασία φόρτωσης.}\;  
-        Η απενεργοποίηση FK‑checks και trigger‑quotas κατά το
-        \texttt{LOAD DATA} μείωσε τον χρόνο import σε
-        \(\sim4.3\,\text{s}\) έναντι \(\sim18\,\text{s}\) σε πλήρη
-        έλεγχο, χωρίς να θυσιάζει ακεραιότητα — καθώς οι ίδιες οι
-        CSV γραμμές παράγονται ήδη valid.
-
- 
-\end{enumerate}
-
-\paragraph{Τελική αποτίμηση.}
-Το project απέδειξε εμπράκτως ότι \emph{καλή μοντελοποίηση + καλά
-ευρετήρια} αποδίδουν περισσότερο από ad‑hoc «tuning».
-Η πλατφόρμα είναι ήδη έτοιμη να δεχθεί μεγαλύτερο όγκο δεδομένων,
-ενώ η τεκμηρίωση (DDL, load scripts, traces) επιτρέπει
-αναπαραγωγιμότητα και μελλοντική συντήρηση με ελάχιστο κόπο.
 
 \end{document}

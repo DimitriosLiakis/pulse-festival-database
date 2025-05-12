@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  12 MAY 2025 20:44
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  12 MAY 2025 21:30
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -506,8 +506,8 @@ Package hyperref Info: Link coloring OFF on input line 36.
 
 \c@lstlisting=\count317
  (./report.toc
-Overfull \hbox (8.0481pt too wide) in paragraph at lines 20--20
- [][] [][]\TU/NotoSerif(1)/m/n/12 Ερώτημα 6 – Παραστάσεις Επισκέπτη & Μέσος Όρος Rating[] [][]  
+Overfull \hbox (12.67606pt too wide) in paragraph at lines 22--22
+ [] [][]\TU/NotoSerif(1)/b/n/12 Ερώτημα 6 – Παραστάσεις Επισκέπτη & Μέσος Όρος Ratings[] []  
  []
 
 )
@@ -516,20 +516,20 @@ Overfull \hbox (8.0481pt too wide) in paragraph at lines 20--20
 
  [1
 
-]
+] [2]
 File: er.png Graphic file (type bmp)
 <er.png>
 File: relational.png Graphic file (type bmp)
 <relational.png>
- [2]
+ [3]
 
-LaTeX Warning: Reference `fig:er' on page 3 undefined on input line 56.
-
-
-LaTeX Warning: Reference `tab:all-tables' on page 3 undefined on input line 57.
+LaTeX Warning: Reference `fig:er' on page 4 undefined on input line 56.
 
 
-LaTeX Warning: Reference `app:install' on page 3 undefined on input line 58.
+LaTeX Warning: Reference `tab:all-tables' on page 4 undefined on input line 57.
+
+
+LaTeX Warning: Reference `app:install' on page 4 undefined on input line 58.
 
 Missing character: There is no ∙ (U+2219) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 
@@ -537,7 +537,7 @@ Overfull \hbox (65.28299pt too wide) in paragraph at lines 65--67
 []\TU/NotoSerif(1)/m/n/12 Κάθε πίνακας διαθέτει τεχνητό πρωτεύον κλειδί τύπου \TU/DejaVuSansMono(0)/m/n/12 INT AUTO_INCREMENT
  []
 
-[3]
+[4]
 Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 
 Overfull \hbox (18.53647pt too wide) in paragraph at lines 74--79
@@ -574,7 +574,7 @@ Overfull \hbox (63.61426pt too wide) in paragraph at lines 118--121
 \TU/NotoSerif(1)/m/n/12 και Performance, [][][][][][][][][][][][][][][][][][] σε Festival, Stage_Staff. 
  []
 
-[4]
+[5]
 Overfull \hbox (61.56226pt too wide) in paragraph at lines 126--129
 []\TU/DejaVuSansMono(0)/m/n/12 uk_visitor_performance\TU/NotoSerif(1)/m/n/12 : [][][][][][][][][][][]
  []
@@ -701,7 +701,7 @@ Overfull \hbox (40.87447pt too wide) in alignment at lines 158--178
  [] [] [] 
  []
 
-[5]
+[6]
 Overfull \hbox (4.99413pt too wide) in paragraph at lines 181--183
  []\TU/NotoSerif(1)/b/n/12 Απόδειξη βελτίωσης.[] \TU/NotoSerif(1)/m/n/12 Παραθέτουμε ενδεικτικά το \TU/DejaVuSansMono(0)/m/n/12 query_cost \TU/NotoSerif(1)/m/n/12 που
  []
@@ -719,12 +719,12 @@ Overfull \hbox (55.17116pt too wide) in paragraph at lines 195--202
  []
 
 
-LaTeX Warning: Reference `app:install' on page 6 undefined on input line 206.
+LaTeX Warning: Reference `app:install' on page 7 undefined on input line 206.
 
 
-LaTeX Warning: Reference `app:load' on page 6 undefined on input line 206.
+LaTeX Warning: Reference `app:load' on page 7 undefined on input line 206.
 
-[6]
+[7]
 Overfull \hbox (7.64479pt too wide) in paragraph at lines 231--233
 []\TU/NotoSerif(1)/b/n/12 Determinism\TU/NotoSerif(1)/m/n/12 : \TU/DejaVuSansMono(0)/m/n/12 Faker.seed(42)\TU/NotoSerif(1)/m/n/12  και \TU/DejaVuSansMono(0)/m/n/12 random.seed(42) \TU/NotoSerif(1)/m/n/12 για επα-
  []
@@ -756,207 +756,81 @@ Overfull \hbox (110.10481pt too wide) in paragraph at lines 261--268
 \TU/NotoSerif(1)/m/n/12 τάλληλο χειρισμό \TU/DejaVuSansMono(0)/m/n/12 \N \TU/NotoSerif(1)/m/n/12 για προαιρετικά FK (π.χ. \TU/DejaVuSansMono(0)/m/n/12 Performance_Artist.band_id_FK\TU/NotoSerif(1)/m/n/12 ). 
  []
 
-[7]
+[8]
 Overfull \hbox (1.51839pt too wide) in paragraph at lines 270--273
 \TU/NotoSerif(1)/m/n/12 και τερματίζει με [][][][] εάν οποιοδήποτε seed‑σενάριο απο-
  []
 
 Missing character: There is no ✅ (U+2705) in font DejaVu Sans Mono/OT:script=latn;language=dflt;!
-[8] [9] [10] [11] [12] [13] [14] [15] [16] [17] [18]
-Overfull \hbox (2.24146pt too wide) in paragraph at lines 731--731
-[]\TU/NotoSerif(1)/b/n/14.4 Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέ-
- []
-
-Package hyperref Info: bookmark level for unknown lstlisting defaults to 0 on input line 738.
-[19]
-Overfull \hbox (16.9157pt too wide) in paragraph at lines 754--756
-[]\TU/NotoSerif(1)/m/n/12 ο πίνακας \TU/DejaVuSansMono(0)/m/n/12 Rating \TU/NotoSerif(1)/m/n/12 (~400 rows) σαρώνεται \TU/NotoSerif(1)/b/n/12 full scan\TU/NotoSerif(1)/m/n/12 · κόστος ~40 IOs, 
+[9] [10] [11] [12] [13] [14] [15] [16] [17] [18] [19]
+Overfull \hbox (29.40288pt too wide) in paragraph at lines 730--730
+[]\TU/NotoSerif(1)/b/n/17.28 Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλ-
  []
 
 
-Overfull \hbox (5.14996pt too wide) in paragraph at lines 756--758
-[]\TU/NotoSerif(1)/m/n/12 ακολουθεί \TU/DejaVuSansMono(0)/m/n/12 Performance_Artist \TU/NotoSerif(1)/m/n/12 με \TU/NotoSerif(1)/m/it/12 range scan \TU/NotoSerif(1)/m/n/12 στο PK (~2 rows), 
- []
-
-
-Overfull \hbox (27.50273pt too wide) in paragraph at lines 772--776
- []\TU/NotoSerif(1)/b/n/12 4.2 \TU/DejaVuSansMono(0)/b/n/12 FORCE INDEX\TU/NotoSerif(1)/b/n/12  + Nested Loop[] \TU/NotoSerif(1)/m/n/12 Χρησιμοποιούμε τον auto‑index επάνω
- []
-
-
-Overfull \hbox (59.70308pt too wide) in paragraph at lines 772--776
-\TU/NotoSerif(1)/m/n/12 στο \TU/DejaVuSansMono(0)/m/n/12 Rating.performance_id_FK \TU/NotoSerif(1)/m/n/12 και «αναγκάζουμε» nested‑loop ([][]\TU/DejaVuSansMono(0)/m/n/12 LOOP_JOIN[]\TU/NotoSerif(1)/m/n/12 )
- []
-
-
-Overfull \hbox (47.8903pt too wide) in paragraph at lines 795--797
-[]\TU/DejaVuSansMono(0)/m/n/12 Performance_Artist \TU/NotoSerif(1)/m/n/12 εκτελεί \TU/NotoSerif(1)/m/it/12 range scan (2 rows) \TU/NotoSerif(1)/m/n/12 μέσω \TU/DejaVuSansMono(0)/m/n/12 artist_id_FK\TU/NotoSerif(1)/m/n/12 , 
+Overfull \hbox (23.14803pt too wide) in paragraph at lines 733--734
+[]\TU/NotoSerif(1)/m/n/12 Η ερώτηση μετρά τον μέσο όρο δύο κριτηρίων (\TU/NotoSerif(1)/m/it/12 Interpretation, Overall\TU/NotoSerif(1)/m/n/12 )
  []
 
 [20]
-Overfull \hbox (46.93446pt too wide) in paragraph at lines 812--814
- []\TU/NotoSerif(1)/b/n/12 4.3 Forced Hash Join[] \TU/NotoSerif(1)/m/n/12 Με ενεργό το \TU/DejaVuSansMono(0)/m/n/12 hash_join \TU/NotoSerif(1)/m/n/12 και hint [][]\TU/DejaVuSansMono(0)/m/n/12 HASH_JOIN(r pa)[]\TU/NotoSerif(1)/m/n/12 ,
- []
-
+Missing character: There is no ≈ (U+2248) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+Missing character: There is no ∙ (U+2219) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+Missing character: There is no ∙ (U+2219) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (14.97917pt too wide) in paragraph at lines 830--835
-[]\TU/NotoSerif(1)/m/n/12 Το \TU/NotoSerif(1)/b/n/12 Explain \TU/NotoSerif(1)/m/n/12 δείχνει και πάλι κόστος 26.8 (ίδιο I/O pattern: range + ref)
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif ExtraBold/OT:script=latn;language=dflt;!
-
-Overfull \hbox (51.41786pt too wide) in paragraph at lines 840--843
-[]\TU/NotoSerif(1)/b/n/12 Full scan → ακριβό\TU/NotoSerif(1)/m/n/12 . Το αρχικό σχέδιο σαρώνει 400 γραμμές στον \TU/DejaVuSansMono(0)/m/n/12 Rating
- []
-
-
-Overfull \hbox (40.5854pt too wide) in paragraph at lines 843--847
-[]\TU/NotoSerif(1)/b/n/12 Index‑driven Nested Loop\TU/NotoSerif(1)/m/n/12 . Επιβάλλοντας \TU/DejaVuSansMono(0)/m/n/12 FORCE INDEX \TU/NotoSerif(1)/m/n/12 + [][]\TU/DejaVuSansMono(0)/m/n/12 LOOP_JOIN
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (0.43025pt too wide) in paragraph at lines 847--850
-[]\TU/NotoSerif(1)/b/n/12 Hash Join\TU/NotoSerif(1)/m/n/12 . Με το ίδιο driving set (range→ref‑access) το hash‑join
- []
-
-
-Overfull \hbox (23.87822pt too wide) in paragraph at lines 850--852
-[]\TU/NotoSerif(1)/b/n/12 Merge Join\TU/NotoSerif(1)/m/n/12 . Δεν είναι διαθέσιμο σε MySQL 8 (μόνο Window engine’s
- []
-
 [21]
-Overfull \hbox (46.47708pt too wide) in paragraph at lines 854--857
-[]\TU/NotoSerif(1)/m/n/12 Συνεπώς, το βέλτιστο για το συγκεκριμένο dataset είναι ο \TU/NotoSerif(1)/m/it/12 index‑nested‑loop
- []
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+Missing character: There is no ≈ (U+2248) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 
-
-Overfull \hbox (79.78058pt too wide) in paragraph at lines 860--860
-[]\TU/NotoSerif(1)/b/n/14.4 Ερώτημα 6 – Παραστάσεις Επισκέπτη & Μέσος Όρος Rating 
- []
-
-
-Overfull \hbox (186.80002pt too wide) in paragraph at lines 864--868
-\TU/NotoSerif(1)/m/it/12 όρο \TU/NotoSerif(1)/m/n/12 όλων των επιμέρους κριτηρίων (\TU/NotoSerif(1)/m/it/12 Interpretation, Sound/Light, Stage Presence, Organization, Overall\TU/NotoSerif(1)/m/n/12 )
- []
-
-Missing character: There is no → (U+2192) in font Noto Serif Italic/OT:script=latn;language=dflt;!
-
-Overfull \hbox (18.9156pt too wide) in paragraph at lines 889--895
- []\TU/NotoSerif(1)/b/n/12 6.1 \TU/NotoSerif(1)/b/it/12 Query Plan \TU/NotoSerif(1)/b/n/12 που επέλεξε ο Optimizer[] \TU/NotoSerif(1)/m/n/12 Το \TU/DejaVuSansMono(0)/m/n/12 EXPLAIN FORMAT=JSON
- []
-
-
-Overfull \hbox (184.54213pt too wide) in paragraph at lines 889--895
-\TU/NotoSerif(1)/m/n/12 τον \TU/NotoSerif(1)/b/n/12 σύνθετο (unique) index \TU/DejaVuSansMono(0)/m/n/12 uk_visitor_performance(visitor_id_FK, performance_id_FK)
- []
-
-
-Overfull \hbox (9.65274pt too wide) in paragraph at lines 889--895
-\TU/NotoSerif(1)/m/n/12 μόλις ~3 γραμμές στον πίνακα \TU/DejaVuSansMono(0)/m/n/12 Rating\TU/NotoSerif(1)/m/n/12 , στρατηγική \TU/NotoSerif(1)/m/it/12 range_scan → eq_ref\TU/NotoSerif(1)/m/n/12 . 
+Overfull \hbox (18.36096pt too wide) in paragraph at lines 811--811
+[]\TU/NotoSerif(1)/b/n/17.28 Ερώτημα 6 – Παραστάσεις Επισκέπτη & Μέ-
  []
 
 [22]
-Overfull \hbox (13.81306pt too wide) in paragraph at lines 908--911
- []\TU/NotoSerif(1)/b/n/12 6.2 \TU/DejaVuSansMono(0)/b/n/12 FORCE INDEX\TU/NotoSerif(1)/b/n/12  στο \TU/DejaVuSansMono(0)/b/n/12 performance_id_FK[] \TU/NotoSerif(1)/m/n/12 Αναγκάζοντας χρήση του
+Missing character: There is no ∙ (U+2219) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+
+Overfull \hbox (263.28732pt too wide) in paragraph at lines 845--849
+[]\TU/NotoSerif(1)/b/n/12 Παρατήρηση. \TU/NotoSerif(1)/m/n/12 Ο σύνθετος unique‑index \TU/DejaVuSansMono(0)/m/n/12 uk_visitor_performance(visitor_id_FK, performance_id_FK)
  []
 
+Missing character: There is no ≈ (U+2248) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 
-Overfull \hbox (16.8214pt too wide) in paragraph at lines 908--911
-\TU/NotoSerif(1)/m/n/12 απλού index ([]Listing 8[][]) οδηγούμαστε σε \TU/NotoSerif(1)/b/n/12 full scan 400 rows \TU/NotoSerif(1)/m/n/12 και κόστος $\OMS/cmsy/m/n/12 ^^Y
- []
-
-
-Overfull \hbox (29.76472pt too wide) in paragraph at lines 930--932
- []\TU/NotoSerif(1)/b/n/12 6.3 Optimizer Trace[] \TU/NotoSerif(1)/m/n/12 Από το \TU/DejaVuSansMono(0)/m/n/12 INFORMATION_SCHEMA.OPTIMIZER_TRACE
+Overfull \hbox (29.70624pt too wide) in paragraph at lines 865--867
+[]\TU/NotoSerif(1)/b/n/12 Αποτέλεσμα. \TU/NotoSerif(1)/m/n/12  Full scan 400 γραμμών· το κόστος εκτοξεύεται σε 142 I/O
  []
 
 Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (77.63371pt too wide) in paragraph at lines 937--940
-[]\TU/NotoSerif(1)/m/n/12 Με το \TU/DejaVuSansMono(0)/m/n/12 FORCE INDEX \TU/NotoSerif(1)/m/n/12 ο πίνακας σηματοδοτείται \TU/NotoSerif(1)/m/it/12 access_type = ALL\TU/NotoSerif(1)/m/n/12  (~400 rows)·
- []
-
 [23]
-Overfull \hbox (10.34401pt too wide) in paragraph at lines 968--971
-\TU/NotoSerif(1)/m/n/12 Βάσης Δεδομένων φεστιβαλικών εκδηλώσεων· από την αφηρημένη σύλ-
+Overfull \hbox (35.91624pt too wide) in paragraph at lines 892--895
+[]\TU/NotoSerif(1)/m/it/12 Λογική Σχεδίαση\TU/NotoSerif(1)/m/n/12 . 16 πίνακες σε 3NF με 28 \TU/DejaVuSansMono(0)/m/n/12 CHECK\TU/NotoSerif(1)/m/n/12 , 9 triggers και 25 ξένα
  []
 
 
-Overfull \hbox (40.68236pt too wide) in paragraph at lines 973--981
-\TU/NotoSerif(1)/m/n/12 σύνδεσε τις $\OML/cmm/m/it/12 N  \OT1/cmr/m/n/12 :  \OML/cmm/m/it/12 N$ \TU/NotoSerif(1)/m/n/12 συσχετίσεις με junction‑tables \TU/DejaVuSansMono(0)/m/n/12 Performance_Artist\TU/NotoSerif(1)/m/n/12 ,
+Overfull \hbox (110.07478pt too wide) in paragraph at lines 895--899
+[]\TU/NotoSerif(1)/m/it/12 Mock dataset\TU/NotoSerif(1)/m/n/12 . 1 300 εγγραφές παράγονται επαναλήψιμα μέσω \TU/DejaVuSansMono(0)/m/n/12 Faker.seed(42)\TU/NotoSerif(1)/m/n/12  και
+ []
+
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+
+Overfull \hbox (24.5844pt too wide) in paragraph at lines 903--905
+[]\TU/NotoSerif(1)/m/n/12 142 → 3 I/O (‑97.9 %) με το σύνθετο \TU/DejaVuSansMono(0)/m/n/12 uk_visitor_performance\TU/NotoSerif(1)/m/n/12 . 
  []
 
 
-Overfull \hbox (4.45172pt too wide) in paragraph at lines 973--981
-\TU/DejaVuSansMono(0)/m/n/12 Performance_Band\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 Artist_Band\TU/NotoSerif(1)/m/n/12 . Παράλληλα — μέσω triggers
+Overfull \hbox (40.73824pt too wide) in paragraph at lines 909--912
+[]\TU/NotoSerif(1)/m/it/12 Φόρτωση Δεδομένων\TU/NotoSerif(1)/m/n/12 . Προσωρινή απενεργοποίηση FK checks + triggers
  []
 
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 
-Overfull \hbox (2.97202pt too wide) in paragraph at lines 973--981
-\TU/NotoSerif(1)/m/n/12 και check‑constraints — διατηρείται η επιχειρησιακή λογική (πο-
+Overfull \hbox (6.82404pt too wide) in paragraph at lines 927--934
+[]\TU/NotoSerif(1)/b/n/12 Τελικός Απολογισμός \TU/NotoSerif(1)/m/n/12 Καλοσχεδιασμένα ευρετήρια μειώνουν δρα-
  []
 
-
-Overfull \hbox (8.18002pt too wide) in paragraph at lines 982--989
-\TU/NotoSerif(1)/m/n/12 δομένα — όχι απλώς «τυχαία» — τα οποία καλύπτουν corner cases
- []
-
-
-Overfull \hbox (0.67477pt too wide) in paragraph at lines 982--989
-\TU/NotoSerif(1)/m/n/12 για auto‑testing των ερωτημάτων. Το ενσωματωμένο []
- []
-
-
-Overfull \hbox (8.06244pt too wide) in paragraph at lines 992--995
-[]\TU/NotoSerif(1)/m/n/12 Μετρήθηκε δραστική μείωση κόστους ($\OMS/cmsy/m/n/12 ^^@\OT1/cmr/m/n/12 92[]$\TU/NotoSerif(1)/m/n/12  έως $\OMS/cmsy/m/n/12 ^^@\OT1/cmr/m/n/12 97[]$\TU/NotoSerif(1)/m/n/12 ) όταν
- []
-
-Missing character: There is no ≤ (U+2264) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (47.05197pt too wide) in paragraph at lines 999--1004
-[]\TU/NotoSerif(1)/m/n/12 Για μικρούς πίνακες (≤400 rows) η διαφορά nested‑loop vs hash join
- []
-
-
-Overfull \hbox (4.55347pt too wide) in paragraph at lines 999--1004
-\TU/NotoSerif(1)/m/n/12 είναι κυρίως CPU· επομένως η ενεργοποίηση \TU/DejaVuSansMono(0)/m/n/12 hash_join \TU/NotoSerif(1)/m/n/12 δεν
- []
-
-[24]
-Missing character: There is no ≈ (U+2248) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (12.18259pt too wide) in paragraph at lines 1006--1013
-[]\TU/NotoSerif(1)/b/n/12 Index design. \TU/NotoSerif(1)/m/n/12 Ο συνδυασμός \TU/NotoSerif(1)/b/n/12 covering\TU/NotoSerif(1)/m/n/12 , \TU/NotoSerif(1)/b/n/12 selective \TU/NotoSerif(1)/m/n/12 και \TU/NotoSerif(1)/b/n/12 composite
- []
-
-
-Overfull \hbox (1.13913pt too wide) in paragraph at lines 1006--1013
-\TU/NotoSerif(1)/m/n/12 indexes εξυπηρετεί διαφορετικά workloads: πρόγραμμα ημέρας,
- []
-
-
-Overfull \hbox (6.80298pt too wide) in paragraph at lines 1006--1013
-\TU/NotoSerif(1)/m/n/12 dataset των ≈50 kB η επίδρασή τους είναι ήδη μετρήσιμη· σε πραγ-
- []
-
-
-Overfull \hbox (3.60802pt too wide) in paragraph at lines 1006--1013
-\TU/NotoSerif(1)/m/n/12 ματικό όγκο (π.χ. 50 × μεγαλύτερο) το κέρδος κλιμακώνεται γραμ-
- []
-
-
-Overfull \hbox (57.11353pt too wide) in paragraph at lines 1014--1020
-[]\TU/NotoSerif(1)/b/n/12 Διαδικασία φόρτωσης. \TU/NotoSerif(1)/m/n/12 Η απενεργοποίηση FK‑checks και trigger‑quotas
- []
-
-
-Overfull \hbox (19.89604pt too wide) in paragraph at lines 1025--1030
-\TU/NotoSerif(1)/m/it/12 λοποίηση + καλά ευρετήρια \TU/NotoSerif(1)/m/n/12 αποδίδουν περισσότερο από ad‑hoc «tuning».
- []
-
-[25] (./report.aux)
+[24] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
@@ -965,19 +839,16 @@ L3 programming layer <2024-01-22>
 
 LaTeX Warning: There were undefined references.
 
-
-LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
-
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: CC895BBFB106CB183E535BBFFB7A82A8;3967.
+(rerunfilecheck)             Checksum: 7F9088D0EAEC6A294F40434EF641F7F1;5791.
  ) 
 Here is how much of TeX's memory you used:
- 15092 strings out of 474878
- 297735 string characters out of 5762517
+ 15082 strings out of 474878
+ 297454 string characters out of 5762517
  2170627 words of memory out of 5000000
- 36921 multiletter control sequences out of 15000+600000
- 563571 words of font info for 100 fonts, out of 8000000 for 9000
+ 36914 multiletter control sequences out of 15000+600000
+ 563547 words of font info for 97 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,9n,107p,498b,1813s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,9n,107p,480b,1813s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report.pdf (25 pages).
+Output written on report.pdf (24 pages).
