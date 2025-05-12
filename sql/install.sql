@@ -1,13 +1,10 @@
 
-DROP DATABASE IF EXISTS 11new;
-CREATE DATABASE 11new
+DROP DATABASE IF EXISTS music_festival;
+CREATE DATABASE music_festival
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_0900_ai_ci;
-USE 11new;
+USE music_festival;
 
-/* ─────────────────────────────────────────────
-   REFERENCE TABLES
-   ─────────────────────────────────────────── */
 CREATE TABLE Location (
   location_id        INT AUTO_INCREMENT PRIMARY KEY,
   address            VARCHAR(255) NOT NULL,
@@ -64,9 +61,6 @@ CREATE TABLE Event (
   CONSTRAINT ck_event_time CHECK (end_time > start_time)
 );
 
-/* ─────────────────────────────────────────────
-   ARTIST / BAND
-   ─────────────────────────────────────────── */
 CREATE TABLE Artist (
   artist_id        INT AUTO_INCREMENT PRIMARY KEY,
   real_name        VARCHAR(100) NOT NULL,
@@ -103,9 +97,6 @@ CREATE TABLE Artist_Band (
     ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-/* ─────────────────────────────────────────────
-   PERFORMANCE & LINKS
-   ─────────────────────────────────────────── */
 CREATE TABLE Performance (
   performance_id        INT AUTO_INCREMENT PRIMARY KEY,
   event_id_FK           INT NOT NULL,
@@ -146,9 +137,6 @@ CREATE TABLE Performance_Band (
     ON UPDATE CASCADE ON DELETE SET NULL
 );
 
-/* ─────────────────────────────────────────────
-   VISITORS, TICKETS, RATINGS
-   ─────────────────────────────────────────── */
 CREATE TABLE Visitor (
   visitor_id   INT AUTO_INCREMENT PRIMARY KEY,
   first_name   VARCHAR(50) NOT NULL,
@@ -193,9 +181,6 @@ CREATE TABLE Rating (
   UNIQUE KEY uk_visitor_performance (visitor_id_FK, performance_id_FK)
 );
 
-/* ─────────────────────────────────────────────
-   STAFF & STAGE STAFF
-   ─────────────────────────────────────────── */
 CREATE TABLE Staff (
   staff_id        INT AUTO_INCREMENT PRIMARY KEY,
   staff_name      VARCHAR(100) NOT NULL,
@@ -221,9 +206,6 @@ CREATE TABLE Stage_Staff (
   CHECK (end_date >= start_date)
 );
 
-/* ─────────────────────────────────────────────
-   RESALE QUEUE  (kept extended version – remove extras if unwanted)
-   ─────────────────────────────────────────── */
 CREATE TABLE Resale_queue (
   queue_id           INT AUTO_INCREMENT PRIMARY KEY,
   ticket_id_FK       INT NOT NULL,
@@ -247,17 +229,12 @@ CREATE TABLE Resale_queue (
       ON DELETE CASCADE
 );
 
-
-/* ─────────────────────────────────────────────
-   INDEXES
-   ─────────────────────────────────────────── */
+-- INDEXES
 CREATE INDEX idx_event_schedule       ON Event(event_date, start_time, end_time);
 CREATE INDEX idx_performance_by_event ON Performance(event_id_FK, start_time);
 CREATE INDEX idx_staff_role           ON Staff(staff_role);
 
-/* ─────────────────────────────────────────────
-   TRIGGER: STAFF QUOTAS  (unchanged)
-   ─────────────────────────────────────────── */
+-- TRIGGERS
 DROP TRIGGER IF EXISTS trg_staff_quota;
 DELIMITER $$
 CREATE TRIGGER trg_staff_quota
