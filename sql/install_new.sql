@@ -1,17 +1,8 @@
-/* ============================================================
-   Pulse‑University Music Festival – COMPLETE install.sql
-   (MySQL 8 / MariaDB 10.6+)
-   ============================================================ */
-
 DROP DATABASE IF EXISTS music_festival;
 CREATE DATABASE music_festival
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_0900_ai_ci;
 USE music_festival;
-
-/* ------------------------------------------------------------
-   1.  Πίνακες
-   ------------------------------------------------------------ */
 
 CREATE TABLE Location (
   location_id        INT AUTO_INCREMENT PRIMARY KEY,
@@ -41,7 +32,7 @@ CREATE TABLE Festival (
       ON DELETE RESTRICT,
 
   CONSTRAINT ck_festival_dates CHECK (end_date >= start_date),
-  CONSTRAINT uk_festival_year  UNIQUE (festival_year)          -- ένα/έτος
+  CONSTRAINT uk_festival_year  UNIQUE (festival_year)         
 );
 
 CREATE TABLE Stage (
@@ -124,7 +115,6 @@ CREATE TABLE Performance (
   FOREIGN KEY (event_id_FK) REFERENCES Event(event_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
 
-  /* διάρκεια ≤ 3 ώρες */
   CONSTRAINT ck_perf_duration
      CHECK (TIMESTAMPDIFF(SECOND,start_time,end_time) BETWEEN 1 AND 10800),
 
@@ -186,7 +176,6 @@ CREATE TABLE Ticket (
 
   UNIQUE KEY uk_ticket_once (visitor_id_FK, event_id_FK),
 
-  /* έγκυρος EAN‑13 */
   CONSTRAINT ck_ean13_numeric
      CHECK (ean_code REGEXP '^[0-9]{13}$')
 );
@@ -253,21 +242,14 @@ CREATE TABLE Resale_queue (
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
-/* ------------------------------------------------------------
-   2.  Indexes
-   ------------------------------------------------------------ */
+-- INDEXES
 CREATE INDEX idx_event_schedule       ON Event(event_date, start_time, end_time);
 CREATE INDEX idx_performance_by_event ON Performance(event_id_FK, start_time);
 CREATE INDEX idx_staff_role           ON Staff(staff_role);
 
-/* ============================================================
-   3.  Triggers  – Business Rules
-   ============================================================ */
+-- TRIGGERS
 DELIMITER $$
 
-/* ------------------------------------------------------------
-   3.1  Staff quotas (≥ 5 % security, ≥ 2 % support)
-   ------------------------------------------------------------ */
 DROP TRIGGER IF EXISTS trg_staff_quota;
 CREATE TRIGGER trg_staff_quota
 BEFORE INSERT ON Stage_Staff
@@ -302,9 +284,6 @@ BEGIN
   END IF;
 END$$
 
-/* ------------------------------------------------------------
-   3.2  No overlapping Events in same Stage
-   ------------------------------------------------------------ */
 DROP TRIGGER IF EXISTS trg_event_overlap;
 CREATE TRIGGER trg_event_overlap
 BEFORE INSERT ON Event
@@ -323,9 +302,6 @@ BEGIN
   END IF;
 END$$
 
-/* ------------------------------------------------------------
-   3.3  Performance gaps 5–30′  &  no overlap inside Event
-   ------------------------------------------------------------ */
 DROP TRIGGER IF EXISTS trg_performance_gap;
 CREATE TRIGGER trg_performance_gap
 BEFORE INSERT ON Performance
@@ -335,7 +311,6 @@ BEGIN
   DECLARE prev_end TIME;
   DECLARE gap INT;
 
-  /* 3.3.1 overlap στον ίδιο Event */
   SELECT COUNT(*) INTO overlap_cnt
     FROM Performance
    WHERE event_id_FK = NEW.event_id_FK
@@ -346,7 +321,6 @@ BEGIN
        SET MESSAGE_TEXT='Overlapping performance in same event';
   END IF;
 
-  /* 3.3.2 κενό 5–30 λεπτά */
   SET prev_end = NULL;
   SELECT end_time INTO prev_end
     FROM Performance
@@ -363,9 +337,6 @@ BEGIN
   END IF;
 END$$
 
-/* ------------------------------------------------------------
-   3.4  Artist cannot be in two stages simultaneously
-   ------------------------------------------------------------ */
 DROP TRIGGER IF EXISTS trg_artist_double_booking;
 CREATE TRIGGER trg_artist_double_booking
 BEFORE INSERT ON Performance_Artist
@@ -377,7 +348,6 @@ BEGIN
   DECLARE ev_date DATE;
   DECLARE clash INT;
 
-  /* λεπτομέρειες νέου slot */
   SELECT event_id_FK, start_time, end_time
     INTO v_event, st, et
     FROM Performance WHERE performance_id = NEW.performance_id_FK;
@@ -385,7 +355,6 @@ BEGIN
   SELECT event_date INTO ev_date
     FROM Event WHERE event_id = v_event;
 
-  /* check overlap */
   SELECT COUNT(*) INTO clash
     FROM Performance_Artist pa
     JOIN Performance p  ON p.performance_id = pa.performance_id_FK
@@ -401,9 +370,6 @@ BEGIN
   END IF;
 END$$
 
-/* ------------------------------------------------------------
-   3.5  Artist ≤ 3 consecutive years
-   ------------------------------------------------------------ */
 DROP TRIGGER IF EXISTS trg_artist_consecutive_years;
 CREATE TRIGGER trg_artist_consecutive_years
 BEFORE INSERT ON Performance_Artist
@@ -412,14 +378,12 @@ BEGIN
   DECLARE v_year YEAR;
   DECLARE years_cnt INT;
 
-  /* έτος της νέας εμφάνισης */
   SELECT f.festival_year INTO v_year
     FROM Performance p
     JOIN Event    e ON e.event_id        = p.event_id_FK
     JOIN Festival f ON f.festival_id     = e.festival_id_FK
    WHERE p.performance_id = NEW.performance_id_FK;
 
-  /* πόσα διαδοχικά έτη (v_year-2 .. v_year-1) */
   SELECT COUNT(DISTINCT f.festival_year)
     INTO years_cnt
     FROM Performance_Artist pa
@@ -435,9 +399,6 @@ BEGIN
   END IF;
 END$$
 
-/* ------------------------------------------------------------
-   3.6  Stage capacity & VIP ≤ 10 %
-   ------------------------------------------------------------ */
 DROP TRIGGER IF EXISTS trg_ticket_capacity;
 CREATE TRIGGER trg_ticket_capacity
 BEFORE INSERT ON Ticket
@@ -472,9 +433,6 @@ BEGIN
   END IF;
 END$$
 
-/* ------------------------------------------------------------
-   3.7  Rating only with activated ticket
-   ------------------------------------------------------------ */
 DROP TRIGGER IF EXISTS trg_rating_allowed;
 CREATE TRIGGER trg_rating_allowed
 BEFORE INSERT ON Rating
@@ -497,7 +455,4 @@ END$$
 
 DELIMITER ;
 
-/* ------------------------------------------------------------
-   4.  OK Message
-   ------------------------------------------------------------ */
 SELECT '✅  Schema installed with full constraint set.' AS status;

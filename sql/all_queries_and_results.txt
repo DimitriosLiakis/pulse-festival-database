@@ -1,0 +1,3119 @@
+================================================================
+Query: Q01
+================================================================
+
+SELECT
+  f.festival_year       AS Έτος,
+  COALESCE(t.purchase_method, 'Σύνολο_Εσόδων') AS Τρόπος_Πληρωμής,
+  SUM(t.ticket_cost)    AS Σύνολο_Εσόδων
+FROM Ticket    AS t
+JOIN Event     AS e  ON t.event_id_FK    = e.event_id
+JOIN Festival  AS f  ON e.festival_id_FK = f.festival_id
+GROUP BY
+  f.festival_year,
+  t.purchase_method
+WITH ROLLUP
+HAVING
+  (festival_year IS NOT NULL AND purchase_method IS NOT NULL)
+  OR
+  (festival_year IS NOT NULL AND purchase_method IS NULL)
+ORDER BY
+  f.festival_year,
+  purchase_method IS NULL,
+  purchase_method;
+
+---- Results of Q01 ----
+
+Έτος	Τρόπος_Πληρωμής	Σύνολο_Εσόδων
+2017	Σύνολο_Εσόδων	2987.00
+2017	bank_transfer	1005.00
+2017	credit_card	269.00
+2017	debit_card	1055.00
+2017	other	658.00
+2018	Σύνολο_Εσόδων	2313.00
+2018	bank_transfer	699.00
+2018	credit_card	828.00
+2018	debit_card	557.00
+2018	other	229.00
+2019	Σύνολο_Εσόδων	1160.00
+2019	bank_transfer	249.00
+2019	credit_card	517.00
+2019	debit_card	217.00
+2019	other	177.00
+2020	Σύνολο_Εσόδων	931.00
+2020	bank_transfer	225.00
+2020	credit_card	210.00
+2020	debit_card	198.00
+2020	other	298.00
+2021	Σύνολο_Εσόδων	1512.00
+2021	bank_transfer	502.00
+2021	credit_card	415.00
+2021	debit_card	129.00
+2021	other	466.00
+2022	Σύνολο_Εσόδων	1168.00
+2022	bank_transfer	156.00
+2022	credit_card	424.00
+2022	debit_card	189.00
+2022	other	399.00
+2023	Σύνολο_Εσόδων	1170.00
+2023	bank_transfer	395.00
+2023	credit_card	306.00
+2023	debit_card	231.00
+2023	other	238.00
+2024	Σύνολο_Εσόδων	2822.00
+2024	bank_transfer	313.00
+2024	credit_card	820.00
+2024	debit_card	781.00
+2024	other	908.00
+2025	Σύνολο_Εσόδων	1774.00
+2025	bank_transfer	200.00
+2025	credit_card	710.00
+2025	debit_card	461.00
+2025	other	403.00
+2026	Σύνολο_Εσόδων	1545.00
+2026	bank_transfer	362.00
+2026	credit_card	666.00
+2026	debit_card	356.00
+2026	other	161.00
+
+
+================================================================
+Query: Q02
+================================================================
+
+/* Δώστε τιμές στις δύο μεταβλητές πριν τρέξετε το SELECT */
+SET @p_genre = 'rock';   
+SET @p_year  = 2024;     
+
+SELECT  a.artist_id,
+        COALESCE(a.pseudonym, a.real_name) AS artist_name,
+        a.music_genre,
+        /* ‘Y’ αν ο καλλιτέχνης έπαιξε σε εκδήλωση τη συγκεκριμένη χρονιά */
+        CASE WHEN x.artist_id_FK IS NOT NULL THEN 'Y' ELSE 'N' END AS participated
+FROM    Artist AS a
+LEFT JOIN (   /* σύνολο καλλιτεχνών που εμφανίστηκαν το @p_year */
+        SELECT DISTINCT pa.artist_id_FK
+        FROM   Performance_Artist pa
+        JOIN   Performance       p ON p.performance_id = pa.performance_id_FK
+        JOIN   Event             e ON e.event_id        = p.event_id_FK
+        JOIN   Festival          f ON f.festival_id     = e.festival_id_FK
+        WHERE  f.festival_year = @p_year
+) AS x  ON x.artist_id_FK = a.artist_id
+WHERE   a.music_genre = @p_genre           
+ORDER BY artist_name;
+
+---- Results of Q02 ----
+
+artist_id	artist_name	music_genre	participated
+1		rock	Y
+10		rock	N
+22		rock	N
+25		rock	N
+17	brobinson	rock	N
+6	pwilliams	rock	N
+
+
+================================================================
+Query: Q03
+================================================================
+
+SELECT  a.artist_id,
+        COALESCE(a.pseudonym, a.real_name) AS artist_name,
+        f.festival_id,
+        f.festival_name,
+        f.festival_year,
+        COUNT(DISTINCT p.performance_id) AS warmup_cnt              
+FROM        Artist              AS a
+JOIN        Performance_Artist  AS pa ON pa.artist_id_FK   = a.artist_id
+JOIN        Performance         AS p  ON p.performance_id  = pa.performance_id_FK
+JOIN        Event               AS e  ON e.event_id        = p.event_id_FK
+JOIN        Festival            AS f  ON f.festival_id     = e.festival_id_FK
+WHERE       p.performance_type = 'warm up'
+GROUP BY    a.artist_id, f.festival_id                           
+HAVING      warmup_cnt >= 3                                      
+ORDER BY    warmup_cnt DESC, artist_name;
+
+---- Results of Q03 ----
+
+artist_id	artist_name	festival_id	festival_name	festival_year	warmup_cnt
+1		1	PulseFestival_2017	2017	3
+
+
+================================================================
+Query: Q04a
+================================================================
+
+-- FORCE INDEX
+SELECT
+    a.artist_id,
+    COALESCE(a.pseudonym, a.real_name)          AS artist_name,
+    AVG(r.rating_interpretation)                 AS avg_interpretation,
+    AVG(r.rating_overall)                        AS avg_overall
+FROM   Rating AS r
+       FORCE INDEX (`performance_id_FK`)
+JOIN   Performance_Artist AS pa
+       FORCE INDEX (PRIMARY)
+       ON  pa.performance_id_FK = r.performance_id_FK
+JOIN   Artist AS a
+       FORCE INDEX (PRIMARY)
+       ON  a.artist_id = pa.artist_id_FK
+WHERE  a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
+
+
+EXPLAIN FORMAT=JSON
+SELECT
+    a.artist_id,
+    COALESCE(a.pseudonym, a.real_name)          AS artist_name,
+    AVG(r.rating_interpretation)                 AS avg_interpretation,
+    AVG(r.rating_overall)                        AS avg_overall
+FROM   Rating AS r
+       FORCE INDEX (`performance_id_FK`)
+JOIN   Performance_Artist AS pa
+       FORCE INDEX (PRIMARY)
+       ON  pa.performance_id_FK = r.performance_id_FK
+JOIN   Artist AS a
+       FORCE INDEX (PRIMARY)
+       ON  a.artist_id = pa.artist_id_FK
+WHERE  a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
+
+---- Results of Q04a ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+artist_id	artist_name	avg_interpretation	avg_overall
+5		3.1429	3.2857
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "30.87"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 75,\n            "rows_produced_per_join": 2,\n            "filtered": "4.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "26.20",\n              "eval_cost": "0.30",\n              "prefix_cost": "26.50",\n              "data_read_per_join": "47"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`music_festival`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "music_festival.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 12,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "3.12",\n              "eval_cost": "1.25",\n              "prefix_cost": "30.87",\n              "data_read_per_join": "299"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
+
+
+================================================================
+Query: Q04b
+================================================================
+
+SET optimizer_trace = 'enabled=on', end_markers_in_json = off;
+SET @p_artist_id = 5;
+
+SELECT
+    a.artist_id,
+    COALESCE(a.pseudonym, a.real_name)        AS artist_name,
+    ROUND(AVG(r.rating_interpretation), 2)     AS avg_interpretation,
+    ROUND(AVG(r.rating_overall), 2)            AS avg_overall
+FROM   Rating             AS r
+JOIN   Performance        AS p   ON p.performance_id     = r.performance_id_FK
+JOIN   Performance_Artist AS pa  ON pa.performance_id_FK = p.performance_id
+JOIN   Artist             AS a   ON a.artist_id          = pa.artist_id_FK
+WHERE  a.artist_id = @p_artist_id
+GROUP  BY a.artist_id, artist_name;
+
+SELECT JSON_PRETTY(trace) AS optimizer_trace
+FROM   INFORMATION_SCHEMA.OPTIMIZER_TRACE
+LIMIT  1\G
+
+SET optimizer_trace = 'enabled=off';
+
+---- Results of Q04b ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+artist_id	artist_name	avg_interpretation	avg_overall
+5		3.14	3.29
+*************************** 1. row ***************************
+optimizer_trace: {
+  "steps": [
+    {
+      "IN_uses_bisection": true
+    },
+    {
+      "join_preparation": {
+        "steps": [
+          {
+            "expanded_query": "/* select#1 */ select `a`.`artist_id` AS `artist_id`,coalesce(`a`.`pseudonym`,`a`.`real_name`) AS `artist_name`,round(avg(`r`.`rating_interpretation`),2) AS `avg_interpretation`,round(avg(`r`.`rating_overall`),2) AS `avg_overall` from (((`Rating` `r` join `Performance` `p` on((`p`.`performance_id` = `r`.`performance_id_FK`))) join `Performance_Artist` `pa` on((`pa`.`performance_id_FK` = `p`.`performance_id`))) join `Artist` `a` on((`a`.`artist_id` = `pa`.`artist_id_FK`))) where (`a`.`artist_id` = (@`p_artist_id`)) group by `a`.`artist_id`,`artist_name`"
+          },
+          {
+            "transformations_to_nested_joins": {
+              "expanded_query": "/* select#1 */ select `a`.`artist_id` AS `artist_id`,coalesce(`a`.`pseudonym`,`a`.`real_name`) AS `artist_name`,round(avg(`r`.`rating_interpretation`),2) AS `avg_interpretation`,round(avg(`r`.`rating_overall`),2) AS `avg_overall` from `Rating` `r` join `Performance` `p` join `Performance_Artist` `pa` join `Artist` `a` where ((`a`.`artist_id` = (@`p_artist_id`)) and (`a`.`artist_id` = `pa`.`artist_id_FK`) and (`pa`.`performance_id_FK` = `p`.`performance_id`) and (`p`.`performance_id` = `r`.`performance_id_FK`)) group by `a`.`artist_id`,`artist_name`",
+              "transformations": [
+                "JOIN_condition_to_WHERE",
+                "parenthesis_removal"
+              ]
+            }
+          }
+        ],
+        "select#": 1
+      }
+    },
+    {
+      "join_optimization": {
+        "steps": [
+          {
+            "condition_processing": {
+              "steps": [
+                {
+                  "transformation": "equality_propagation",
+                  "resulting_condition": "(multiple equal((@`p_artist_id`), `a`.`artist_id`, `pa`.`artist_id_FK`) and multiple equal(`pa`.`performance_id_FK`, `p`.`performance_id`, `r`.`performance_id_FK`))"
+                },
+                {
+                  "transformation": "constant_propagation",
+                  "resulting_condition": "(multiple equal((@`p_artist_id`), `a`.`artist_id`, `pa`.`artist_id_FK`) and multiple equal(`pa`.`performance_id_FK`, `p`.`performance_id`, `r`.`performance_id_FK`))"
+                },
+                {
+                  "transformation": "trivial_condition_removal",
+                  "resulting_condition": "(multiple equal((@`p_artist_id`), `a`.`artist_id`, `pa`.`artist_id_FK`) and multiple equal(`pa`.`performance_id_FK`, `p`.`performance_id`, `r`.`performance_id_FK`))"
+                }
+              ],
+              "condition": "WHERE",
+              "original_condition": "((`a`.`artist_id` = (@`p_artist_id`)) and (`a`.`artist_id` = `pa`.`artist_id_FK`) and (`pa`.`performance_id_FK` = `p`.`performance_id`) and (`p`.`performance_id` = `r`.`performance_id_FK`))"
+            }
+          },
+          {
+            "substitute_generated_columns": {}
+          },
+          {
+            "table_dependencies": [
+              {
+                "table": "`Rating` `r`",
+                "map_bit": 0,
+                "row_may_be_null": false,
+                "depends_on_map_bits": []
+              },
+              {
+                "table": "`Performance` `p`",
+                "map_bit": 1,
+                "row_may_be_null": false,
+                "depends_on_map_bits": []
+              },
+              {
+                "table": "`Performance_Artist` `pa`",
+                "map_bit": 2,
+                "row_may_be_null": false,
+                "depends_on_map_bits": []
+              },
+              {
+                "table": "`Artist` `a`",
+                "map_bit": 3,
+                "row_may_be_null": false,
+                "depends_on_map_bits": []
+              }
+            ]
+          },
+          {
+            "ref_optimizer_key_uses": [
+              {
+                "field": "performance_id_FK",
+                "table": "`Rating` `r`",
+                "equals": "`pa`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "field": "performance_id_FK",
+                "table": "`Rating` `r`",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "field": "performance_id",
+                "table": "`Performance` `p`",
+                "equals": "`pa`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "field": "performance_id",
+                "table": "`Performance` `p`",
+                "equals": "`r`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "field": "performance_id_FK",
+                "table": "`Performance_Artist` `pa`",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "field": "performance_id_FK",
+                "table": "`Performance_Artist` `pa`",
+                "equals": "`r`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "field": "artist_id_FK",
+                "table": "`Performance_Artist` `pa`",
+                "equals": "(@`p_artist_id`)",
+                "null_rejecting": true
+              },
+              {
+                "field": "artist_id_FK",
+                "table": "`Performance_Artist` `pa`",
+                "equals": "(@`p_artist_id`)",
+                "null_rejecting": true
+              },
+              {
+                "field": "performance_id_FK",
+                "table": "`Performance_Artist` `pa`",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "field": "performance_id_FK",
+                "table": "`Performance_Artist` `pa`",
+                "equals": "`r`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "field": "artist_id",
+                "table": "`Artist` `a`",
+                "equals": "(@`p_artist_id`)",
+                "null_rejecting": true
+              }
+            ]
+          },
+          {
+            "rows_estimation": [
+              {
+                "table": "`Rating` `r`",
+                "table_scan": {
+                  "cost": 0.75,
+                  "rows": 400
+                }
+              },
+              {
+                "table": "`Performance` `p`",
+                "table_scan": {
+                  "cost": 0.25,
+                  "rows": 117
+                }
+              },
+              {
+                "table": "`Performance_Artist` `pa`",
+                "range_analysis": {
+                  "table_scan": {
+                    "cost": 9.85,
+                    "rows": 75
+                  },
+                  "skip_scan_range": {
+                    "cause": "not_single_table",
+                    "chosen": false
+                  },
+                  "group_index_range": {
+                    "cause": "not_single_table",
+                    "chosen": false
+                  },
+                  "setup_range_conditions": [],
+                  "potential_range_indexes": [
+                    {
+                      "cause": "not_applicable",
+                      "index": "PRIMARY",
+                      "usable": false
+                    },
+                    {
+                      "index": "artist_id_FK",
+                      "usable": true,
+                      "key_parts": [
+                        "artist_id_FK",
+                        "performance_id_FK"
+                      ]
+                    },
+                    {
+                      "cause": "not_applicable",
+                      "index": "band_id_FK",
+                      "usable": false
+                    }
+                  ],
+                  "best_covering_index_scan": {
+                    "cost": 7.77709,
+                    "index": "artist_id_FK",
+                    "chosen": true
+                  },
+                  "chosen_range_access_summary": {
+                    "chosen": true,
+                    "cost_for_plan": 0.460366,
+                    "rows_for_plan": 2,
+                    "range_access_plan": {
+                      "rows": 2,
+                      "type": "range_scan",
+                      "index": "artist_id_FK",
+                      "ranges": [
+                        "artist_id_FK = 5"
+                      ]
+                    }
+                  },
+                  "analyzing_range_alternatives": {
+                    "range_scan_alternatives": [
+                      {
+                        "cost": 0.460366,
+                        "rows": 2,
+                        "index": "artist_id_FK",
+                        "chosen": true,
+                        "ranges": [
+                          "artist_id_FK = 5"
+                        ],
+                        "in_memory": 1,
+                        "using_mrr": false,
+                        "index_only": true,
+                        "rowid_ordered": true,
+                        "index_dives_for_eq_ranges": true
+                      }
+                    ],
+                    "analyzing_roworder_intersect": {
+                      "cause": "too_few_roworder_scans",
+                      "usable": false
+                    }
+                  }
+                }
+              },
+              {
+                "cost": 1,
+                "rows": 1,
+                "empty": false,
+                "table": "`Artist` `a`",
+                "table_type": "const"
+              }
+            ]
+          },
+          {
+            "considered_execution_plans": [
+              {
+                "table": "`Performance_Artist` `pa`",
+                "plan_prefix": [
+                  "`Artist` `a`"
+                ],
+                "rest_of_plan": [
+                  {
+                    "table": "`Performance` `p`",
+                    "plan_prefix": [
+                      "`Artist` `a`",
+                      "`Performance_Artist` `pa`"
+                    ],
+                    "rest_of_plan": [
+                      {
+                        "table": "`Rating` `r`",
+                        "plan_prefix": [
+                          "`Artist` `a`",
+                          "`Performance_Artist` `pa`",
+                          "`Performance` `p`"
+                        ],
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "cost": 2.91667,
+                              "rows": 4.16667,
+                              "index": "performance_id_FK",
+                              "chosen": true,
+                              "access_type": "ref"
+                            },
+                            {
+                              "cost": 80.7501,
+                              "chosen": false,
+                              "access_type": "scan",
+                              "rows_to_scan": 400,
+                              "buffers_needed": 1,
+                              "resulting_rows": 400,
+                              "filtering_effect": [],
+                              "using_join_cache": true,
+                              "final_filtering_effect": 1
+                            }
+                          ]
+                        },
+                        "added_to_eq_ref_extension": false
+                      },
+                      {
+                        "table": "`Rating` `r`",
+                        "chosen": true,
+                        "sort_cost": 8.33333,
+                        "plan_prefix": [
+                          "`Artist` `a`",
+                          "`Performance_Artist` `pa`",
+                          "`Performance` `p`"
+                        ],
+                        "cost_for_plan": 4.06703,
+                        "rows_for_plan": 8.33333,
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "cost": 2.91667,
+                              "rows": 4.16667,
+                              "index": "performance_id_FK",
+                              "chosen": true,
+                              "access_type": "ref"
+                            },
+                            {
+                              "cost": 80.7501,
+                              "chosen": false,
+                              "access_type": "scan",
+                              "rows_to_scan": 400,
+                              "buffers_needed": 1,
+                              "resulting_rows": 400,
+                              "filtering_effect": [],
+                              "using_join_cache": true,
+                              "final_filtering_effect": 1
+                            }
+                          ]
+                        },
+                        "new_cost_for_plan": 12.4004,
+                        "condition_filtering_pct": 100
+                      }
+                    ],
+                    "cost_for_plan": 1.15037,
+                    "rows_for_plan": 2,
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "cost": 0.7,
+                          "rows": 1,
+                          "cause": "clustered_pk_chosen_by_heuristics",
+                          "index": "PRIMARY",
+                          "chosen": true,
+                          "access_type": "eq_ref"
+                        },
+                        {
+                          "cause": "covering_index_better_than_full_scan",
+                          "chosen": false,
+                          "access_type": "scan"
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100
+                  },
+                  {
+                    "table": "`Rating` `r`",
+                    "plan_prefix": [
+                      "`Artist` `a`",
+                      "`Performance_Artist` `pa`"
+                    ],
+                    "cost_for_plan": 3.36703,
+                    "rows_for_plan": 8.33333,
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "cost": 2.91667,
+                          "rows": 4.16667,
+                          "index": "performance_id_FK",
+                          "chosen": true,
+                          "access_type": "ref"
+                        },
+                        {
+                          "cost": 80.75,
+                          "chosen": false,
+                          "access_type": "scan",
+                          "rows_to_scan": 400,
+                          "buffers_needed": 1,
+                          "resulting_rows": 400,
+                          "filtering_effect": [],
+                          "using_join_cache": true,
+                          "final_filtering_effect": 1
+                        }
+                      ]
+                    },
+                    "pruned_by_heuristic": true,
+                    "condition_filtering_pct": 100
+                  }
+                ],
+                "cost_for_plan": 0.450366,
+                "rows_for_plan": 2,
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "index": "PRIMARY",
+                      "chosen": false,
+                      "usable": false,
+                      "access_type": "ref"
+                    },
+                    {
+                      "cost": 0.450366,
+                      "rows": 2,
+                      "index": "artist_id_FK",
+                      "chosen": true,
+                      "access_type": "ref"
+                    },
+                    {
+                      "cause": "heuristic_index_cheaper",
+                      "chosen": false,
+                      "access_type": "range",
+                      "range_details": {
+                        "used_index": "artist_id_FK"
+                      }
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100
+              },
+              {
+                "table": "`Performance` `p`",
+                "plan_prefix": [
+                  "`Artist` `a`"
+                ],
+                "rest_of_plan": [
+                  {
+                    "table": "`Performance_Artist` `pa`",
+                    "plan_prefix": [
+                      "`Artist` `a`",
+                      "`Performance` `p`"
+                    ],
+                    "cost_for_plan": 52.9,
+                    "rows_for_plan": 117,
+                    "pruned_by_cost": true,
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "cost": 40.95,
+                          "rows": 1,
+                          "cause": "clustered_pk_chosen_by_heuristics",
+                          "index": "PRIMARY",
+                          "chosen": true,
+                          "access_type": "eq_ref"
+                        },
+                        {
+                          "cost": 77.2628,
+                          "chosen": false,
+                          "access_type": "range",
+                          "rows_to_scan": 2,
+                          "range_details": {
+                            "used_index": "artist_id_FK"
+                          },
+                          "resulting_rows": 2,
+                          "filtering_effect": [],
+                          "final_filtering_effect": 1
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100
+                  },
+                  {
+                    "table": "`Rating` `r`",
+                    "plan_prefix": [
+                      "`Artist` `a`",
+                      "`Performance` `p`"
+                    ],
+                    "cost_for_plan": 182.575,
+                    "rows_for_plan": 487.5,
+                    "pruned_by_cost": true,
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "cost": 170.625,
+                          "rows": 4.16667,
+                          "index": "performance_id_FK",
+                          "chosen": true,
+                          "access_type": "ref"
+                        },
+                        {
+                          "cost": 4680.75,
+                          "chosen": false,
+                          "access_type": "scan",
+                          "rows_to_scan": 400,
+                          "buffers_needed": 1,
+                          "resulting_rows": 400,
+                          "filtering_effect": [],
+                          "using_join_cache": true,
+                          "final_filtering_effect": 1
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100
+                  }
+                ],
+                "cost_for_plan": 11.95,
+                "rows_for_plan": 117,
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "index": "PRIMARY",
+                      "chosen": false,
+                      "usable": false,
+                      "access_type": "ref"
+                    },
+                    {
+                      "cost": 11.95,
+                      "chosen": true,
+                      "access_type": "scan",
+                      "rows_to_scan": 117,
+                      "resulting_rows": 117,
+                      "filtering_effect": [],
+                      "final_filtering_effect": 1
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100
+              },
+              {
+                "table": "`Rating` `r`",
+                "plan_prefix": [
+                  "`Artist` `a`"
+                ],
+                "cost_for_plan": 40.75,
+                "rows_for_plan": 400,
+                "pruned_by_cost": true,
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "index": "performance_id_FK",
+                      "chosen": false,
+                      "usable": false,
+                      "access_type": "ref"
+                    },
+                    {
+                      "cost": 40.75,
+                      "chosen": true,
+                      "access_type": "scan",
+                      "rows_to_scan": 400,
+                      "resulting_rows": 400,
+                      "filtering_effect": [],
+                      "final_filtering_effect": 1
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100
+              }
+            ]
+          },
+          {
+            "attaching_conditions_to_tables": {
+              "original_condition": "((`p`.`performance_id` = `pa`.`performance_id_FK`) and (`r`.`performance_id_FK` = `pa`.`performance_id_FK`) and (`pa`.`artist_id_FK` = (@`p_artist_id`)))",
+              "attached_conditions_summary": [
+                {
+                  "table": "`Performance_Artist` `pa`",
+                  "attached": "(`pa`.`artist_id_FK` = (@`p_artist_id`))"
+                },
+                {
+                  "table": "`Performance` `p`",
+                  "attached": "(`p`.`performance_id` = `pa`.`performance_id_FK`)"
+                },
+                {
+                  "table": "`Rating` `r`",
+                  "attached": "(`r`.`performance_id_FK` = `pa`.`performance_id_FK`)"
+                }
+              ],
+              "attached_conditions_computation": []
+            }
+          },
+          {
+            "optimizing_distinct_group_by_order_by": {
+              "simplifying_group_by": {
+                "items": [
+                  {
+                    "item": "'5'",
+                    "uses_only_constant_tables": true
+                  },
+                  {
+                    "item": "coalesce('','Stephanie Dalton')",
+                    "uses_only_constant_tables": true
+                  }
+                ],
+                "original_clause": "'5',`artist_name`",
+                "resulting_clause": "",
+                "resulting_clause_is_simple": true
+              }
+            }
+          },
+          {
+            "finalizing_table_conditions": [
+              {
+                "table": "`Performance_Artist` `pa`",
+                "final_table_condition   ": null,
+                "original_table_condition": "(`pa`.`artist_id_FK` = (@`p_artist_id`))"
+              },
+              {
+                "table": "`Performance` `p`",
+                "final_table_condition   ": null,
+                "original_table_condition": "(`p`.`performance_id` = `pa`.`performance_id_FK`)"
+              },
+              {
+                "table": "`Rating` `r`",
+                "final_table_condition   ": null,
+                "original_table_condition": "(`r`.`performance_id_FK` = `pa`.`performance_id_FK`)"
+              }
+            ]
+          },
+          {
+            "refine_plan": [
+              {
+                "table": "`Performance_Artist` `pa`"
+              },
+              {
+                "table": "`Performance` `p`"
+              },
+              {
+                "table": "`Rating` `r`"
+              }
+            ]
+          }
+        ],
+        "select#": 1
+      }
+    },
+    {
+      "join_execution": {
+        "steps": [],
+        "select#": 1
+      }
+    }
+  ]
+}
+
+
+================================================================
+Query: Q04c
+================================================================
+
+/* 4.3 Forced Nested Loop Join (updated for revised schema) */
+SELECT
+    a.artist_id,
+    COALESCE(a.pseudonym, a.real_name)   AS artist_name,
+    AVG(r.rating_interpretation)          AS avg_interpretation,
+    AVG(r.rating_overall)                 AS avg_overall
+FROM Rating             AS r
+    FORCE INDEX (`performance_id_FK`)    
+JOIN Performance_Artist AS pa
+    FORCE INDEX (PRIMARY)                
+    /*+ LOOP_JOIN(r pa) */               
+    ON r.performance_id_FK = pa.performance_id_FK
+JOIN Artist             AS a
+    FORCE INDEX (PRIMARY)                
+    ON pa.artist_id_FK = a.artist_id
+WHERE a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
+
+EXPLAIN FORMAT=JSON
+SELECT
+    a.artist_id,
+    COALESCE(a.pseudonym, a.real_name)   AS artist_name,
+    AVG(r.rating_interpretation)          AS avg_interpretation,
+    AVG(r.rating_overall)                 AS avg_overall
+FROM Rating             AS r
+    FORCE INDEX (`performance_id_FK`)
+JOIN Performance_Artist AS pa
+    FORCE INDEX (PRIMARY)
+    /*+ LOOP_JOIN(r pa) */
+    ON r.performance_id_FK = pa.performance_id_FK
+JOIN Artist             AS a
+    FORCE INDEX (PRIMARY)
+    ON pa.artist_id_FK = a.artist_id
+WHERE a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
+
+---- Results of Q04c ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+artist_id	artist_name	avg_interpretation	avg_overall
+5		3.1429	3.2857
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "30.87"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 75,\n            "rows_produced_per_join": 2,\n            "filtered": "4.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "26.20",\n              "eval_cost": "0.30",\n              "prefix_cost": "26.50",\n              "data_read_per_join": "47"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`music_festival`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "music_festival.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 12,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "3.12",\n              "eval_cost": "1.25",\n              "prefix_cost": "30.87",\n              "data_read_per_join": "299"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
+
+
+================================================================
+Query: Q04d
+================================================================
+
+/* Example: Forced Hash Join with pseudonym */
+
+SET optimizer_switch = 'hash_join=on';
+
+SELECT
+    a.artist_id,
+    COALESCE(a.pseudonym, a.real_name)   AS artist_name, 
+    AVG(r.rating_interpretation)          AS avg_interpretation,
+    AVG(r.rating_overall)                 AS avg_overall
+FROM   Rating             AS r
+    FORCE INDEX (`performance_id_FK`)
+JOIN   Performance_Artist AS pa
+    FORCE INDEX (PRIMARY)
+    /*+ HASH_JOIN(r pa) */
+    ON r.performance_id_FK = pa.performance_id_FK
+JOIN   Artist             AS a
+    FORCE INDEX (PRIMARY)
+    ON pa.artist_id_FK = a.artist_id
+WHERE  a.artist_id = 5
+GROUP  BY a.artist_id, artist_name;
+
+EXPLAIN FORMAT=JSON
+SELECT
+    a.artist_id,
+    COALESCE(a.pseudonym, a.real_name)   AS artist_name,  
+    AVG(r.rating_interpretation)          AS avg_interpretation,
+    AVG(r.rating_overall)                 AS avg_overall
+FROM   Rating             AS r
+    FORCE INDEX (`performance_id_FK`)
+JOIN   Performance_Artist AS pa
+    FORCE INDEX (PRIMARY)
+    /*+ HASH_JOIN(r pa) */
+    ON r.performance_id_FK = pa.performance_id_FK
+JOIN   Artist             AS a
+    FORCE INDEX (PRIMARY)
+    ON pa.artist_id_FK = a.artist_id
+WHERE  a.artist_id = 5
+GROUP  BY a.artist_id, artist_name;
+
+---- Results of Q04d ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+artist_id	artist_name	avg_interpretation	avg_overall
+5		3.1429	3.2857
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "30.87"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "index",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "rows_examined_per_scan": 75,\n            "rows_produced_per_join": 2,\n            "filtered": "4.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "26.20",\n              "eval_cost": "0.30",\n              "prefix_cost": "26.50",\n              "data_read_per_join": "47"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "attached_condition": "(`music_festival`.`pa`.`artist_id_FK` = 5)"\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ref",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "key": "performance_id_FK",\n            "used_key_parts": [\n              "performance_id_FK"\n            ],\n            "key_length": "4",\n            "ref": [\n              "music_festival.pa.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 4,\n            "rows_produced_per_join": 12,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "3.12",\n              "eval_cost": "1.25",\n              "prefix_cost": "30.87",\n              "data_read_per_join": "299"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
+
+
+================================================================
+Query: Q04
+================================================================
+
+SET @p_artist_id   = 5;    
+SELECT  a.artist_id,
+        COALESCE(a.pseudonym, a.real_name)               AS artist_name,
+        ROUND(AVG(r.rating_interpretation), 2)            AS avg_interpretation,
+        ROUND(AVG(r.rating_overall),        2)            AS avg_overall
+FROM        Rating              r
+JOIN        Performance         p   ON p.performance_id      = r.performance_id_FK
+JOIN        Performance_Artist  pa  ON pa.performance_id_FK  = p.performance_id
+JOIN        Artist              a   ON a.artist_id           = pa.artist_id_FK
+WHERE       a.artist_id = @p_artist_id        
+GROUP BY    a.artist_id, artist_name;
+
+EXPLAIN FORMAT=JSON
+SELECT  a.artist_id,
+        COALESCE(a.pseudonym, a.real_name)               AS artist_name,
+        ROUND(AVG(r.rating_interpretation), 2)            AS avg_interpretation,
+        ROUND(AVG(r.rating_overall),        2)            AS avg_overall
+FROM        Rating              r
+JOIN        Performance         p   ON p.performance_id      = r.performance_id_FK
+JOIN        Performance_Artist  pa  ON pa.performance_id_FK  = p.performance_id
+JOIN        Artist              a   ON a.artist_id           = pa.artist_id_FK
+WHERE       a.artist_id = @p_artist_id        
+GROUP BY    a.artist_id, artist_name;
+---- Results of Q04 ----
+
+artist_id	artist_name	avg_interpretation	avg_overall
+5		3.14	3.29
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "320.25"\n    },\n    "grouping_operation": {\n      "using_filesort": false,\n      "nested_loop": [\n        {\n          "table": {\n            "table_name": "a",\n            "access_type": "const",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "artist_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 1,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.00",\n              "eval_cost": "0.10",\n              "prefix_cost": "0.00",\n              "data_read_per_join": "5K"\n            },\n            "used_columns": [\n              "artist_id",\n              "real_name",\n              "pseudonym"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "r",\n            "access_type": "ALL",\n            "possible_keys": [\n              "performance_id_FK"\n            ],\n            "rows_examined_per_scan": 400,\n            "rows_produced_per_join": 400,\n            "filtered": "100.00",\n            "cost_info": {\n              "read_cost": "0.25",\n              "eval_cost": "40.00",\n              "prefix_cost": "40.25",\n              "data_read_per_join": "9K"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "rating_interpretation",\n              "rating_overall"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "pa",\n            "access_type": "eq_ref",\n            "possible_keys": [\n              "PRIMARY",\n              "artist_id_FK"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ],\n            "key_length": "8",\n            "ref": [\n              "pulse_festival.r.performance_id_FK",\n              "const"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 400,\n            "filtered": "100.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "100.00",\n              "eval_cost": "40.00",\n              "prefix_cost": "180.25",\n              "data_read_per_join": "6K"\n            },\n            "used_columns": [\n              "performance_id_FK",\n              "artist_id_FK"\n            ]\n          }\n        },\n        {\n          "table": {\n            "table_name": "p",\n            "access_type": "eq_ref",\n            "possible_keys": [\n              "PRIMARY"\n            ],\n            "key": "PRIMARY",\n            "used_key_parts": [\n              "performance_id"\n            ],\n            "key_length": "4",\n            "ref": [\n              "pulse_festival.r.performance_id_FK"\n            ],\n            "rows_examined_per_scan": 1,\n            "rows_produced_per_join": 400,\n            "filtered": "100.00",\n            "using_index": true,\n            "cost_info": {\n              "read_cost": "100.00",\n              "eval_cost": "40.00",\n              "prefix_cost": "320.25",\n              "data_read_per_join": "837K"\n            },\n            "used_columns": [\n              "performance_id"\n            ]\n          }\n        }\n      ]\n    }\n  }\n}
+
+
+================================================================
+Query: Q05
+================================================================
+
+SELECT
+    a.artist_id,
+    a.real_name                           AS artist_name,
+    TIMESTAMPDIFF(YEAR, a.birth_date, CURDATE()) AS age,
+    COUNT(DISTINCT f.festival_id)         AS festival_count
+FROM   Artist              AS a
+JOIN   Performance_Artist  AS pa  ON pa.artist_id_FK      = a.artist_id
+JOIN   Performance         AS p   ON p.performance_id     = pa.performance_id_FK
+JOIN   Event               AS e   ON e.event_id           = p.event_id_FK
+JOIN   Festival            AS f   ON f.festival_id        = e.festival_id_FK
+WHERE  TIMESTAMPDIFF(YEAR, a.birth_date, CURDATE()) < 30
+GROUP  BY a.artist_id, artist_name, age
+ORDER  BY festival_count DESC, artist_name;
+
+---- Results of Q05 ----
+
+artist_id	artist_name	age	festival_count
+24	Marissa Webster	20	3
+5	Stephanie Dalton	24	2
+9	Stephanie Simmons	25	1
+
+
+================================================================
+Query: Q06a
+================================================================
+
+-- FORCE INDEX
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)    
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)              
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)    
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)              
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+---- Results of Q06a ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+performance_id	event_name	performance_type	avg_visitor_rating
+23	Event_1	main act	3.80000000
+19	Event_20	main act	3.20000000
+27	Event_49	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "141.83"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ALL",\n              "possible_keys": [\n                "performance_id_FK"\n              ],\n              "rows_examined_per_scan": 400,\n              "rows_produced_per_join": 2,\n              "filtered": "0.56",\n              "cost_info": {\n                "read_cost": "140.02",\n                "eval_cost": "0.23",\n                "prefix_cost": "140.25",\n                "data_read_per_join": "54"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ],\n              "attached_condition": "(`music_festival`.`r`.`visitor_id_FK` = 24)"\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.04",\n                "data_read_per_join": "4K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.83",\n                "data_read_per_join": "5K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+
+================================================================
+Query: Q06b
+================================================================
+
+SET optimizer_trace="enabled=on";
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+SELECT * FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE\G
+
+EXPLAIN FORMAT=JSON
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+SELECT * FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE\G
+
+---- Results of Q06b ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+performance_id	event_name	performance_type	avg_visitor_rating
+23	Event_1	main act	3.80000000
+19	Event_20	main act	3.20000000
+27	Event_49	special guest	3.00000000
+*************************** 1. row ***************************
+                            QUERY: SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time
+                            TRACE: {
+  "steps": [
+    {
+      "IN_uses_bisection": true
+    },
+    {
+      "join_preparation": {
+        "select#": 1,
+        "steps": [
+          {
+            "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from ((`Rating` `r` join `Performance` `p` on((`r`.`performance_id_FK` = `p`.`performance_id`))) join `Event` `e` on((`p`.`event_id_FK` = `e`.`event_id`))) where (`r`.`visitor_id_FK` = 24) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+          },
+          {
+            "transformations_to_nested_joins": {
+              "transformations": [
+                "JOIN_condition_to_WHERE",
+                "parenthesis_removal"
+              ],
+              "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from `Rating` `r` join `Performance` `p` join `Event` `e` where ((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`)) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+            }
+          },
+          {
+            "functional_dependencies_of_GROUP_columns": {
+              "all_columns_of_table_map_bits": [
+                1
+              ],
+              "columns": [
+                "music_festival.p.performance_id",
+                "music_festival.e.event_name",
+                "music_festival.p.performance_type"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "join_optimization": {
+        "select#": 1,
+        "steps": [
+          {
+            "condition_processing": {
+              "condition": "WHERE",
+              "original_condition": "((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`))",
+              "steps": [
+                {
+                  "transformation": "equality_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "constant_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "trivial_condition_removal",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                }
+              ]
+            }
+          },
+          {
+            "substitute_generated_columns": {
+            }
+          },
+          {
+            "table_dependencies": [
+              {
+                "table": "`Rating` `r`",
+                "row_may_be_null": false,
+                "map_bit": 0,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Performance` `p`",
+                "row_may_be_null": false,
+                "map_bit": 1,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Event` `e`",
+                "row_may_be_null": false,
+                "map_bit": 2,
+                "depends_on_map_bits": [
+                ]
+              }
+            ]
+          },
+          {
+            "ref_optimizer_key_uses": [
+              {
+                "table": "`Rating` `r`",
+                "field": "visitor_id_FK",
+                "equals": "24",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "performance_id",
+                "equals": "`r`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "event_id_FK",
+                "equals": "`e`.`event_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Event` `e`",
+                "field": "event_id",
+                "equals": "`p`.`event_id_FK`",
+                "null_rejecting": true
+              }
+            ]
+          },
+          {
+            "rows_estimation": [
+              {
+                "table": "`Rating` `r`",
+                "range_analysis": {
+                  "table_scan": {
+                    "rows": 400,
+                    "cost": 42.85
+                  },
+                  "potential_range_indexes": [
+                    {
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    },
+                    {
+                      "index": "uk_visitor_performance",
+                      "usable": true,
+                      "key_parts": [
+                        "visitor_id_FK",
+                        "performance_id_FK"
+                      ]
+                    },
+                    {
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    }
+                  ],
+                  "setup_range_conditions": [
+                  ],
+                  "group_index_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "skip_scan_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "analyzing_range_alternatives": {
+                    "range_scan_alternatives": [
+                      {
+                        "index": "uk_visitor_performance",
+                        "ranges": [
+                          "visitor_id_FK = 24"
+                        ],
+                        "index_dives_for_eq_ranges": true,
+                        "rowid_ordered": false,
+                        "using_mrr": false,
+                        "index_only": false,
+                        "in_memory": 1,
+                        "rows": 3,
+                        "cost": 1.31,
+                        "chosen": true
+                      }
+                    ],
+                    "analyzing_roworder_intersect": {
+                      "usable": false,
+                      "cause": "too_few_roworder_scans"
+                    }
+                  },
+                  "chosen_range_access_summary": {
+                    "range_access_plan": {
+                      "type": "range_scan",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "ranges": [
+                        "visitor_id_FK = 24"
+                      ]
+                    },
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 1.31,
+                    "chosen": true
+                  }
+                }
+              },
+              {
+                "table": "`Performance` `p`",
+                "table_scan": {
+                  "rows": 117,
+                  "cost": 0.25
+                }
+              },
+              {
+                "table": "`Event` `e`",
+                "table_scan": {
+                  "rows": 50,
+                  "cost": 0.25
+                }
+              }
+            ]
+          },
+          {
+            "considered_execution_plans": [
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Rating` `r`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "cost": 1.05,
+                      "chosen": true
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "range",
+                      "range_details": {
+                        "used_index": "uk_visitor_performance"
+                      },
+                      "chosen": false,
+                      "cause": "heuristic_index_cheaper"
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 3,
+                "cost_for_plan": 1.05,
+                "rest_of_plan": [
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Event` `e`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "ref",
+                          "index": "PRIMARY",
+                          "usable": false,
+                          "chosen": false
+                        },
+                        {
+                          "rows_to_scan": 50,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 50,
+                          "cost": 15.25,
+                          "chosen": true
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 150,
+                    "cost_for_plan": 16.3,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Event` `e`"
+                        ],
+                        "table": "`Performance` `p`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 15.75,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 117,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 117,
+                              "cost": 1755.31,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "condition_filtering_pct": 100,
+                        "rows_for_plan": 150,
+                        "cost_for_plan": 32.05,
+                        "chosen": true
+                      }
+                    ]
+                  },
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Performance` `p`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "eq_ref",
+                          "index": "PRIMARY",
+                          "rows": 1,
+                          "cost": 1.05,
+                          "chosen": true,
+                          "cause": "clustered_pk_chosen_by_heuristics"
+                        },
+                        {
+                          "rows_to_scan": 117,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 117,
+                          "cost": 35.35,
+                          "chosen": false
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 2.1,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Performance` `p`"
+                        ],
+                        "table": "`Event` `e`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 1.05,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 50,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 50,
+                              "cost": 15.2503,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "added_to_eq_ref_extension": true,
+                        "condition_filtering_pct": 100,
+                        "rows_for_plan": 3,
+                        "cost_for_plan": 3.15,
+                        "chosen": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Event` `e`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 50,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 50,
+                      "cost": 5.25,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 50,
+                "cost_for_plan": 5.25,
+                "pruned_by_cost": true
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Performance` `p`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "idx_performance_by_event",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 117,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 117,
+                      "cost": 11.95,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 117,
+                "cost_for_plan": 11.95,
+                "pruned_by_cost": true
+              }
+            ]
+          },
+          {
+            "attaching_conditions_to_tables": {
+              "original_condition": "((`p`.`performance_id` = `r`.`performance_id_FK`) and (`e`.`event_id` = `p`.`event_id_FK`) and (`r`.`visitor_id_FK` = 24))",
+              "attached_conditions_computation": [
+              ],
+              "attached_conditions_summary": [
+                {
+                  "table": "`Rating` `r`",
+                  "attached": "(`r`.`visitor_id_FK` = 24)"
+                },
+                {
+                  "table": "`Performance` `p`",
+                  "attached": "(`p`.`performance_id` = `r`.`performance_id_FK`)"
+                },
+                {
+                  "table": "`Event` `e`",
+                  "attached": "(`e`.`event_id` = `p`.`event_id_FK`)"
+                }
+              ]
+            }
+          },
+          {
+            "optimizing_distinct_group_by_order_by": {
+              "simplifying_order_by": {
+                "original_clause": "`e`.`event_name`,`p`.`start_time`",
+                "items": [
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`start_time`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`e`.`event_name`,`p`.`start_time`"
+              },
+              "simplifying_group_by": {
+                "original_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`",
+                "items": [
+                  {
+                    "item": "`p`.`performance_id`"
+                  },
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`performance_type`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`"
+              }
+            }
+          },
+          {
+            "finalizing_table_conditions": [
+              {
+                "table": "`Rating` `r`",
+                "original_table_condition": "(`r`.`visitor_id_FK` = 24)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Performance` `p`",
+                "original_table_condition": "(`p`.`performance_id` = `r`.`performance_id_FK`)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Event` `e`",
+                "original_table_condition": "(`e`.`event_id` = `p`.`event_id_FK`)",
+                "final_table_condition   ": null
+              }
+            ]
+          },
+          {
+            "refine_plan": [
+              {
+                "table": "`Rating` `r`"
+              },
+              {
+                "table": "`Performance` `p`"
+              },
+              {
+                "table": "`Event` `e`"
+              }
+            ]
+          },
+          {
+            "considering_tmp_tables": [
+              {
+                "adding_tmp_table_in_plan_at_position": 3,
+                "write_method": "continuously_update_group_row"
+              },
+              {
+                "adding_sort_to_table": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "join_execution": {
+        "select#": 1,
+        "steps": [
+          {
+            "temp_table_aggregate": {
+              "select#": 1,
+              "steps": [
+                {
+                  "creating_tmp_table": {
+                    "tmp_table_info": {
+                      "table": "<temporary>",
+                      "in_plan_at_position": 3,
+                      "columns": 5,
+                      "row_length": 517,
+                      "key_length": 488,
+                      "unique_constraint": false,
+                      "makes_grouped_rows": true,
+                      "cannot_insert_duplicates": false,
+                      "location": "TempTable"
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "sorting_table": "<temporary>",
+            "filesort_information": [
+              {
+                "direction": "asc",
+                "expression": "`e`.`event_name`"
+              },
+              {
+                "direction": "asc",
+                "expression": "`p`.`start_time`"
+              }
+            ],
+            "filesort_priority_queue_optimization": {
+              "usable": false,
+              "cause": "not applicable (no LIMIT)"
+            },
+            "filesort_execution": [
+            ],
+            "filesort_summary": {
+              "memory_available": 262144,
+              "key_size": 1616,
+              "row_size": 2137,
+              "max_rows_per_buffer": 122,
+              "num_rows_estimate": 18446744073709551615,
+              "num_rows_found": 3,
+              "num_initial_chunks_spilled_to_disk": 0,
+              "peak_memory_used": 32800,
+              "sort_algorithm": "std::sort",
+              "sort_mode": "<varlen_sort_key, packed_additional_fields>"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}
+MISSING_BYTES_BEYOND_MAX_MEM_SIZE: 0
+          INSUFFICIENT_PRIVILEGES: 0
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.15"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_visitor_performance",\n                "performance_id_FK"\n              ],\n              "key": "uk_visitor_performance",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 3,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "1.05",\n                "data_read_per_join": "72"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_by_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "2.10",\n                "data_read_per_join": "6K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "3.15",\n                "data_read_per_join": "7K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+*************************** 1. row ***************************
+                            QUERY: EXPLAIN FORMAT=JSON
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time
+                            TRACE: {
+  "steps": [
+    {
+      "join_preparation": {
+        "select#": 1,
+        "steps": [
+          {
+            "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from ((`Rating` `r` join `Performance` `p` on((`r`.`performance_id_FK` = `p`.`performance_id`))) join `Event` `e` on((`p`.`event_id_FK` = `e`.`event_id`))) where (`r`.`visitor_id_FK` = 24) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+          },
+          {
+            "transformations_to_nested_joins": {
+              "transformations": [
+                "JOIN_condition_to_WHERE",
+                "parenthesis_removal"
+              ],
+              "expanded_query": "/* select#1 */ select `p`.`performance_id` AS `performance_id`,`e`.`event_name` AS `event_name`,`p`.`performance_type` AS `performance_type`,avg((((((`r`.`rating_interpretation` + `r`.`rating_sound_light`) + `r`.`rating_stage_presence`) + `r`.`rating_organization`) + `r`.`rating_overall`) / 5.0)) AS `avg_visitor_rating` from `Rating` `r` join `Performance` `p` join `Event` `e` where ((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`)) group by `p`.`performance_id`,`e`.`event_name`,`p`.`performance_type` order by `e`.`event_name`,`p`.`start_time`"
+            }
+          },
+          {
+            "functional_dependencies_of_GROUP_columns": {
+              "all_columns_of_table_map_bits": [
+                1
+              ],
+              "columns": [
+                "music_festival.p.performance_id",
+                "music_festival.e.event_name",
+                "music_festival.p.performance_type"
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "join_optimization": {
+        "select#": 1,
+        "steps": [
+          {
+            "condition_processing": {
+              "condition": "WHERE",
+              "original_condition": "((`r`.`visitor_id_FK` = 24) and (`p`.`event_id_FK` = `e`.`event_id`) and (`r`.`performance_id_FK` = `p`.`performance_id`))",
+              "steps": [
+                {
+                  "transformation": "equality_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "constant_propagation",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                },
+                {
+                  "transformation": "trivial_condition_removal",
+                  "resulting_condition": "(multiple equal(24, `r`.`visitor_id_FK`) and multiple equal(`p`.`event_id_FK`, `e`.`event_id`) and multiple equal(`r`.`performance_id_FK`, `p`.`performance_id`))"
+                }
+              ]
+            }
+          },
+          {
+            "substitute_generated_columns": {
+            }
+          },
+          {
+            "table_dependencies": [
+              {
+                "table": "`Rating` `r`",
+                "row_may_be_null": false,
+                "map_bit": 0,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Performance` `p`",
+                "row_may_be_null": false,
+                "map_bit": 1,
+                "depends_on_map_bits": [
+                ]
+              },
+              {
+                "table": "`Event` `e`",
+                "row_may_be_null": false,
+                "map_bit": 2,
+                "depends_on_map_bits": [
+                ]
+              }
+            ]
+          },
+          {
+            "ref_optimizer_key_uses": [
+              {
+                "table": "`Rating` `r`",
+                "field": "visitor_id_FK",
+                "equals": "24",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Rating` `r`",
+                "field": "performance_id_FK",
+                "equals": "`p`.`performance_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "performance_id",
+                "equals": "`r`.`performance_id_FK`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Performance` `p`",
+                "field": "event_id_FK",
+                "equals": "`e`.`event_id`",
+                "null_rejecting": true
+              },
+              {
+                "table": "`Event` `e`",
+                "field": "event_id",
+                "equals": "`p`.`event_id_FK`",
+                "null_rejecting": true
+              }
+            ]
+          },
+          {
+            "rows_estimation": [
+              {
+                "table": "`Rating` `r`",
+                "range_analysis": {
+                  "table_scan": {
+                    "rows": 400,
+                    "cost": 42.85
+                  },
+                  "potential_range_indexes": [
+                    {
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    },
+                    {
+                      "index": "uk_visitor_performance",
+                      "usable": true,
+                      "key_parts": [
+                        "visitor_id_FK",
+                        "performance_id_FK"
+                      ]
+                    },
+                    {
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "cause": "not_applicable"
+                    }
+                  ],
+                  "setup_range_conditions": [
+                  ],
+                  "group_index_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "skip_scan_range": {
+                    "chosen": false,
+                    "cause": "not_single_table"
+                  },
+                  "analyzing_range_alternatives": {
+                    "range_scan_alternatives": [
+                      {
+                        "index": "uk_visitor_performance",
+                        "ranges": [
+                          "visitor_id_FK = 24"
+                        ],
+                        "index_dives_for_eq_ranges": true,
+                        "rowid_ordered": false,
+                        "using_mrr": false,
+                        "index_only": false,
+                        "in_memory": 1,
+                        "rows": 3,
+                        "cost": 1.31,
+                        "chosen": true
+                      }
+                    ],
+                    "analyzing_roworder_intersect": {
+                      "usable": false,
+                      "cause": "too_few_roworder_scans"
+                    }
+                  },
+                  "chosen_range_access_summary": {
+                    "range_access_plan": {
+                      "type": "range_scan",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "ranges": [
+                        "visitor_id_FK = 24"
+                      ]
+                    },
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 1.31,
+                    "chosen": true
+                  }
+                }
+              },
+              {
+                "table": "`Performance` `p`",
+                "table_scan": {
+                  "rows": 117,
+                  "cost": 0.25
+                }
+              },
+              {
+                "table": "`Event` `e`",
+                "table_scan": {
+                  "rows": 50,
+                  "cost": 0.25
+                }
+              }
+            ]
+          },
+          {
+            "considered_execution_plans": [
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Rating` `r`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "uk_visitor_performance",
+                      "rows": 3,
+                      "cost": 1.05,
+                      "chosen": true
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "performance_id_FK",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "range",
+                      "range_details": {
+                        "used_index": "uk_visitor_performance"
+                      },
+                      "chosen": false,
+                      "cause": "heuristic_index_cheaper"
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 3,
+                "cost_for_plan": 1.05,
+                "rest_of_plan": [
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Event` `e`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "ref",
+                          "index": "PRIMARY",
+                          "usable": false,
+                          "chosen": false
+                        },
+                        {
+                          "rows_to_scan": 50,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 50,
+                          "cost": 15.25,
+                          "chosen": true
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 150,
+                    "cost_for_plan": 16.3,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Event` `e`"
+                        ],
+                        "table": "`Performance` `p`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 15.75,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 117,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 117,
+                              "cost": 1755.31,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "condition_filtering_pct": 5,
+                        "rows_for_plan": 7.5,
+                        "cost_for_plan": 32.05,
+                        "chosen": true
+                      }
+                    ]
+                  },
+                  {
+                    "plan_prefix": [
+                      "`Rating` `r`"
+                    ],
+                    "table": "`Performance` `p`",
+                    "best_access_path": {
+                      "considered_access_paths": [
+                        {
+                          "access_type": "eq_ref",
+                          "index": "PRIMARY",
+                          "rows": 1,
+                          "cost": 1.05,
+                          "chosen": true,
+                          "cause": "clustered_pk_chosen_by_heuristics"
+                        },
+                        {
+                          "rows_to_scan": 117,
+                          "filtering_effect": [
+                          ],
+                          "final_filtering_effect": 1,
+                          "access_type": "scan",
+                          "using_join_cache": true,
+                          "buffers_needed": 1,
+                          "resulting_rows": 117,
+                          "cost": 35.35,
+                          "chosen": false
+                        }
+                      ]
+                    },
+                    "condition_filtering_pct": 100,
+                    "rows_for_plan": 3,
+                    "cost_for_plan": 2.1,
+                    "rest_of_plan": [
+                      {
+                        "plan_prefix": [
+                          "`Rating` `r`",
+                          "`Performance` `p`"
+                        ],
+                        "table": "`Event` `e`",
+                        "best_access_path": {
+                          "considered_access_paths": [
+                            {
+                              "access_type": "eq_ref",
+                              "index": "PRIMARY",
+                              "rows": 1,
+                              "cost": 1.05,
+                              "chosen": true,
+                              "cause": "clustered_pk_chosen_by_heuristics"
+                            },
+                            {
+                              "rows_to_scan": 50,
+                              "filtering_effect": [
+                              ],
+                              "final_filtering_effect": 1,
+                              "access_type": "scan",
+                              "using_join_cache": true,
+                              "buffers_needed": 1,
+                              "resulting_rows": 50,
+                              "cost": 15.2503,
+                              "chosen": false
+                            }
+                          ]
+                        },
+                        "added_to_eq_ref_extension": true,
+                        "condition_filtering_pct": 100,
+                        "rows_for_plan": 3,
+                        "cost_for_plan": 3.15,
+                        "chosen": true
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Event` `e`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 50,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 50,
+                      "cost": 5.25,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 50,
+                "cost_for_plan": 5.25,
+                "pruned_by_cost": true
+              },
+              {
+                "plan_prefix": [
+                ],
+                "table": "`Performance` `p`",
+                "best_access_path": {
+                  "considered_access_paths": [
+                    {
+                      "access_type": "ref",
+                      "index": "PRIMARY",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "access_type": "ref",
+                      "index": "idx_performance_by_event",
+                      "usable": false,
+                      "chosen": false
+                    },
+                    {
+                      "rows_to_scan": 117,
+                      "filtering_effect": [
+                      ],
+                      "final_filtering_effect": 1,
+                      "access_type": "scan",
+                      "resulting_rows": 117,
+                      "cost": 11.95,
+                      "chosen": true
+                    }
+                  ]
+                },
+                "condition_filtering_pct": 100,
+                "rows_for_plan": 117,
+                "cost_for_plan": 11.95,
+                "pruned_by_cost": true
+              }
+            ]
+          },
+          {
+            "attaching_conditions_to_tables": {
+              "original_condition": "((`p`.`performance_id` = `r`.`performance_id_FK`) and (`e`.`event_id` = `p`.`event_id_FK`) and (`r`.`visitor_id_FK` = 24))",
+              "attached_conditions_computation": [
+              ],
+              "attached_conditions_summary": [
+                {
+                  "table": "`Rating` `r`",
+                  "attached": "(`r`.`visitor_id_FK` = 24)"
+                },
+                {
+                  "table": "`Performance` `p`",
+                  "attached": "(`p`.`performance_id` = `r`.`performance_id_FK`)"
+                },
+                {
+                  "table": "`Event` `e`",
+                  "attached": "(`e`.`event_id` = `p`.`event_id_FK`)"
+                }
+              ]
+            }
+          },
+          {
+            "optimizing_distinct_group_by_order_by": {
+              "simplifying_order_by": {
+                "original_clause": "`e`.`event_name`,`p`.`start_time`",
+                "items": [
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`start_time`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`e`.`event_name`,`p`.`start_time`"
+              },
+              "simplifying_group_by": {
+                "original_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`",
+                "items": [
+                  {
+                    "item": "`p`.`performance_id`"
+                  },
+                  {
+                    "item": "`e`.`event_name`"
+                  },
+                  {
+                    "item": "`p`.`performance_type`"
+                  }
+                ],
+                "resulting_clause_is_simple": false,
+                "resulting_clause": "`p`.`performance_id`,`e`.`event_name`,`p`.`performance_type`"
+              }
+            }
+          },
+          {
+            "finalizing_table_conditions": [
+              {
+                "table": "`Rating` `r`",
+                "original_table_condition": "(`r`.`visitor_id_FK` = 24)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Performance` `p`",
+                "original_table_condition": "(`p`.`performance_id` = `r`.`performance_id_FK`)",
+                "final_table_condition   ": null
+              },
+              {
+                "table": "`Event` `e`",
+                "original_table_condition": "(`e`.`event_id` = `p`.`event_id_FK`)",
+                "final_table_condition   ": null
+              }
+            ]
+          },
+          {
+            "refine_plan": [
+              {
+                "table": "`Rating` `r`"
+              },
+              {
+                "table": "`Performance` `p`"
+              },
+              {
+                "table": "`Event` `e`"
+              }
+            ]
+          },
+          {
+            "considering_tmp_tables": [
+              {
+                "adding_tmp_table_in_plan_at_position": 3,
+                "write_method": "continuously_update_group_row"
+              },
+              {
+                "adding_sort_to_table": ""
+              }
+            ]
+          }
+        ]
+      }
+    },
+    {
+      "join_explain": {
+        "select#": 1,
+        "steps": [
+        ]
+      }
+    }
+  ]
+}
+MISSING_BYTES_BEYOND_MAX_MEM_SIZE: 0
+          INSUFFICIENT_PRIVILEGES: 0
+
+
+================================================================
+Query: Q06c
+================================================================
+
+/* 6.3 Forced Nested Loop Join */
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)     
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)               
+  /*+ LOOP_JOIN(r p) */               
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)               
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)     
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)               
+  /*+ LOOP_JOIN(r p) */               
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)               
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+---- Results of Q06c ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+performance_id	event_name	performance_type	avg_visitor_rating
+23	Event_1	main act	3.80000000
+19	Event_20	main act	3.20000000
+27	Event_49	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "141.83"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ALL",\n              "possible_keys": [\n                "performance_id_FK"\n              ],\n              "rows_examined_per_scan": 400,\n              "rows_produced_per_join": 2,\n              "filtered": "0.56",\n              "cost_info": {\n                "read_cost": "140.02",\n                "eval_cost": "0.23",\n                "prefix_cost": "140.25",\n                "data_read_per_join": "54"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ],\n              "attached_condition": "(`music_festival`.`r`.`visitor_id_FK` = 24)"\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.04",\n                "data_read_per_join": "4K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.83",\n                "data_read_per_join": "5K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+
+================================================================
+Query: Q06d
+================================================================
+
+/* 6.4 Forced Hash Join */
+SET optimizer_switch='hash_join=on';
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)
+  /*+ HASH_JOIN(r p) */
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+  FORCE INDEX (performance_id_FK)
+JOIN Performance AS p
+  FORCE INDEX (PRIMARY)
+  /*+ HASH_JOIN(r p) */
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e
+  FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+---- Results of Q06d ----
+
+mysql: [Warning] Using a password on the command line interface can be insecure.
+performance_id	event_name	performance_type	avg_visitor_rating
+23	Event_1	main act	3.80000000
+19	Event_20	main act	3.20000000
+27	Event_49	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "141.83"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ALL",\n              "possible_keys": [\n                "performance_id_FK"\n              ],\n              "rows_examined_per_scan": 400,\n              "rows_produced_per_join": 2,\n              "filtered": "0.56",\n              "cost_info": {\n                "read_cost": "140.02",\n                "eval_cost": "0.23",\n                "prefix_cost": "140.25",\n                "data_read_per_join": "54"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ],\n              "attached_condition": "(`music_festival`.`r`.`visitor_id_FK` = 24)"\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.04",\n                "data_read_per_join": "4K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "music_festival.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 2,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.56",\n                "eval_cost": "0.23",\n                "prefix_cost": "141.83",\n                "data_read_per_join": "5K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+
+================================================================
+Query: Q06
+================================================================
+
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+EXPLAIN FORMAT=JSON
+SELECT
+  p.performance_id,
+  e.event_name,
+  p.performance_type,
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall)
+    / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p
+  ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY
+  p.performance_id,
+  e.event_name,
+  p.performance_type
+ORDER BY
+  e.event_name,
+  p.start_time;
+
+---- Results of Q06 ----
+
+performance_id	event_name	performance_type	avg_visitor_rating
+23	Event_1	main act	3.80000000
+19	Event_20	main act	3.20000000
+27	Event_49	special guest	3.00000000
+EXPLAIN
+{\n  "query_block": {\n    "select_id": 1,\n    "cost_info": {\n      "query_cost": "3.15"\n    },\n    "ordering_operation": {\n      "using_filesort": true,\n      "grouping_operation": {\n        "using_temporary_table": true,\n        "using_filesort": false,\n        "nested_loop": [\n          {\n            "table": {\n              "table_name": "r",\n              "access_type": "ref",\n              "possible_keys": [\n                "uk_visitor_performance",\n                "performance_id_FK"\n              ],\n              "key": "uk_visitor_performance",\n              "used_key_parts": [\n                "visitor_id_FK"\n              ],\n              "key_length": "4",\n              "ref": [\n                "const"\n              ],\n              "rows_examined_per_scan": 3,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "1.05",\n                "data_read_per_join": "72"\n              },\n              "used_columns": [\n                "rating_id",\n                "visitor_id_FK",\n                "performance_id_FK",\n                "rating_interpretation",\n                "rating_sound_light",\n                "rating_stage_presence",\n                "rating_organization",\n                "rating_overall"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "p",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY",\n                "idx_performance_by_event"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "performance_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "pulse_festival.r.performance_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "2.10",\n                "data_read_per_join": "6K"\n              },\n              "used_columns": [\n                "performance_id",\n                "event_id_FK",\n                "performance_type",\n                "start_time"\n              ]\n            }\n          },\n          {\n            "table": {\n              "table_name": "e",\n              "access_type": "eq_ref",\n              "possible_keys": [\n                "PRIMARY"\n              ],\n              "key": "PRIMARY",\n              "used_key_parts": [\n                "event_id"\n              ],\n              "key_length": "4",\n              "ref": [\n                "pulse_festival.p.event_id_FK"\n              ],\n              "rows_examined_per_scan": 1,\n              "rows_produced_per_join": 3,\n              "filtered": "100.00",\n              "cost_info": {\n                "read_cost": "0.75",\n                "eval_cost": "0.30",\n                "prefix_cost": "3.15",\n                "data_read_per_join": "7K"\n              },\n              "used_columns": [\n                "event_id",\n                "event_name"\n              ]\n            }\n          }\n        ]\n      }\n    }\n  }\n}
+
+
+================================================================
+Query: Q07
+================================================================
+
+SELECT
+    f.festival_id,
+    f.festival_name,
+    ROUND(AVG(
+      CASE s.experience_level
+        WHEN 'intern'     THEN 1
+        WHEN 'beginner'   THEN 2
+        WHEN 'average'    THEN 3
+        WHEN 'experienced' THEN 4
+        WHEN 'expert'     THEN 5
+      END
+    ), 2) AS avg_tech_experience
+FROM   Festival            AS f
+JOIN   Event               AS e
+  ON f.festival_id = e.festival_id_FK
+JOIN   Stage               AS st
+  ON st.stage_id    = e.stage_id_FK
+JOIN   Stage_Staff         AS ss
+  ON ss.stage_id_FK = st.stage_id
+JOIN   Staff               AS s
+  ON s.staff_id     = ss.staff_id_FK
+WHERE  s.staff_role = 'tech'
+  AND  ss.start_date BETWEEN f.start_date AND f.end_date
+GROUP  BY f.festival_id, f.festival_name
+ORDER  BY avg_tech_experience ASC
+LIMIT  1;
+
+---- Results of Q07 ----
+
+festival_id	festival_name	avg_tech_experience
+6	PulseFestival_2022	1.00
+
+
+================================================================
+Query: Q08
+================================================================
+
+SET @p_date = '2025-06-15';
+
+SELECT
+    s.staff_id,
+    s.staff_name,
+    s.experience_level
+FROM   Staff AS s
+WHERE  s.staff_role = 'support'
+  AND NOT EXISTS (
+      SELECT 1
+      FROM   Stage_Staff AS ss
+      WHERE  ss.staff_id_FK = s.staff_id
+        AND  @p_date BETWEEN ss.start_date AND ss.end_date
+  )
+ORDER  BY s.staff_name;
+
+---- Results of Q08 ----
+
+staff_id	staff_name	experience_level
+4	Anne Garner	experienced
+21	Christine Sanders	average
+3	Daniel King	beginner
+20	David Manning	average
+13	Jennifer Salazar	average
+8	Marie Ryan	intern
+7	Michael Jacobs	expert
+10	Patricia Griffin	beginner
+23	Randy Warren	average
+14	Terry Miller	expert
+
+
+================================================================
+Query: Q09
+================================================================
+
+WITH attendance AS (
+  SELECT
+    t.visitor_id_FK   AS visitor_id,
+    YEAR(p.start_time) AS year,
+    COUNT(DISTINCT p.performance_id) AS cnt
+  FROM Ticket t
+  JOIN Event e
+    ON t.event_id_FK = e.event_id
+  JOIN Performance p
+    ON p.event_id_FK = e.event_id
+  WHERE YEAR(p.start_time) = 2025
+  GROUP BY
+    t.visitor_id_FK,
+    YEAR(p.start_time)
+  HAVING COUNT(*) > 3
+)
+SELECT
+  v.visitor_id,
+  v.first_name,
+  v.last_name,
+  a.cnt
+FROM attendance a
+JOIN Visitor v
+  ON v.visitor_id = a.visitor_id
+WHERE
+  a.cnt IN (
+    SELECT cnt
+    FROM attendance
+    GROUP BY cnt
+    HAVING COUNT(*) > 1
+  )
+ORDER BY a.cnt DESC;
+
+---- Results of Q09 ----
+
+visitor_id	first_name	last_name	cnt
+35	Brandon	Miller	13
+24	Heather	Fernandez	13
+30	Melissa	Curtis	12
+192	Amy	Miller	12
+164	Barbara	Moore	10
+137	Nicole	Johnson	10
+65	Tyrone	Robertson	10
+125	Amanda	Myers	9
+29	Rachel	Morris	9
+38	Laurie	Montgomery	9
+17	Ashlee	Sparks	9
+187	Rebecca	Austin	9
+70	Dylan	Becker	9
+71	Monique	Fitzgerald	9
+1	John	Alvarez	8
+36	Jeffrey	Joyce	8
+66	Thomas	Herrera	8
+113	Jeffery	Coleman	8
+27	Michael	Kramer	8
+26	Kristin	Harris	8
+191	Randall	Guerrero	8
+176	Richard	Johnson	8
+86	Barbara	Ray	7
+28	Brittney	Hayes	7
+94	Lisa	Adams	7
+84	Emily	Stephens	7
+118	Aaron	Rubio	7
+4	Danny	Jones	7
+121	Debra	Alexander	7
+53	Benjamin	Harris	7
+166	Stephen	Meyer	7
+138	Crystal	Pham	7
+141	Andrew	Woods	7
+37	Omar	Padilla	7
+129	Jeffrey	Black	6
+122	Christopher	Tran	6
+182	James	Christensen	6
+188	Luke	Miller	6
+116	Richard	Brady	6
+198	Monica	Thomas	6
+105	Cheyenne	Hart	6
+143	Jessica	Rush	6
+149	Darlene	Hughes	6
+81	Jamie	Aguilar	6
+16	Kathleen	Padilla	6
+69	Emily	Whitney	6
+40	Steven	Elliott	6
+61	Fred	Morris	6
+55	Kenneth	Griffin	6
+46	Tara	Bishop	6
+2	Michael	Chavez	5
+10	Diane	Daniels	5
+177	Ann	Harvey	5
+21	Kristin	Walter	5
+175	Andrea	Gray	5
+25	Cory	Jennings	5
+148	Colleen	Castillo	5
+147	Heidi	Bowen	5
+120	Heather	Woods	5
+75	Richard	Donovan	5
+77	Jessica	Wong	5
+79	Kurt	Sullivan	5
+134	Heidi	Williams	5
+112	Anthony	Juarez	4
+12	Stephen	Thomas	4
+15	Tara	Jones	4
+193	Melissa	Randolph	4
+186	Susan	Meyer	4
+85	Jamie	Garcia	4
+185	Joseph	Martin	4
+19	Patrick	Howard	4
+180	Joshua	Stuart	4
+114	Linda	Hudson	4
+197	Jessica	Carter	4
+117	Marcus	Campbell	4
+171	Larry	Rodgers	4
+168	Kevin	Stanley	4
+33	Christina	Day	4
+162	Nathan	Richards	4
+157	Andrea	Cooper	4
+156	Brent	Ward	4
+155	Todd	Black	4
+154	Penny	Smith	4
+39	Cynthia	Schmidt	4
+64	Anna	Flores	4
+145	Tanya	Wilkerson	4
+124	Jason	Livingston	4
+41	William	Collins	4
+140	Joel	Stewart	4
+132	Cody	Anderson	4
+48	Robert	Sanders	4
+136	David	Dunlap	4
+
+
+================================================================
+Query: Q10
+================================================================
+
+WITH ArtistGenres AS (
+  SELECT 
+    pa.performance_id_FK AS perf,
+    a.music_genre        AS g1,
+    a.sub_genre          AS g2
+  FROM   Performance_Artist pa
+  JOIN   Artist            a ON a.artist_id = pa.artist_id_FK
+),
+GenrePairs AS (
+  SELECT DISTINCT
+    perf,
+    LEAST(g1, g2) AS genre1,
+    GREATEST(g1, g2) AS genre2
+  FROM   ArtistGenres
+  WHERE  g2 IS NOT NULL
+    AND  g1 <> g2
+)
+SELECT
+  genre1,
+  genre2,
+  COUNT(DISTINCT perf) AS appearances
+FROM   GenrePairs
+GROUP  BY genre1, genre2
+ORDER  BY appearances DESC
+LIMIT  3;
+
+---- Results of Q10 ----
+
+genre1	genre2	appearances
+hard rock	rock	20
+electronic	techno	10
+indie rock	rock	10
+
+
+================================================================
+Query: Q11
+================================================================
+
+WITH ArtistCounts AS (
+  SELECT
+    a.artist_id,
+    a.real_name                                    AS artist_name,
+    COUNT(*)                                       AS cnt
+  FROM   Performance_Artist pa
+  JOIN   Performance         p  ON p.performance_id     = pa.performance_id_FK
+  JOIN   Event               e  ON e.event_id           = p.event_id_FK
+  JOIN   Artist              a  ON a.artist_id          = pa.artist_id_FK
+  GROUP  BY a.artist_id, artist_name
+),
+MaxCount AS (
+  SELECT MAX(cnt) AS max_cnt
+  FROM   ArtistCounts
+)
+SELECT
+  ac.artist_id,
+  ac.artist_name,
+  ac.cnt              AS appearances,
+  mc.max_cnt          AS top_appearances
+FROM   ArtistCounts AS ac
+CROSS  JOIN MaxCount  AS mc
+WHERE  ac.cnt <= mc.max_cnt - 5
+ORDER  BY ac.cnt DESC, ac.artist_name;
+
+---- Results of Q11 ----
+
+artist_id	artist_name	appearances	top_appearances
+7	Casey Marshall	4	20
+10	Paul Larsen	4	20
+15	Shannon Cannon	4	20
+12	Steven Miller	4	20
+21	Garrett Gibson	3	20
+24	Marissa Webster	3	20
+16	Steven Houston	3	20
+23	Zoe Bell	3	20
+25	Alex Hernandez	2	20
+22	Darlene Miller	2	20
+28	Jaime David	2	20
+4	Janet Ross	2	20
+13	Jason Daniels	2	20
+14	Jason Stein	2	20
+26	Kristy Robinson	2	20
+18	Michael Yates	2	20
+17	Rebecca Hurst	2	20
+5	Stephanie Dalton	2	20
+19	Tamara Hooper	2	20
+27	Ashley Weiss	1	20
+8	Emily Fischer	1	20
+3	John Atkinson	1	20
+11	Kari Allen	1	20
+9	Stephanie Simmons	1	20
+
+
+================================================================
+Query: Q12
+================================================================
+
+WITH RECURSIVE
+  FestivalDays AS (
+    SELECT
+      f.festival_id,
+      f.festival_name,
+      f.start_date AS day
+    FROM Festival f
+    UNION ALL
+    SELECT
+      fd.festival_id,
+      fd.festival_name,
+      DATE_ADD(fd.day, INTERVAL 1 DAY)
+    FROM FestivalDays fd
+    WHERE fd.day < (SELECT end_date
+                    FROM Festival
+                    WHERE festival_id = fd.festival_id)
+  )
+
+SELECT
+  fd.festival_id,
+  fd.festival_name,
+  fd.day,
+  SUM(CASE WHEN s.staff_role = 'tech'    THEN 1 ELSE 0 END) AS tech_count,
+  SUM(CASE WHEN s.staff_role = 'security' THEN 1 ELSE 0 END) AS security_count,
+  SUM(CASE WHEN s.staff_role = 'support'  THEN 1 ELSE 0 END) AS support_count
+FROM FestivalDays fd
+LEFT JOIN Stage_Staff ss
+  ON ss.start_date <= fd.day
+ AND ss.end_date   >= fd.day
+LEFT JOIN Staff s
+  ON s.staff_id = ss.staff_id_FK
+GROUP BY
+  fd.festival_id,
+  fd.festival_name,
+  fd.day
+ORDER BY
+  fd.festival_id,
+  fd.day;
+
+---- Results of Q12 ----
+
+festival_id	festival_name	day	tech_count	security_count	support_count
+1	PulseFestival_2017	2017-05-05	1	0	0
+1	PulseFestival_2017	2017-05-06	1	0	0
+1	PulseFestival_2017	2017-05-07	1	0	0
+1	PulseFestival_2017	2017-05-08	1	0	1
+1	PulseFestival_2017	2017-05-09	2	2	0
+2	PulseFestival_2018	2018-05-01	1	0	0
+2	PulseFestival_2018	2018-05-02	2	0	0
+2	PulseFestival_2018	2018-05-03	1	0	0
+3	PulseFestival_2019	2019-05-05	0	0	0
+3	PulseFestival_2019	2019-05-06	0	1	1
+3	PulseFestival_2019	2019-05-07	1	2	1
+4	PulseFestival_2020	2020-08-02	1	1	0
+4	PulseFestival_2020	2020-08-03	1	1	1
+4	PulseFestival_2020	2020-08-04	1	1	1
+4	PulseFestival_2020	2020-08-05	1	1	1
+4	PulseFestival_2020	2020-08-06	1	0	0
+5	PulseFestival_2021	2021-07-01	2	0	0
+5	PulseFestival_2021	2021-07-02	2	0	0
+5	PulseFestival_2021	2021-07-03	2	1	2
+6	PulseFestival_2022	2022-07-03	1	0	0
+6	PulseFestival_2022	2022-07-04	1	1	0
+6	PulseFestival_2022	2022-07-05	2	1	1
+7	PulseFestival_2023	2023-07-01	1	1	0
+7	PulseFestival_2023	2023-07-02	1	0	0
+8	PulseFestival_2024	2024-05-03	1	1	1
+8	PulseFestival_2024	2024-05-04	1	1	1
+8	PulseFestival_2024	2024-05-05	1	1	2
+8	PulseFestival_2024	2024-05-06	1	1	1
+9	PulseFestival_2025	2025-07-01	1	1	0
+9	PulseFestival_2025	2025-07-02	1	1	0
+9	PulseFestival_2025	2025-07-03	1	1	0
+9	PulseFestival_2025	2025-07-04	1	1	0
+9	PulseFestival_2025	2025-07-05	1	1	0
+10	PulseFestival_2026	2026-05-04	2	0	0
+10	PulseFestival_2026	2026-05-05	2	1	1
+
+
+================================================================
+Query: Q13
+================================================================
+
+SELECT
+    a.artist_id,
+    COALESCE(a.real_name, a.real_name)   AS artist_name,
+    COUNT(DISTINCT l.continent)            AS continent_count
+FROM   Artist              AS a
+JOIN   Performance_Artist  AS pa  ON pa.artist_id_FK    = a.artist_id
+JOIN   Performance         AS p   ON p.performance_id   = pa.performance_id_FK
+JOIN   Event               AS e   ON e.event_id         = p.event_id_FK
+JOIN   Festival            AS f   ON f.festival_id      = e.festival_id_FK
+JOIN   Location            AS l   ON l.location_id      = f.location_id_FK
+GROUP  BY a.artist_id, artist_name
+HAVING COUNT(DISTINCT l.continent) >= 3
+ORDER  BY artist_name;
+
+---- Results of Q13 ----
+
+artist_id	artist_name	continent_count
+1	Frances Cardenas	3
+15	Shannon Cannon	3
+16	Steven Houston	3
+23	Zoe Bell	3
+
+
+================================================================
+Query: Q14
+================================================================
+
+WITH GenreYearCounts AS (
+  SELECT
+    a.music_genre            AS genre,
+    YEAR(e.event_date)       AS yr,
+    COUNT(*)                 AS cnt
+  FROM   Performance_Artist pa
+  JOIN   Performance         p  ON p.performance_id   = pa.performance_id_FK
+  JOIN   Event               e  ON e.event_id         = p.event_id_FK
+  JOIN   Artist              a  ON a.artist_id        = pa.artist_id_FK
+  GROUP  BY genre, yr
+  HAVING COUNT(*) >= 3       
+)
+SELECT
+  g1.genre,
+  g1.yr      AS year1,
+  g1.cnt     AS count1,
+  g2.yr      AS year2,
+  g2.cnt     AS count2
+FROM   GenreYearCounts g1
+JOIN   GenreYearCounts g2
+  ON g1.genre = g2.genre
+ AND g2.yr   = g1.yr + 1    
+ AND g2.cnt  = g1.cnt      
+ORDER  BY genre, year1;
+
+---- Results of Q14 ----
+
+genre	year1	count1	year2	count2
+rock	2023	3	2024	3
+rock	2024	3	2025	3
+
+
+================================================================
+Query: Q15
+================================================================
+
+SELECT
+    CONCAT(v.first_name, ' ', v.last_name)   AS visitor_name,
+    a.real_name                             AS artist_name,   
+    SUM(
+        r.rating_interpretation
+      + r.rating_sound_light
+      + r.rating_stage_presence
+      + r.rating_organization
+      + r.rating_overall
+    )                                         AS total_score
+FROM   Rating              AS r
+JOIN   Visitor             AS v  ON v.visitor_id           = r.visitor_id_FK
+JOIN   Performance         AS p  ON p.performance_id       = r.performance_id_FK
+JOIN   Performance_Artist  AS pa ON pa.performance_id_FK   = p.performance_id
+JOIN   Artist              AS a  ON a.artist_id            = pa.artist_id_FK
+GROUP  BY v.visitor_id, a.artist_id, visitor_name, artist_name
+ORDER  BY total_score DESC
+LIMIT  5;
+
+---- Results of Q15 ----
+
+visitor_name	artist_name	total_score
+Nicholas Rojas	Darlene Miller	32
+Joshua Martinez	Shannon Cannon	32
+Alan Buck	Rebecca Hurst	30
+Alyssa Sanders	Marissa Webster	25
+Michael Ortiz	Kari Allen	23
+
+

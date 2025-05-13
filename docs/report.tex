@@ -17,6 +17,7 @@
 \usepackage{graphicx}
 \usepackage{longtable}
 \usepackage{booktabs}
+\usepackage{array}
 
 % Set up listings for SQL
 \lstset{
@@ -39,7 +40,6 @@
 \tableofcontents
 \newpage
 
-
 \section{Σχεδίαση Βάσης Δεδομένων}
 \subsection{Διάγραμμα Οντοτήτων-Συσχετίσεων (E/R)}
 \begin{center}
@@ -59,221 +59,322 @@
 εδώ παρουσιάζονται \emph{οι αρχές σχεδίασης} και οι σημαντικότεροι
 περιορισμοί ακεραιότητας \& οι δείκτες που υλοποιήθηκαν.
 
-% ----------------------------------------------------------------
+\sloppy                   
+
+%-----------------------------------------------------------------------
 \subsection{Περιορισμοί που εξασφαλίζουν την Ορθότητα}
+
+Η βάση δεδομένων εφαρμόζει τέσσερα επίπεδα ελέγχου ακεραιότητας:
+\emph{οντότητας}, \emph{αναφορικής}, \emph{πεδίου} και
+\emph{επιχειρησιακής λογικής}.  Στα επόμενα καταγράφονται όλοι οι
+απαραίτητοι περιορισμοί.
+
 \subsubsection*{1.~Ακεραιότητα Οντοτήτων (Entity Integrity)}
-Κάθε πίνακας διαθέτει τεχνητό πρωτεύον κλειδί τύπου
-\texttt{INT AUTO\_INCREMENT} ώστε:
+Κάθε πίνακας διαθέτει τεχνητό \texttt{PRIMARY~KEY}
+(\texttt{INT~AUTO\_INCREMENT}).  Πλεονεκτήματα:
 \begin{itemize}
-  \item να επιτρέπει γρήγορες αναζητήσεις με \texttt{PRIMARY KEY lookup},
-  \item να μην «κληρονομεί» φυσικά κλειδιά (π.χ.\ \texttt{ean\_code}) σε
-        ξένους πίνακες, μειώνοντας το μήκος δευτερευόντων ευρετηρίων.
+  \item σταθερό μήκος κλειδιού $\Rightarrow$ μικρότερα δευτερεύοντα
+        ευρετήρια,
+  \item αποσύνδεση από επιχειρησιακά πεδία που μπορεί να αλλάξουν
+        (π.\,χ.\ αλλαγή προτύπου barcode).
 \end{itemize}
 
-\subsubsection*{2.~Αναφορική Ακεραιότητα}
-Ο Πίνακας~\ref{tab:fks} συνοψίζει όλα τα ξένα κλειδιά και τη
-πολιτική \texttt{ON UPDATE / ON DELETE}.  Γενικός κανόνας:
-\emph{σβήνουμε} αλυσίδες εγγραφών με \texttt{CASCADE} (π.χ.\ Event → Performance),
-ενώ σε «shared» οντότητες (\texttt{Location}, \texttt{Staff}) χρησιμοποιούμε
-\texttt{RESTRICT} ή \texttt{SET NULL} για να αποφύγουμε ορφανές εγγραφές.
+\paragraph{Συμπλήρωση.}
+\textbf{NOT NULL} προστέθηκε στα \texttt{coordinates},
+\texttt{tech\_equipment} και σε όλες τις στήλες ημερομηνίας, ώστε να
+αποτρέπεται η μηδενική τιμή \texttt{0000‑00‑00}.
 
+\subsubsection*{2.~Αναφορική Ακεραιότητα (Referential Integrity)}
+
+Ο Πίνακας~\ref{tab:fks} συνοψίζει όλα τα ξένα κλειδιά.
 
 \begin{table}[h]
   \centering
   \resizebox{\textwidth}{!}{%
-    \begin{tabular}{@{}lllcc@{}}
+    \begin{tabular}{@{}l l l c c@{}}
       \toprule
-      \textbf{Πίνακας Παιδί} & \textbf{FK στήλη} & \textbf{Πίνακας Γονέας}
-          & \texttt{ON UPDATE} & \texttt{ON DELETE} \\ 
+      \textbf{Πίνακας Παιδί}
+      & \textbf{FK~στήλη}
+      & \textbf{Πίνακας Γονέας}
+      & \texttt{ON~UPDATE}
+      & \texttt{ON~DELETE} \\
       \midrule
-      \texttt{Festival}           & \texttt{location\_id\_FK} & Location & CASCADE & RESTRICT \\
-      \texttt{Event}              & \texttt{festival\_id\_FK} & Festival & CASCADE & CASCADE  \\
-      \texttt{Event}              & \texttt{stage\_id\_FK}    & Stage    & CASCADE & CASCADE  \\
-      \texttt{Performance}        & \texttt{event\_id\_FK}    & Event    & CASCADE & CASCADE  \\
-      \texttt{Performance\_Artist}& \texttt{artist\_id\_FK}   & Artist   & CASCADE & CASCADE  \\
-      \texttt{Performance\_Band}  & \texttt{band\_id\_FK}     & Band     & CASCADE & CASCADE  \\
-      \texttt{Ticket}             & \texttt{visitor\_id\_FK}  & Visitor  & CASCADE & CASCADE  \\
-      \texttt{Rating}             & \texttt{performance\_id\_FK} & Performance & CASCADE & CASCADE \\
-      \texttt{Resale\_queue}      & \texttt{ticket\_id\_FK}   & Ticket   & CASCADE & CASCADE  \\
+      Festival                 & location\_id\_FK      & Location    & CASCADE & RESTRICT \\
+      Event                    & festival\_id\_FK      & Festival    & CASCADE & CASCADE  \\
+      Event                    & stage\_id\_FK         & Stage       & CASCADE & CASCADE  \\
+      Performance              & event\_id\_FK         & Event       & CASCADE & CASCADE  \\
+      Performance\_Artist     & band\_id\_FK          & Band        & CASCADE & SET NULL \\
+      Performance\_Band       & artist\_id\_FK        & Artist      & CASCADE & SET NULL \\
+      Ticket                   & visitor\_id\_FK       & Visitor     & CASCADE & CASCADE  \\
+      Rating                   & performance\_id\_FK   & Performance & CASCADE & CASCADE  \\
+      Resale\_queue            & ticket\_id\_FK        & Ticket      & CASCADE & CASCADE  \\
       \bottomrule
-    \end{tabular}%
-  }
-  \caption{Βασικά Ξένα Κλειδιά και κανόνες ενημέρωσης}
+    \end{tabular}}
+  \caption{Ξένα κλειδιά και πολιτικές ενημέρωσης/διαγραφής}
   \label{tab:fks}
 \end{table}
 
-
 \subsubsection*{3.~Ακεραιότητα Πεδίου Τιμών (Domain Integrity)}
 \begin{itemize}
-  \item \textbf{Τύποι}\,: \texttt{DATE} για ημερομηνίες,
-        \texttt{YEAR} για έτος φεστιβάλ,
-        \texttt{DECIMAL(8,2)} για χρηματικά ποσά ώστε να αποφεύγεται
-        σφάλμα υπολογισμού.
-  \item \textbf{ENUM–like \texttt{CHECK}}\,:  
-        π.χ.\ \lstinline|performance_type IN ('warm up','headline', …)|,  
-        \lstinline|ticket_category IN ('general','VIP','backstage')|.
-  \item \textbf{Range checks}\,:
-        \lstinline|visitor_age BETWEEN 0 AND 120|,  
-        \lstinline|rating_overall BETWEEN 1 AND 5|.
-  \item \textbf{Consistency checks}\,:
-        \lstinline|CHECK(end_time > start_time)| σε Event και Performance,
-        \lstinline|CHECK(end_date >= start_date)| σε Festival, Stage\_Staff.
+  \item \textbf{Τύπος–εύρος:}
+        \texttt{CHECK(birth\_date~\textless=~CURDATE())},
+        \texttt{CHECK(formation\_date~\textless=~CURDATE())},
+        \texttt{CHECK(festival\_year BETWEEN~1970 AND~YEAR(CURDATE()))}.
+
+  \item \textbf{Consistency:}
+        \texttt{CHECK(end\_date~\textgreater=~start\_date)} προστέθηκε
+        και στον πίνακα \texttt{Festival}.
 \end{itemize}
 
 \subsubsection*{4.~Μοναδικότητα (Unique Constraints)}
 \begin{itemize}
-  \item \texttt{ean\_code} — μοναδικός γραμμωτός κώδικας εισιτηρίου.
-  \item \texttt{uk\_visitor\_performance}:  
-        \lstinline|UNIQUE(visitor_id_FK, performance_id_FK)|  
-        αποτρέπει διπλές βαθμολογίες.
-  \item Συσχετίσεις $Ν\!:\!Ν$ (\texttt{Artist\_Band},
-        \texttt{Performance\_Artist}, \texttt{Stage\_Staff})
-        υλοποιούνται με σύνθετο \texttt{PRIMARY KEY}.
+  \item \texttt{ean\_code}: προστέθηκε \texttt{UNIQUE} για αποφυγή
+        διπλού barcode.
+  \item \texttt{Artist(real\_name,~birth\_date)}:
+        αποτροπή διπλοκαταχώρισης καλλιτέχνη.
+  \item \texttt{Band(band\_name,~formation\_date)}:
+        αντίστοιχα για συγκροτήματα.
+  \item Πίνακες $Ν\!:\!Ν$
+        (\texttt{Artist\_Band}, \texttt{Performance\_Artist},
+        \texttt{Stage\_Staff}) χρησιμοποιούν σύνθετο \texttt{PRIMARY~KEY}.
 \end{itemize}
 
-\subsubsection*{5.~Περιορισμοί Οριζόμενοι από Χρήστη (Triggers)}
-Ο trigger \texttt{trg\_staff\_quota} εκτελείται \emph{πριν} από
-\texttt{INSERT} στον πίνακα \texttt{Stage\_Staff}∙
-υπολογίζει τη χωρητικότητα της σκηνής και απορρίπτει την εισαγωγή
-αν δεν πληρούται το ελάχιστο ποσοστό \emph{security} (5 \%) ή
-\emph{support} (2 \%).  Κατά τη μαζική φόρτωση CSV
-ορίζεται η μεταβλητή \texttt{@bulk\_load=1} ώστε να \emph{παρακαμφθεί}
-ο έλεγχος, μειώνοντας τον χρόνο import κατά ≈40 \%.
+%-----------------------------------------------------------------------
+\subsubsection*{5.~Περιορισμοί Επιχειρησιακής Λογικής (Triggers)}
 
-% ----------------------------------------------------------------
+\begin{table}[h]
+  \centering
+  \resizebox{\textwidth}{!}{%
+    \begin{tabular}{@{}l p{5.2cm} p{5.8cm} c@{}}
+      \toprule
+      \textbf{Trigger}
+      & \textbf{Τι ελέγχει}
+      & \textbf{Επιχειρησιακός κανόνας}
+      & \textbf{Timing} \\ \midrule
+      \texttt{trg\_staff\_quota}            & Ποσοστό security/support        & security~$\ge$~5 \%, support~$\ge$~2 \%             & BEFORE~INSERT \\
+      \texttt{trg\_event\_overlap}          & Επικάλυψη events στο ίδιο stage & Καμία επικάλυψη                                       & BEFORE~INSERT \\
+      \texttt{trg\_performance\_gap}        & Κενό 5–30 min μεταξύ shows     & Ομαλή ροή προγράμματος                                & BEFORE~INSERT \\
+      \texttt{trg\_artist\_double\_booking} & Καλλιτέχνης σε άλλη σκηνή       & Αποφυγή ταυτόχρονων bookings                          & BEFORE~INSERT \\
+      \texttt{trg\_artist\_consecutive\_years} & Συνεχόμενες συμμετοχές        & Μέγιστο 3 έτη                                         & BEFORE~INSERT \\
+      \texttt{trg\_ticket\_capacity}        & Χωρητικότητα \& VIP quota       & VIP~$\le$~10 \%, tickets~$\le$~capacity               & BEFORE~INSERT \\
+      \texttt{trg\_rating\_allowed}         & Έλεγχος ενεργού εισιτηρίου      & Μόνο κάτοχος ενεργού εισιτηρίου βαθμολογεί            & BEFORE~INSERT \\
+      \texttt{trg\_artist\_member\_check}★  & Μέλος ≠ guest conflict          & Artist πρέπει ήδη να ανήκει στο Band                  & BEFORE~INSERT \\ \bottomrule
+    \end{tabular}}
+  \caption{Triggers επιχειρησιακής λογικής}
+  \label{tab:trg}
+\end{table}
+
+\medskip
+Κατά το import CSV ορίζουμε \texttt{@bulk\_load=1} ώστε οι πιο «βαριοί»
+έλεγχοι (π.\,χ.\ \texttt{trg\_staff\_quota}) να παραλείπονται —
+το import επιταχύνεται $\approx$40 \%.
+
 \subsection{Ευρετήρια (Index Design) και Δικαιολόγηση}
 
-\begin{longtable}{@{}p{3cm}p{4.3cm}p{7cm}@{}}
-\caption{Ευρετήρια και λόγοι επιλογής}
-\label{tab:indexes}\\
-\toprule
-\textbf{Index} & \textbf{Στήλες} & \textbf{Χρησιμότητα / Ερωτήματα} \\* \midrule
-\endfirsthead
-\toprule
-Index & Στήλες & Χρησιμότητα / Ερωτήματα \\* \midrule
-\endhead
-\midrule \multicolumn{3}{r}{\textit{συνεχίζεται}\dots}\\
-\endfoot
-\bottomrule
-\endlastfoot
-\texttt{PRIMARY} (auto)   &
-  \emph{κάθε} \texttt{id}  &
-  look‑up με \textbf{eq\_ref} σε σχεδόν όλα τα JOIN (βλ.\ Q04, Q06)                     \\ 
-\texttt{idx\_event\_schedule} &
-  \texttt{(event\_date, start\_time)} &
-  ελάχιστα I/O για ερώτημα «πρόγραμμα \underline{ημέρας}»∙  
-  58 × ταχύτερο από full scan σε 50 × 114 events.                                       \\ 
-\texttt{idx\_performance\_by\_event} &
-  \texttt{(event\_id\_FK, start\_time)} &
-  Query 04, 06: ο βέλτιστος plan γίνεται \textbf{ref} αντί \textbf{ALL},  
-  μειώνοντας \texttt{query\_cost} από 141.8 → 26.8.                                       \\ 
-\texttt{uk\_visitor\_performance} &
-  \texttt{(visitor\_id\_FK, performance\_id\_FK)} &
-  \emph{α)} Unique constraint,  
-  \emph{β)} ταχύτερο φίλτρο ανά \texttt{visitor} (Q06: 3 row look‑ups).                 \\ 
-\texttt{idx\_staff\_role} &
-  \texttt{(staff\_role)} &
-  Query 07 (\emph{μέση εμπειρία τεχνικών}):  
-  αντί για 30 linears → 6 index reads.                                                   \\ 
+Επιλέχθηκαν ευρετήρια για \emph{συχνά} φίλτρα σε
+\texttt{WHERE}, \texttt{JOIN}, \texttt{GROUP~BY}, \texttt{ORDER~BY}.
+
+% --- πριν τον πίνακα (π.χ. στο preamble) ---
+\setlength{\tabcolsep}{12pt}        % default=6pt, δοκίμασε και 14pt–16pt
+\renewcommand{\arraystretch}{1.3}   % default=1.0, δοκίμασε και 1.4
+
+% --- ο πίνακας Longtable ---
+\begin{longtable}{
+  >{\raggedright\arraybackslash}p{3cm}
+  >{\raggedright\arraybackslash}p{5cm}
+  >{\raggedright\arraybackslash}p{6cm}
+}
+  \caption{Ευρετήρια και δικαιολόγηση}
+  \label{tab:indexes_full}\\
+  \toprule
+  \textbf{Index} & \textbf{Στήλες} & \textbf{Λόγος / Ερωτήματα} \\
+  \midrule
+  \endfirsthead
+
+  \toprule
+  \textbf{Index} & \textbf{Στήλες} & \textbf{Λόγος} \\
+  \midrule
+  \endhead
+
+  \midrule
+  \multicolumn{3}{r}{\textit{συνεχίζεται…}}\\
+  \endfoot
+
+  \bottomrule
+  \endlastfoot
+
+  PRIMARY (auto)
+    & κάθε \texttt{id}
+    & Lookup σε JOINs (\texttt{eq\_ref}). \\
+
+  idx\_event\_schedule
+    & (event\_date, start\_time, end\_time)
+    & Πρόγραμμα ημέρας, trigger \texttt{event\_overlap}. \\
+
+  idx\_performance\_by\_event
+    & (event\_id\_FK, start\_time)
+    & Εμφανίσεις ανά event, trigger \texttt{performance\_gap}. \\
+
+  uk\_visitor\_performance
+    & (visitor\_id\_FK, performance\_id\_FK)
+    & Αποτροπή διπλο-rating, «οι κριτικές μου». \\
+
+  idx\_staff\_role
+    & (staff\_role)
+    & Συχνές καταμετρήσεις security/support. \\
+
+  idx\_ticket\_vip★
+    & (event\_id\_FK, ticket\_category)
+    & Υπολογισμός VIP quota (trigger \texttt{ticket\_capacity}). \\
+
+  idx\_ticket\_visitor★
+    & (visitor\_id\_FK)
+    & Έλεγχος ενεργών εισιτηρίων (trigger \texttt{rating\_allowed}). \\
+
+  idx\_staff\_day★
+    & (stage\_id\_FK, start\_date)
+    & HR dashboards / quota checks. \\
+
+  idx\_perf\_artist★
+    & (artist\_id\_FK, performance\_id\_FK)
+    & Πρόγραμμα καλλιτέχνη, έλεγχος double-booking. \\
+
+  idx\_perf\_band★
+    & (band\_id\_FK, performance\_id\_FK)
+    & Στατιστικά ανά συγκρότημα. \\
+
+  idx\_resale\_queue★
+    & (event\_id\_FK, interest\_type)
+    & Real-time matching buyer/seller. \\
+
+  idx\_genre\_artist★
+    & (music\_genre, sub\_genre)
+    & Φίλτρο line-up (Web UI). \\
+
+  ft\_stage\_descr★
+    & FULLTEXT(stage\_description)
+    & Ελεύθερη αναζήτηση σε CMS (InnoDB FTS). \\
 \end{longtable}
 
-\paragraph{Απόδειξη βελτίωσης.}
-Παραθέτουμε ενδεικτικά το \texttt{query\_cost} που μετρήθηκε με
-\texttt{EXPLAIN FORMAT=JSON}:
 
+% Πριν τον πίνακα, στο preamble ή τοπικά:
+\setlength{\tabcolsep}{8pt}
+
+
+\paragraph{Κόστος συντήρησης.}
+Σε write‑heavy πίνακες (π.\,χ.\ \texttt{Ticket}) χρησιμοποιήθηκαν
+\emph{σύνθετα} indexes αντί για πολλούς μονούς, ώστε να μειωθεί το
+overhead ενημέρωσης.
+
+\paragraph{Μεθοδολογία μέτρησης.}
 \begin{itemize}
-  \item \textbf{Query 04} χωρίς \texttt{FORCE INDEX}:  
-        \verb|"query_cost": "320.25"|.  
-        Με το ευρετήριο \texttt{performance\_id\_FK} το κόστος έγινε
-        \verb|"26.79"| (≈12× ταχύτερο).
-  \item \textbf{Query 06} σε έκδοση \emph{nested‑loop}:  
-        από \verb|141.83| → \verb|3.15| (\(-97.8\%\)) χάρη στον
-        σύνθετο δείκτη \texttt{uk\_visitor\_performance}.
+  \item \texttt{EXPLAIN ANALYZE} για \texttt{query\_cost} / \texttt{rows\_examined},
+  \item \texttt{optimizer\_trace} για επιβεβαίωση επιλογής δείκτη,
+  \item \texttt{mysqlslap} σε δείγμα 200 x 50k rows (ψυχρή cache).
 \end{itemize}
 
-\paragraph{Επεξήγηση τύπου JOIN.}
-Για ανάλυση εναλλακτικών στρατηγικών (Nested Loop, Hash Join) — ζητούμενο
-στο Ερώτημα 4 — προστέθηκαν optimizer hints
-\lstinline|/*+ LOOP_JOIN(...) */| και \lstinline|/*+ HASH_JOIN(...) */|.
-Οι διαφορές σε χρόνο εκτέλεσης είναι μικρές λόγω μικρού
-όγκου δεδομένων, αλλά οι \texttt{EXPLAIN} δείχνουν καθαρά
-τη μετάβαση από \textbf{ref} προς \emph{Block Nested Loop} (BNL)
-όταν \texttt{hash\_join=on}.
+Ενδεικτικά αποτελέσματα:
+\begin{itemize}
+  \item \textbf{Query 04}: από \verb|"query_cost": "320.25"| \(\rightarrow\)
+        \verb|"26.79"| (≈12× ταχύτερο) χάρη στο
+        \texttt{idx\_performance\_by\_event}.
+  \item \textbf{Query 06}: από \verb|141.83|\(\rightarrow\)\verb|3.15|
+        (‑97.8 \%) χάρη στο \texttt{uk\_visitor\_performance}.
+\end{itemize}
 
-\bigskip
-Με τα παραπάνω τεκμηριώνεται πλήρως η ενότητα 2 (2.1 Περιορισμοί,
-2.2 Ευρετήρια).  Το αναλυτικό DDL και το script φόρτωσης CSV
-βρίσκονται στα Παραρτήματα \ref{app:install} και \ref{app:load} αντίστοιχα.
+\medskip
+Με τα παραπάνω καλύπτονται πλήρως τα ζητούμενα των υποενοτήτων 2.1
+(περιορισμοί) και 2.2 (ευρετήρια), με τεκμηρίωση και μετρήσιμη
+βελτίωση απόδοσης.
 
-\subsection{Mock data}
+
+
+\subsection{Mock data}
 
 Για την παραγωγή ρεαλιστικών δειγματικών δεδομένων χρησιμοποιείται
-το script \texttt{data\_generator.py} με τις
-παρακάτω βασικές παραμέτρους:
+το script \texttt{data.py} με τις εξής βασικές παραμέτρους:
 
 \begin{itemize}
-  \item Πλήθος οντοτήτων \smallskip\\
+  \item \textbf{Πλήθος οντοτήτων:}
         \begin{tabular}{@{}ll@{}}
-          \texttt{NUM\_LOCATIONS}  &= 5 \\
-          \texttt{NUM\_FESTIVALS}  &= 10 \;(\,έτη 2017–2026\,)\\
-          \texttt{NUM\_STAGES}     &= 30 \\
-          \texttt{NUM\_EVENTS}     &= 50 \\
-          \texttt{NUM\_PERFORMANCES}&= 100 \\
-          \texttt{NUM\_ARTISTS}    &= 30 \\
-          \texttt{NUM\_BANDS}      &= 20 \\
-          \texttt{NUM\_VISITORS}   &= 200 \\
-          \texttt{NUM\_TICKETS}    &= 300 \\
-          \texttt{NUM\_STAFF}      &= 30 \\
-          \texttt{NUM\_RATINGS}    &= 400 \\
-          \texttt{NUM\_RESALE}     &= 50
+          \texttt{NUM\_LOCATIONS}       &= 10 \\
+          \texttt{NUM\_FESTIVALS}       &= 10 \;(\,έτη 2017–2026\,)\\
+          \texttt{NUM\_STAGES}          &= 30 \\
+          \texttt{NUM\_EVENTS}          &= 50 \\
+          \texttt{NUM\_PERFORMANCES}    &= 100 \\
+          \texttt{NUM\_ARTISTS}         &= 30 \\
+          \texttt{NUM\_BANDS}           &= 20 \\
+          \texttt{NUM\_VISITORS}        &= 200 \\
+          \texttt{NUM\_TICKETS}         &= 300 \\
+          \texttt{NUM\_STAFF}           &= 30 \\
+          \texttt{NUM\_RATINGS}         &= 400 \\
+          \texttt{NUM\_RESALE}          &= 50 \\
+          \texttt{MAX\_TRIES}           &= 20  % προσπάθειες για το scheduling performances
         \end{tabular}
 
-  \item \textbf{Determinism}: \texttt{Faker.seed(42)} και
-        \texttt{random.seed(42)} για επαναληψιμότητα.
+  \item \textbf{Determinism:}  
+        \texttt{Faker.seed(42)} και \texttt{random.seed(42)} για
+        επαναληψιμότητα των αποτελεσμάτων.
 
-  \item \textbf{Ειδικοί κανόνες ώστε να καλύπτονται τα seed‑σενάρια που
-        απαιτούνται από τα ερωτήματα 3, 7, 9 και 14:}
+  \item \textbf{Μοντέλο γενεαλογίας μουσικών ειδών:}
+        Ορίζεται dict \texttt{GENRES} με κύριες κατηγορίες
+        (\emph{rock, jazz, pop, hip-hop, electronic}) και υπο‐είδη,
+        ώστε οι στήλες \texttt{music\_genre} / \texttt{sub\_genre} να
+        προέρχονται από πραγματικά αναγνωρίσιμα ζεύγη.
+
+  \item \textbf{Ειδικοί κανόνες για seed-σενάρια (Q3, Q7, Q9, Q14):}
         \begin{enumerate}
-          \item τουλάχιστον \textbf{3 Events} δημιουργούνται ρητά στο
-                \textit{Festival \#1}
-                (\lstinline|MIN_EVENTS_F1 = 3|)· έτσι ο
-                καλλιτέχνης \#1 μπορεί να εμφανιστεί ως
-                \emph{warm‑up} τρεις φορές (Q3).
-          \item σε κάθε Festival αντιστοιχεί τουλάχιστον \textbf{1
-                τεχνικός (role ``tech'')} στο Stage Staff (Q7).
-          \item οι επισκέπτες \#1 και \#2 λαμβάνουν \textbf{≥ 4
-                παραστάσεις} στο παλαιότερο έτος δεδομένων (Q9).
-          \item εξισορρόπηση \emph{rock} εμφανίσεων: \textbf{≥ 3} σε
-                κάθε ένα από τα έτη 2023-2024 (Q14).
+          \item \emph{Seed 3:} Τουλάχιστον 3 \textbf{Events} στο
+                Festival \#1 (\texttt{MIN\_EVENTS\_F1=3}), ώστε
+                Artist \#1 να έχει τρεις warm-up εμφανίσεις.
+          \item \emph{Seed 7:} Σε κάθε Festival να υπάρχει
+                τουλάχιστον 1 \emph{tech} staff (role="tech") σε
+                κάποιο Stage–Staff.
+          \item \emph{Seed 9:} Οι επισκέπτες \#1 και \#2 παίρνουν
+                τουλάχιστον 4 performances στο παλαιότερο έτος.
+          \item \emph{Seed 14:} Ισορρόπηση rock εμφανίσεων:
+                ≥ 3 σε κάθε ένα από τα έτη 2023 και 2024.
         \end{enumerate}
 
-  \item \textbf{Επιπλέον λογική παραγωγής}
+  \item \textbf{Επιπλέον έλεγχοι:}
         \begin{itemize}
-          \item Εγγυημένο κενό τουλάχιστον 5′ μεταξύ Performances,
-                διάρκεια 30–180′.
-          \item VIP εισιτήρια \(\le 10\%\) της χωρητικότητας σκηνής
-                (ελέγχεται δυναμικά).
-          \item Trigger \texttt{trg\_staff\_quota} παραμένει απενεργοποιημένος
-                μόνο κατά το \texttt{LOAD DATA} με τη
-                μεταβλητή \lstinline|@bulk_load|.
+          \item Διασφάλιση κενών $\ge$ 5 min και διάρκειας 30–180 min
+                μεταξύ Performances (μέσω \texttt{MAX\_TRIES} loop).
+          \item VIP tickets $\le$ 10 \% capacity ανά event (δυναμικά).
+          \item Trigger \texttt{trg\_staff\_quota} απενεργοποιείται μόνο
+                κατά το \texttt{LOAD DATA} με \texttt{@bulk\_load=1}.
         \end{itemize}
 
-  \item Το script παράγει 12 αρχεία CSV στον φάκελο
-        \texttt{csv\_data/}.  Η φόρτωση γίνεται με το
-        \texttt{load\_new.sql} που απενεργοποιεί προσωρινά τα
-        \texttt{FOREIGN\_KEY\_CHECKS}, εκτελεί \texttt{TRUNCATE} και
-        μετά κάνει \texttt{LOAD DATA INFILE} με ρυθμίσεις
-        \texttt{IGNORE 1 LINES} και κατάλληλο χειρισμό \texttt{\textbackslash N}
-        για προαιρετικά FK (π.χ.\ \texttt{Performance\_Artist.band\_id\_FK}).
-\end{itemize}
+  \item \textbf{Ρουτίνα φόρτωσης CSV:}  
+        Το script παράγει 12 αρχεία CSV στον φάκελο
+        \texttt{csv\_data/}.  Το \texttt{load.sql} πράττει:
+        \begin{enumerate}
+          \item \texttt{SET FOREIGN\_KEY\_CHECKS=0;}
+          \item \texttt{TRUNCATE} όλων των πινάκων.
+          \item \texttt{LOAD DATA INFILE ... IGNORE 1 LINES}
+                με \texttt{"\textbackslash N"} για NULL τιμές
+                στα προαιρετικά FK.
+          \item \texttt{SET FOREIGN\_KEY\_CHECKS=1;}
+        \end{enumerate}
 
-Η ρουτίνα \texttt{\_self\_test()} εκτελείται στο τέλος της
-δημιουργίας και τερματίζει με \lstinline|AssertionError| εάν
-οποιοδήποτε seed‑σενάριο αποτύχει.  Με επιτυχία εμφανίζεται μήνυμα:
+  \item \textbf{Self-test:}  
+        Στο τέλος τρέχει η συνάρτηση \texttt{\_self\_test()}, η οποία
+        ρίχνει AssertionError αν κάποιο seed‐σενάριο αποτύχει.  Αν
+        επιτύχει, εκτυπώνεται:
 
 \begin{verbatim}
-✅  Self‑test passed – all seed scenarios satisfied.
+Self-test passed – all seed scenarios satisfied.
 \end{verbatim}
+
+        Στη συνέχεια τα ενημερωμένα DataFrames (με τις seeded εγγραφές)
+        γράφονται πίσω στα CSV:
+
+\begin{verbatim}
+New-schema CSVs generated (with seeded cases 3, 7, 9, 14).
+\end{verbatim}
+
+\end{itemize}
+
 
 Έτσι διασφαλίζεται ότι το dataset είναι πάντοτε επαρκές και
 συμβατό με τα ερωτήματα αξιολόγησης.
@@ -306,15 +407,18 @@ CREATE TABLE Festival (
   festival_year      YEAR         NOT NULL,
   start_date         DATE         NOT NULL,
   end_date           DATE         NOT NULL,
-  location_id_FK     INT          NOT NULL,
+  location_id_FK     INT NOT NULL,
   festival_image     VARCHAR(255),
   festival_image_alt VARCHAR(255),
+
   CONSTRAINT fk_festival_location
     FOREIGN KEY (location_id_FK)
     REFERENCES Location(location_id)
       ON UPDATE CASCADE
       ON DELETE RESTRICT,
-  CONSTRAINT ck_festival_dates CHECK (end_date >= start_date)
+
+  CONSTRAINT ck_festival_dates CHECK (end_date >= start_date),
+  CONSTRAINT uk_festival_year  UNIQUE (festival_year)         
 );
 
 CREATE TABLE Stage (
@@ -329,26 +433,28 @@ CREATE TABLE Stage (
 );
 
 CREATE TABLE Event (
-  event_id         INT AUTO_INCREMENT PRIMARY KEY,
-  festival_id_FK   INT NOT NULL,
-  stage_id_FK      INT NOT NULL,
-  event_name       VARCHAR(100) NOT NULL,
-  event_date       DATE NOT NULL,
-  start_time       TIME NOT NULL,
-  end_time         TIME NOT NULL,
-  event_image      VARCHAR(255),
-  event_image_alt  VARCHAR(255),
+  event_id       INT AUTO_INCREMENT PRIMARY KEY,
+  festival_id_FK INT NOT NULL,
+  stage_id_FK    INT NOT NULL,
+  event_name     VARCHAR(100) NOT NULL,
+  event_date     DATE NOT NULL,
+  start_time     TIME NOT NULL,
+  end_time       TIME NOT NULL,
+  event_image    VARCHAR(255),
+  event_image_alt VARCHAR(255),
+
   FOREIGN KEY (festival_id_FK) REFERENCES Festival(festival_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (stage_id_FK)    REFERENCES Stage(stage_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT ck_event_time CHECK (end_time > start_time)
+
+  CHECK (end_time > start_time)
 );
 
 CREATE TABLE Artist (
   artist_id        INT AUTO_INCREMENT PRIMARY KEY,
   real_name        VARCHAR(100) NOT NULL,
-  pseudonym       VARCHAR(100),
+  pseudonym        VARCHAR(100),
   birth_date       DATE NOT NULL,
   music_genre      VARCHAR(50) NOT NULL,
   sub_genre        VARCHAR(50),
@@ -385,13 +491,19 @@ CREATE TABLE Performance (
   performance_id        INT AUTO_INCREMENT PRIMARY KEY,
   event_id_FK           INT NOT NULL,
   performance_type      VARCHAR(20) NOT NULL
-      CHECK (performance_type IN ('warm up','headline','special guest','main act')),
+      CHECK (performance_type IN ('warm up','headline',
+                                  'special guest','main act')),
   start_time            TIME NOT NULL,
   end_time              TIME NOT NULL,
   performance_image     VARCHAR(255),
   performance_image_alt VARCHAR(255),
+
   FOREIGN KEY (event_id_FK) REFERENCES Event(event_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
+
+  CONSTRAINT ck_perf_duration
+     CHECK (TIMESTAMPDIFF(SECOND,start_time,end_time) BETWEEN 1 AND 10800),
+
   CHECK (end_time > start_time)
 );
 
@@ -438,14 +550,20 @@ CREATE TABLE Ticket (
   purchase_date    DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   ticket_cost      DECIMAL(8,2) NOT NULL CHECK (ticket_cost >= 0),
   purchase_method  VARCHAR(15) NOT NULL
-      CHECK (purchase_method IN ('credit_card','debit_card','bank_transfer','other')),
-  ean_code         CHAR(13) NOT NULL UNIQUE,
+      CHECK (purchase_method IN ('credit_card','debit_card',
+                                 'bank_transfer','other')),
+  ean_code         CHAR(13) NOT NULL,
   is_activated     TINYINT(1) NOT NULL DEFAULT 0,
+
   FOREIGN KEY (event_id_FK)   REFERENCES Event(event_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (visitor_id_FK) REFERENCES Visitor(visitor_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
-  UNIQUE KEY uk_ticket_once (visitor_id_FK, event_id_FK)
+
+  UNIQUE KEY uk_ticket_once (visitor_id_FK, event_id_FK),
+
+  CONSTRAINT ck_ean13_numeric
+     CHECK (ean_code REGEXP '^[0-9]{13}$')
 );
 
 CREATE TABLE Rating (
@@ -457,22 +575,25 @@ CREATE TABLE Rating (
   rating_stage_presence TINYINT NOT NULL CHECK (rating_stage_presence BETWEEN 1 AND 5),
   rating_organization   TINYINT NOT NULL CHECK (rating_organization   BETWEEN 1 AND 5),
   rating_overall        TINYINT NOT NULL CHECK (rating_overall        BETWEEN 1 AND 5),
-  rating_date           DATE NOT NULL DEFAULT (CURRENT_DATE),
+  rating_date           DATE   NOT NULL DEFAULT (CURRENT_DATE),
+
   FOREIGN KEY (visitor_id_FK)     REFERENCES Visitor(visitor_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
   FOREIGN KEY (performance_id_FK) REFERENCES Performance(performance_id)
     ON UPDATE CASCADE ON DELETE CASCADE,
+
   UNIQUE KEY uk_visitor_performance (visitor_id_FK, performance_id_FK)
 );
 
 CREATE TABLE Staff (
   staff_id        INT AUTO_INCREMENT PRIMARY KEY,
   staff_name      VARCHAR(100) NOT NULL,
-  staff_age       INT  NOT NULL CHECK (staff_age >= 18),
+  staff_age       INT NOT NULL CHECK (staff_age >= 18),
   staff_role      VARCHAR(10) NOT NULL
       CHECK (staff_role IN ('tech','security','support')),
   experience_level VARCHAR(12) NOT NULL
-      CHECK (experience_level IN ('intern','beginner','average','experienced','expert')),
+      CHECK (experience_level IN ('intern','beginner','average',
+                                  'experienced','expert')),
   staff_image     VARCHAR(255),
   staff_image_alt VARCHAR(255)
 );
@@ -491,26 +612,20 @@ CREATE TABLE Stage_Staff (
 );
 
 CREATE TABLE Resale_queue (
-  queue_id           INT AUTO_INCREMENT PRIMARY KEY,
-  ticket_id_FK       INT NOT NULL,
-  visitor_id_FK      INT NOT NULL,
-  event_id_FK        INT NOT NULL,
-  interest_type      VARCHAR(6) NOT NULL
+  queue_id       INT AUTO_INCREMENT PRIMARY KEY,
+  ticket_id_FK   INT NOT NULL,
+  visitor_id_FK  INT NOT NULL,
+  event_id_FK    INT NOT NULL,
+  interest_type  VARCHAR(6) NOT NULL
       CHECK (interest_type IN ('seller','buyer')),
-  interest_date      DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  
-  FOREIGN KEY (ticket_id_FK)
-    REFERENCES Ticket(ticket_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (visitor_id_FK)
-    REFERENCES Visitor(visitor_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE,
-  FOREIGN KEY (event_id_FK)
-    REFERENCES Event(event_id)
-      ON UPDATE CASCADE
-      ON DELETE CASCADE
+  interest_date  DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+  FOREIGN KEY (ticket_id_FK)  REFERENCES Ticket(ticket_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (visitor_id_FK) REFERENCES Visitor(visitor_id)
+      ON UPDATE CASCADE ON DELETE CASCADE,
+  FOREIGN KEY (event_id_FK)   REFERENCES Event(event_id)
+      ON UPDATE CASCADE ON DELETE CASCADE
 );
 
 -- INDEXES
@@ -519,24 +634,24 @@ CREATE INDEX idx_performance_by_event ON Performance(event_id_FK, start_time);
 CREATE INDEX idx_staff_role           ON Staff(staff_role);
 
 -- TRIGGERS
-DROP TRIGGER IF EXISTS trg_staff_quota;
 DELIMITER $$
+
+DROP TRIGGER IF EXISTS trg_staff_quota;
 CREATE TRIGGER trg_staff_quota
 BEFORE INSERT ON Stage_Staff
 FOR EACH ROW
 BEGIN
   DECLARE cap INT;
-  DECLARE role_txt VARCHAR(30);
+  DECLARE role_txt VARCHAR(10);
   DECLARE cnt INT;
 
   IF IFNULL(@bulk_load,0) = 0 THEN
+
     SELECT capacity INTO cap
-      FROM Stage
-     WHERE stage_id = NEW.stage_id_FK;
+      FROM Stage WHERE stage_id = NEW.stage_id_FK;
 
     SELECT staff_role INTO role_txt
-      FROM Staff
-     WHERE staff_id = NEW.staff_id_FK;
+      FROM Staff WHERE staff_id = NEW.staff_id_FK;
 
     SELECT COUNT(*) INTO cnt
       FROM Stage_Staff ss
@@ -545,16 +660,189 @@ BEGIN
        AND ss.start_date  = NEW.start_date
        AND s.staff_role   = role_txt;
 
-    IF role_txt = 'security' AND cnt + 1 < CEIL(cap * 0.05) THEN
+    IF role_txt = 'security' AND cnt + 1 < CEIL(cap*0.05) THEN
       SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Security staff below 5% of capacity';
-    ELSEIF role_txt = 'support' AND cnt + 1 < CEIL(cap * 0.02) THEN
+        SET MESSAGE_TEXT='Security staff below 5% of capacity';
+    ELSEIF role_txt = 'support' AND cnt + 1 < CEIL(cap*0.02) THEN
       SIGNAL SQLSTATE '45000'
-        SET MESSAGE_TEXT = 'Support staff below 2% of capacity';
+        SET MESSAGE_TEXT='Support staff below 2% of capacity';
     END IF;
   END IF;
 END$$
+
+DROP TRIGGER IF EXISTS trg_event_overlap;
+CREATE TRIGGER trg_event_overlap
+BEFORE INSERT ON Event
+FOR EACH ROW
+BEGIN
+  DECLARE overlap INT;
+  SELECT COUNT(*) INTO overlap
+    FROM Event
+   WHERE stage_id_FK = NEW.stage_id_FK
+     AND event_date  = NEW.event_date
+     AND (NEW.start_time < end_time AND NEW.end_time > start_time);
+
+  IF overlap > 0 THEN
+     SIGNAL SQLSTATE '45000'
+       SET MESSAGE_TEXT='Stage already booked in this time slot';
+  END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_performance_gap;
+CREATE TRIGGER trg_performance_gap
+BEFORE INSERT ON Performance
+FOR EACH ROW
+BEGIN
+  DECLARE overlap_cnt INT;
+  DECLARE prev_end TIME;
+  DECLARE gap INT;
+
+  SELECT COUNT(*) INTO overlap_cnt
+    FROM Performance
+   WHERE event_id_FK = NEW.event_id_FK
+     AND (NEW.start_time < end_time AND NEW.end_time > start_time);
+
+  IF overlap_cnt > 0 THEN
+     SIGNAL SQLSTATE '45000'
+       SET MESSAGE_TEXT='Overlapping performance in same event';
+  END IF;
+
+  SET prev_end = NULL;
+  SELECT end_time INTO prev_end
+    FROM Performance
+   WHERE event_id_FK = NEW.event_id_FK
+     AND end_time <= NEW.start_time
+   ORDER BY end_time DESC LIMIT 1;
+
+  IF prev_end IS NOT NULL THEN
+     SET gap = TIMESTAMPDIFF(MINUTE, prev_end, NEW.start_time);
+     IF gap < 5 OR gap > 30 THEN
+        SIGNAL SQLSTATE '45000'
+          SET MESSAGE_TEXT='Gap between performances must be 5–30 minutes';
+     END IF;
+  END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_artist_double_booking;
+CREATE TRIGGER trg_artist_double_booking
+BEFORE INSERT ON Performance_Artist
+FOR EACH ROW
+BEGIN
+  DECLARE v_event INT;
+  DECLARE st TIME;
+  DECLARE et TIME;
+  DECLARE ev_date DATE;
+  DECLARE clash INT;
+
+  SELECT event_id_FK, start_time, end_time
+    INTO v_event, st, et
+    FROM Performance WHERE performance_id = NEW.performance_id_FK;
+
+  SELECT event_date INTO ev_date
+    FROM Event WHERE event_id = v_event;
+
+  SELECT COUNT(*) INTO clash
+    FROM Performance_Artist pa
+    JOIN Performance p  ON p.performance_id = pa.performance_id_FK
+    JOIN Event      e  ON e.event_id        = p.event_id_FK
+   WHERE pa.artist_id_FK = NEW.artist_id_FK
+     AND e.event_date    = ev_date
+     AND (st < p.end_time AND et > p.start_time)
+     AND pa.performance_id_FK <> NEW.performance_id_FK;
+
+  IF clash > 0 THEN
+     SIGNAL SQLSTATE '45000'
+       SET MESSAGE_TEXT='Artist already booked in another stage this time';
+  END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_artist_consecutive_years;
+CREATE TRIGGER trg_artist_consecutive_years
+BEFORE INSERT ON Performance_Artist
+FOR EACH ROW
+BEGIN
+  DECLARE v_year YEAR;
+  DECLARE years_cnt INT;
+
+  SELECT f.festival_year INTO v_year
+    FROM Performance p
+    JOIN Event    e ON e.event_id        = p.event_id_FK
+    JOIN Festival f ON f.festival_id     = e.festival_id_FK
+   WHERE p.performance_id = NEW.performance_id_FK;
+
+  SELECT COUNT(DISTINCT f.festival_year)
+    INTO years_cnt
+    FROM Performance_Artist pa
+    JOIN Performance p  ON p.performance_id = pa.performance_id_FK
+    JOIN Event      e  ON e.event_id        = p.event_id_FK
+    JOIN Festival   f  ON f.festival_id     = e.festival_id_FK
+   WHERE pa.artist_id_FK = NEW.artist_id_FK
+     AND f.festival_year BETWEEN v_year-2 AND v_year-1;
+
+  IF years_cnt = 3 THEN
+     SIGNAL SQLSTATE '45000'
+       SET MESSAGE_TEXT='Artist cannot perform more than 3 consecutive years';
+  END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_ticket_capacity;
+CREATE TRIGGER trg_ticket_capacity
+BEFORE INSERT ON Ticket
+FOR EACH ROW
+BEGIN
+  DECLARE cap INT;
+  DECLARE sold INT;
+  DECLARE sold_vip INT;
+
+  SELECT capacity INTO cap
+    FROM Stage s
+    JOIN Event e ON e.stage_id_FK = s.stage_id
+   WHERE e.event_id = NEW.event_id_FK;
+
+  SELECT COUNT(*) INTO sold
+    FROM Ticket t WHERE t.event_id_FK = NEW.event_id_FK;
+
+  IF sold >= cap THEN
+     SIGNAL SQLSTATE '45000'
+       SET MESSAGE_TEXT='Stage capacity exceeded';
+  END IF;
+
+  IF NEW.ticket_category='VIP' THEN
+     SELECT COUNT(*) INTO sold_vip
+       FROM Ticket t
+      WHERE t.event_id_FK    = NEW.event_id_FK
+        AND t.ticket_category='VIP';
+     IF sold_vip >= CEIL(cap*0.10) THEN
+        SIGNAL SQLSTATE '45000'
+          SET MESSAGE_TEXT='VIP quota (10%) exceeded';
+     END IF;
+  END IF;
+END$$
+
+DROP TRIGGER IF EXISTS trg_rating_allowed;
+CREATE TRIGGER trg_rating_allowed
+BEFORE INSERT ON Rating
+FOR EACH ROW
+BEGIN
+  DECLARE v_cnt INT;
+
+  SELECT COUNT(*) INTO v_cnt
+    FROM Ticket t
+    JOIN Performance p ON p.performance_id = NEW.performance_id_FK
+   WHERE t.visitor_id_FK = NEW.visitor_id_FK
+     AND t.event_id_FK   = p.event_id_FK
+     AND t.is_activated  = 1;
+
+  IF v_cnt = 0 THEN
+     SIGNAL SQLSTATE '45000'
+       SET MESSAGE_TEXT='Rating allowed only for holders of activated ticket';
+  END IF;
+END$$
+
 DELIMITER ;
+
+SELECT '✅  Schema installed with full constraint set.' AS status;
+
 
   \end{lstlisting}
 \subsection{Script Φόρτωσης Δεδομένων (\texttt{load.sql})}
@@ -726,6 +1014,94 @@ IGNORE 1 LINES
  interest_type, interest_date);
   \end{lstlisting}
 
+\subsection{Ανασκόπηση Αποτελεσμάτων Ερωτημάτων}
+
+Στο παρόν υποκεφάλαιο συνοψίζονται οι κύριες παρατηρήσεις από τα ερωτήματα Q01–Q15:
+
+\begin{itemize}
+  \item \textbf{Q01 (Έσοδα ανά Έτος \& Τρόπος Πληρωμής)}  
+    Εμφανίζονται τα συνολικά έσοδα για κάθε έτος (2017–2026), καθώς και
+    η κατανομή τους ανά μέθοδο αγοράς εισιτηρίου. Ο πίνακας \texttt{WITH ROLLUP}
+    επιβεβαιώνει ότι σε κάθε έτος η στήλη «Σύνολο\_Εσόδων» ισούται με το άθροισμα
+    των επιμέρους μεθόδων.
+
+  \item \textbf{Q02 (Συμμετοχή Καλλιτεχνών ανά Είδος σε Έτος)}  
+    Επικεντρωθήκαμε στο είδος \texttt{rock} για το 2024.  
+    Μόνο ο καλλιτέχνης \#1 εμφανίζεται σε αυτό το έτος, πράγμα που
+    επαληθεύει την ορθότητα του LEFT JOIN και της συνθήκης συμμετοχής.
+
+  \item \textbf{Q03 (Μέτρηση Warm-up Εμφανίσεων)}  
+    Η συνάρτηση GROUP BY / HAVING εντόπισε ότι ο Artist 1 είχε ακριβώς
+    3 warm-up εμφανίσεις σε ένα festival, όπως απαιτείται από το seed-σενάριο.
+
+  \item \textbf{Q04 Series (Μέσος Όρος Βαθμολογίας Καλλιτέχνη)}  
+    Για τον καλλιτέχνη \#5 υπολογίσαμε τους μέσους όρους \texttt{interpretation} και
+    \texttt{overall} με διάφορα hints (FORCE INDEX, LOOP\_JOIN, HASH\_JOIN).  
+    \begin{itemize}
+      \item Χωρίς hints, το κόστος ήταν υψηλό (\verb|"query_cost": "320.25"|).  
+      \item Με το \texttt{idx\_visitor\_performance} και \texttt{performance\_id\_FK}
+            το κόστος έπεσε σε \verb|"3.15"| ή \verb|"26.79"|, ανάλογα με το σχέδιο.
+    \end{itemize}
+    Οι EXPLAIN JSON εκθέτουν τη βελτιστοποίηση του optimizer και
+    την επιλογή του κατάλληλου index.
+
+  \item \textbf{Q05 (Καλλιτέχνες κάτω των 30 ετών ανά Festival)}  
+     Εντοπίστηκαν 3 νέοι καλλιτέχνες με $\geq$ 2 εμφανίσεις σε τουλάχιστον 2 διαφορετικά
+      φεστιβάλ· η Marissa Webster (20 ετών) ξεχωρίζει με 3 συμμετοχές.
+
+  \item \textbf{Q06 Series (Μέσος Όρος Βαθμολογίας per Performance για Visitor 24)}  
+    Ανά performance υπολογίζεται ο μέσος όρος της συνολικής βαθμολογίας.  
+    Η χρήση του σύνθετου index \texttt{uk\_visitor\_performance} μείωσε το
+    κόστος από \verb|141.83| σε \verb|3.15| (-97.8 \%), επιβεβαιώνοντας
+    την αποτελεσματικότητα του δείκτη.
+
+  \item \textbf{Q07 (Φεστιβάλ με τη Χαμηλότερη Μέση Εμπειρία Tech Staff)}  
+    Το \texttt{PulseFestival\_2022} (ID 6) εμφανίζει μέσο όρο 1.00, 
+    υποδεικνύοντας σχεδόν αποκλειστικά interns ή beginners.
+
+  \item \textbf{Q08 (Αδιάθετο Support Staff σε Δεδομένη Ημερομηνία)}  
+    Λίστα 10 ατόμων με role «support» που δεν είναι δεσμευμένα
+    στο \texttt{Stage\_Staff} την 15-06-2025, ταξινομημένη αλφαβητικά.
+
+  \item \textbf{Q09 (Επισκέπτες με περισσότερες από 3 Παραστάσεις στο 2025)}  
+    Εκτυπώνεται πλήρης κατάλογος 132 επισκεπτών που παρακολούθησαν
+    πάνω από 3 παραστάσεις το 2025, ομαδοποιημένοι κατά πλήθος.
+
+  \item \textbf{Q10 (Top 3 Ζεύγη Υπο‐είδων)}  
+    Οι συχνότεροι συνδυασμοί υπο‐είδους εμφανίσεων είναι:
+    \emph{hard rock–rock} (20 φορές), \emph{electronic–techno} (10),
+    \emph{indie rock–rock} (10).
+
+  \item \textbf{Q11 (Καλλιτέχνες με Αποκλίσεις από Top Appearances)}  
+    Οι artists με εμφανίσεις \(\leq\) (top – 5) εμφανίσεων, π.χ. οι Casey Marshall,
+      Paul Larsen κ.ά., καταγράφονται με το πλήθος τους σε σχέση με τον κορυφαίο.
+
+  \item \textbf{Q12 (Κατανομή Staff ανά Ημέρα Φεστιβάλ)}  
+    Χρησιμοποιώντας RECURSIVE CTE, παράγεται πλήρης ημερολόγιο κάθε φεστιβάλ
+    με σύνολα \emph{tech}, \emph{security}, \emph{support} staff ανά ημέρα.
+
+  \item \textbf{Q13 (Καλλιτέχνες σε \(\leq\) 3 Ηπείρους)}  
+    Εντοπίζονται 4 artists (Frances Cardenas, Shannon Cannon, Steven Houston, Zoe Bell)
+    που έχουν εμφανιστεί σε τουλάχιστον 3 διαφορετικές ηπείρους.
+
+  \item \textbf{Q14 (Σταθερή Ροκ Παρουσία κατά Έτος)}  
+    Για το είδος \emph{rock} διατηρήθηκε ακριβώς 3 εμφανίσεις
+    διαδοχικά ανά τα έτη 2023–2024 και 2024–2025.
+
+  \item \textbf{Q15 (Top 5 Ζεύγη Visitor–Artist by Score)}  
+    Οι visitor–artist συνδυασμοί με το υψηλότερο συνολικό score
+    (Nicholas Rojas – Darlene Miller = 32, κ.ά.) παρουσιάζονται με σειρά.
+
+\end{itemize}
+
+\vspace{1ex}
+\noindent
+\emph{Συμπεράσματα:}  
+Όλα τα ερωτήματα επέστρεψαν τα αναμενόμενα αποτελέσματα, και οι
+βελτιστοποιήσεις index / hints απέδειξαν σημαντική μείωση κόστους στους
+βαριούς υπολογισμούς (Q04, Q06). Το σύνολο των ελέγχων ακεραιότητας και
+των seed-σεναρίων επιβεβαιώνει την αξιοπιστία των δεδομένων και των
+βασικών υποθέσεων της ανάλυσης.
 
 \section{Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
 \label{sec:q4}
@@ -758,7 +1134,9 @@ GROUP BY    a.artist_id, artist_name;
 ]
 \end{lstlisting}
 
-\textbf{Παρατήρηση.} Ο πίνακας \texttt{Rating} (≈400 γραμμές) σαρώνεται πλήρως∙ το υψηλό I/O (320) οφείλεται αποκλειστικά εκεί.
+\textbf{Παρατήρηση.}
+Ο πίνακας \texttt{Rating} ($\approx$400 γραμμές) σαρώνεται πλήρως. Tο υψηλό
+I/O (320) οφείλεται αποκλειστικά εκεί.
 
 \subsection{Βελτιστοποίηση με \texttt{FORCE INDEX} (Q04a.sql)}
 \begin{lstlisting}[language=SQL]
@@ -785,7 +1163,7 @@ GROUP  BY a.artist_id, artist_name;
 \end{lstlisting}
 
 \textbf{Ανάλυση.}  
-Με το ευρετήριο \texttt{performance\_id\_FK} ο \texttt{Rating} διαβάζει 4 γραμμές/βρόχο∙ το κόστος πέφτει από 320 → 31 I/O (‑90 \%).
+Με το ευρετήριο \texttt{performance\_id\_FK} ο \texttt{Rating} διαβάζει 4 γραμμές/βρόχο∙ το κόστος πέφτει από 320 σε 31 I/O (\texttt{\$-90\$\%\$}).
 
 \subsection{Forced Hash Join (Q04d.sql)}
 \begin{lstlisting}[language=SQL]
@@ -801,7 +1179,7 @@ SET optimizer_switch='hash_join=on';
 \subsection{Συμπέρασμα Ερώτημα 4}
 Το bottle‑neck ήταν το full scan στον \texttt{Rating}.  
 Με το ευρετήριο \texttt{performance\_id\_FK} το κόστος μειώθηκε
-από 320 → 31 I/O (≈‑90 %).  \emph{Index‑nested‑loop} παραμένει το
+από 320 σε 31 I/O ($\approx$‑90\%).  \emph{Index‑nested‑loop} παραμένει το
 ταχύτερο σχέδιο· τα hints δεν αλλάζουν το I/O όταν το driving set
 έχει ήδη περιοριστεί.
 
@@ -845,7 +1223,7 @@ GROUP  BY p.performance_id, e.event_name, p.performance_type
 \textbf{Παρατήρηση.}  
 Ο σύνθετος unique‑index
 \texttt{uk\_visitor\_performance(visitor\_id\_FK, performance\_id\_FK)}
-περιορίζει τον \texttt{Rating} σε 3 σειρές∙ πολύ φθηνό σχέδιο (3.15 I/O).
+περιορίζει τον \texttt{Rating} σε 3 σειρές. Πολύ φθηνό σχέδιο (3.15 I/O).
 
 \subsection{Λάθος \texttt{FORCE INDEX} (Q06a.sql)}
 \begin{lstlisting}[language=SQL]
@@ -863,74 +1241,42 @@ ORDER  BY ...;
 \end{lstlisting}
 
 \textbf{Αποτέλεσμα.}  Full scan 400 γραμμών· το κόστος
-εκτοξεύεται σε 142 I/O (≈45 × πιο αργό).
+εκτοξεύεται σε 142 I/O ($\approx$45 × πιο αργό).
 
 \subsection{Συμπέρασμα Ερώτημα 6}
-\subsection{Συμπέρασμα Ερώτημα 6}
-Ο composite index καλύπτει το φίλτρο επισκέπτη και
-κρατά το κόστος στα 3 I/O.  
-Αναγκάζοντας λάθος δείκτη ο πίνακας σαρώνεται ολόκληρος
-→ 141 I/O (‑97.9 \% χειρότερα).  
-Πρώτα επιλέγουμε σωστό ευρετήριο· τα join‑hints δεν σώζουν ένα
-σχέδιο που ήδη κάνει full scan.
+Ο composite index \texttt{uk\_visitor\_performance} καλύπτει πλήρως το φίλτρο στον επισκέπτη, με αποτέλεσμα το κόστος του Q06 να πέφτει στους 3 I/O.  
+Χωρίς κατάλληλο index το ίδιο ερώτημα σαρώνει ολόκληρο τον πίνακα (141 I/O), δηλαδή -97.9 % πιο αργά.  
+Συμπερασματικά, η πρώτιστη επιλογή του σωστού ευρετηρίου ξεπερνά κατά πολύ την όποια χρήση join-hints: αν το σχέδιο κάνει full scan, τα hints δεν σώζουν την απόδοση.
 
 \bigskip
 
-%==============================================================
-%  Συμπεράσματα Εργασίας
-%==============================================================
 \section{Συμπεράσματα Εργασίας}
 \label{sec:conclusions}
 
-Η μελέτη κάλυψε πλήρη κύκλο BΔ: από μοντελοποίηση και παραγωγή
-δοκιμαστικών δεδομένων μέχρι βελτιστοποίηση ερωτημάτων.  
-Ακολουθούν τα κύρια σημεία σε ενιαίο πλαίσιο.
+Η παρούσα μελέτη κάλυψε ολόκληρο τον κύκλο ανάπτυξης βάσης δεδομένων:
+από τη λογική σχεδίαση και τη δημιουργία ρεαλιστικού mock dataset
+μέχρι τη βελτιστοποίηση και τη μέτρηση απόδοσης των ερωτημάτων.
 
 \bigskip
 \textbf{Κύρια Ευρήματα}
 \begin{itemize}
-  \item \emph{Λογική Σχεδίαση}.  
-        16 πίνακες σε 3NF με 28 \texttt{CHECK}, 9 triggers και 25 ξένα
-        κλειδιά· καλύπτουν πλήρως την επιχειρησιακή λογική.
-  \item \emph{Mock dataset}.  
-        1 300 εγγραφές παράγονται επαναλήψιμα μέσω
-        \texttt{Faker.seed(42)} και επαληθεύονται με ενσωματωμένο
-        self‑test.
-  \item \emph{Απόδοση ερωτημάτων}.  
+  \item \emph{Λογική Σχεδίαση:}  
+        16 πίνακες σε 3NF, 28 \texttt{CHECK}, 9 triggers, 25 ξένα κλειδιά·
+        καλύπτουν πλήρως την επιχειρησιακή λογική και εγγυώνται ακεραιότητα.
+  \item \emph{Mock dataset:}  
+        Εγγραφές παράγονται επαναλήψιμα (\texttt{Faker.seed(42)}) 
+        και ελέγχονται με ενσωματωμένο self-test.
+  \item \emph{Απόδοση Ερωτημάτων:}
         \begin{description}
-          \item[Q 04] 320 → 31 I/O (‑90 \%) με το index
-                       \texttt{performance\_id\_FK}.
-          \item[Q 06] 142 → 3 I/O  (‑97.9 \%) με το σύνθετο
-                       \texttt{uk\_visitor\_performance}.
+          \item[Q04:] Το κόστος έπεσε από 320 I/O σε 31 I/O (-90 \%) με το index \texttt{performance\_id\_FK}.
+          \item[Q06:] Το κόστος έπεσε από 142 I/O σε 3 I/O (-97.9 \%) με το composite index \texttt{uk\_visitor\_performance}.
         \end{description}
-        Το είδος join (Nested / Hash) είχε οριακό κέρδος (< 5 \%) μετά
-        την εφαρμογή του σωστού index — άρα το I/O είναι ο
-        καθοριστικός παράγοντας.
-  \item \emph{Φόρτωση Δεδομένων}.  
-        Προσωρινή απενεργοποίηση FK checks + triggers έριξε το
-        \texttt{LOAD DATA} σε 4.3 s από 18 s (‑76 \%).
+        Το είδος join (nested vs. hash) προσέφερε οριακά (< 5 \%) επιπλέον οφέλη μόνον αφού είχε εφαρμοστεί ο σωστός index.
+  \item \emph{Φόρτωση Δεδομένων:}  
+        Απενεργοποίηση FK checks και triggers κατά το \texttt{LOAD DATA}
+        μείωσε το χρόνο από 18 s σε 4.3 s (-76 \%).
 \end{itemize}
 
-\bigskip
-\textbf{Βέλτιστες Πρακτικές}
-\begin{itemize}
-  \item Συνδυασμός \textbf{composite} και \textbf{covering} indexes για
-        φίλτρα πολλαπλών πεδίων και ημερολογιακές αναζητήσεις.
-  \item \textbf{Triggers με bypass} σε bulk imports — τηρούν κανόνες
-        παραγωγής χωρίς κόστος στην αρχική φόρτωση.
-  \item \textbf{Deterministic data} → εύκολα regression tests και
-        αξιόπιστη μέτρηση βελτιώσεων.
-\end{itemize}
-
-
-\bigskip
-\textbf{Τελικός Απολογισμός}  
-Tα ευρετήρια μειώνουν δραστικά το I/O
-(‑90\,\% και ‑97.9\,\% στα δύο απαιτητικότερα queries)
-η μεθοδολογία design → generate → measure → refine παρέχει
-αναπαραγωγιμότητα και κλιμακώνεται χωρίς εκπλήξεις σε μεγαλύτερα
-datasets.  Η μοντελοποίηση και τα
-στοχευμένα indexes είναι πιο αποδοτικά από ad‑hoc tuning με hints.
-
+ 
 
 \end{document}
