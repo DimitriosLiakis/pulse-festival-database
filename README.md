@@ -1,5 +1,3 @@
-Παρακάτω θα βρεις μια βελτιωμένη εκδοχή του README με ενιαίο ύφος, καθαρή δομή και χωρίς επαναλήψεις τίτλων· μπορείς να αντικαταστήσεις το υπάρχον αρχείο χωρίς άλλες αλλαγές.
-
 # Pulse Festival Database  
 Εξαμηνιαία Εργασία Βάσεων Δεδομένων (NTUA 2024‑2025)  
 **Φοιτητής:** Δημήτριος Λιάκης · ΑΜ 03120846
@@ -11,11 +9,10 @@
 | ---------------- | --------- |
 | `report.tex` + εικόνες | Η τελική αναφορά (LaTeX). |
 | `sql/install.sql` | DDL – δημιουργία σχήματος, indexes, trigger. |
-| `sql/loaδ.sql` | Φόρτωση όλων των CSV. |
+| `sql/load.sql` | Φόρτωση όλων των CSV. |
 | `csv_data/*.csv` | Mock data (δημιουργούνται από το script). |
-| `data.py` | Παραγωγή δειγματικών δεδομένων + self‑test. |
-| `queries/` | Τα 15 ερωτήματα και οι optimized παραλλαγές. |
-| `traces/` | JSON traces για Q04 και Q06. |
+| `csv_data/data.py` | Παραγωγή δειγματικών δεδομένων + self‑test. |
+| `sql/` | Τα 15 ερωτήματα και οι optimized παραλλαγές. |
 | `README.md` | Το παρόν αρχείο. |
 
 ---
@@ -27,8 +24,6 @@
 * Διαχείριση τοποθεσιών, φεστιβάλ, σκηνών, εκδηλώσεων, παραστάσεων  
 * Καλλιτέχνες & μπάντες, προσωπικό ασφαλείας/υποστήριξης/τεχνικούς  
 * Επισκέπτες, εισιτήρια, βαθμολογίες παραστάσεων, ουρά μεταπώλησης
-
-Ο σχεδιασμός είναι πλήρως 3NF, περιλαμβάνει 16 πίνακες και καλύπτει όλα τα ερωτήματα της εκφώνησης.
 
 ---
 
@@ -53,7 +48,7 @@
 
 | Οντότητα | Πλήθος | Σχόλιο |
 | -------- | ------ | ------ |
-| Locations | 5 | Ευρώπη, Ασία, κ.λπ. |
+| Locations | 10 | Ευρώπη, Ασία, κ.λπ. |
 | Festivals | 10 | 2017‑2026 |
 | Stages | 30 | Χωρητικότητα 100‑2 000 |
 | Events | 50 | ≥ 3 στο Festival #1 |
@@ -65,7 +60,7 @@
 | Ratings | 400 | 5 κριτήρια (1‑5) |
 | Resale queue | 50 | buyers & sellers |
 
-`data_generator.py` εγγυάται ειδικές “seed” περιπτώσεις για τα ερωτήματα 3, 7, 9, 14 και τερματίζει με **AssertionError** αν αποτύχουν.
+`data.py` εγγυάται ειδικές “seed” περιπτώσεις για τα ερωτήματα 3, 7, 9, 14 και τερματίζει με **AssertionError** αν αποτύχουν.
 
 ---
 
@@ -79,7 +74,7 @@ python data_generator.py
 mysql -u root -p < sql/install.sql
 
 # Φόρτωση CSV
-mysql -u root -p 10new < sql/load_new.sql
+mysql -u root -p music_festival < sql/load_new.sql
 ```
 
 ---
@@ -88,10 +83,10 @@ mysql -u root -p 10new < sql/load_new.sql
 
 ```bash
 # Παράδειγμα: Query 4
-mysql -u root -p 10new < queries/Q04.sql
+mysql -u root -p music_festival < queries/Q04.sql
 
 # Query 6 με trace
-mysql -u root -p 10new < queries/Q06b.sql > traces/Q06_trace.json
+mysql -u root -p music_festival < queries/Q06b.sql > traces/Q06_trace.json
 ```
 
 ---
