@@ -1055,150 +1055,183 @@ IGNORE 1 LINES
 των seed-σεναρίων επιβεβαιώνει την αξιοπιστία των δεδομένων και των
 βασικών υποθέσεων της ανάλυσης.
 
-\section{Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
+
+\section{Ερώτημα 4: Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}
 \label{sec:q4}
 
-Η ερώτηση μετρά τον μέσο όρο δύο κριτηρίων (\emph{Interpretation, Overall}) για έναν καλλιτέχνη.
+Σκοπός: Υπολογισμός μέσου όρου των κριτηρίων \emph{interpretation} και \emph{overall} για έναν συγκεκριμένο καλλιτέχνη.
 
-\subsection{Βασική εκδοχή (Q04.sql)}
+\subsection{Βασική Έκδοση (Q04.sql)}
 \begin{lstlisting}[language=SQL]
 SET @p_artist_id = 5;
 
-SELECT  a.artist_id,
-        COALESCE(a.pseudonym, a.real_name) AS artist_name,
-        ROUND(AVG(r.rating_interpretation), 2) AS avg_interpretation,
-        ROUND(AVG(r.rating_overall),        2) AS avg_overall
-FROM        Rating              r
-JOIN        Performance         p   ON p.performance_id      = r.performance_id_FK
-JOIN        Performance_Artist  pa  ON pa.performance_id_FK  = p.performance_id
-JOIN        Artist              a   ON a.artist_id           = pa.artist_id_FK
-WHERE       a.artist_id = @p_artist_id        
-GROUP BY    a.artist_id, artist_name;
+SELECT
+  a.artist_id,
+  COALESCE(a.pseudonym, a.real_name) AS artist_name,
+  ROUND(AVG(r.rating_interpretation), 2) AS avg_interpretation,
+  ROUND(AVG(r.rating_overall),        2) AS avg_overall
+FROM Rating             AS r
+JOIN Performance        AS p  ON p.performance_id     = r.performance_id_FK
+JOIN Performance_Artist AS pa ON pa.performance_id_FK = p.performance_id
+JOIN Artist             AS a  ON a.artist_id          = pa.artist_id_FK
+WHERE a.artist_id = @p_artist_id
+GROUP BY a.artist_id, artist_name;
 \end{lstlisting}
 
-\paragraph{Σχέδιο εκτέλεσης (σύνοψη)}
-\begin{lstlisting}
-"query_cost": "320.25",
-"nested_loop": [
-  { "table_name":"r",  "access_type":"ALL",  "rows":400 },
-  { "table_name":"pa", "access_type":"eq_ref" },
-  { "table_name":"p",  "access_type":"eq_ref" }
-]
-\end{lstlisting}
+\paragraph{Σχέδιο Εκτέλεσης (EXPLAIN)}  
+\begin{itemize}
+  \item \texttt{query\_cost = 320.25}
+  \item Full scan σε \texttt{Rating} (400 rows) → υψηλό I/O.
+\end{itemize}
 
-\textbf{Παρατήρηση.}
-Ο πίνακας \texttt{Rating} ($\approx$400 γραμμές) σαρώνεται πλήρως. Tο υψηλό
-I/O (320) οφείλεται αποκλειστικά εκεί.
-
-\subsection{Βελτιστοποίηση με \texttt{FORCE INDEX} (Q04a.sql)}
+\subsection{Q04a: FORCE INDEX}
 \begin{lstlisting}[language=SQL]
-SELECT  a.artist_id,
-        COALESCE(a.pseudonym, a.real_name) AS artist_name,
-        AVG(r.rating_interpretation)       AS avg_interpretation,
-        AVG(r.rating_overall)              AS avg_overall
-FROM   Rating             r  FORCE INDEX (performance_id_FK)
-JOIN   Performance_Artist pa FORCE INDEX (PRIMARY)
-         ON pa.performance_id_FK = r.performance_id_FK
-JOIN   Artist             a  FORCE INDEX (PRIMARY)
-         ON a.artist_id      = pa.artist_id_FK
-WHERE  a.artist_id = 5
-GROUP  BY a.artist_id, artist_name;
+SELECT
+  a.artist_id,
+  COALESCE(a.pseudonym, a.real_name) AS artist_name,
+  AVG(r.rating_interpretation)       AS avg_interpretation,
+  AVG(r.rating_overall)              AS avg_overall
+FROM Rating             AS r
+  FORCE INDEX (performance_id_FK)
+JOIN Performance_Artist AS pa
+  FORCE INDEX (PRIMARY)
+  ON pa.performance_id_FK = r.performance_id_FK
+JOIN Artist             AS a
+  FORCE INDEX (PRIMARY)
+  ON a.artist_id = pa.artist_id_FK
+WHERE a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
 \end{lstlisting}
 
-\paragraph{Σχέδιο εκτέλεσης – Nested Loop}
-\begin{lstlisting}
-"query_cost": "30.87",
-"nested_loop":[
-  { "table_name":"pa", "access_type":"index", "rows":75 },
-  { "table_name":"r",  "access_type":"ref",   "rows":4  }
-]
+\paragraph{EXPLAIN}  
+\texttt{query\_cost = 30.87}: index–nested–loop με 75 rows σε \texttt{pa} και 4 rows/ref σε \texttt{r}.
+
+\subsection{Q04b: Optimizer Trace}
+\begin{lstlisting}[language=SQL]
+SET optimizer_trace='enabled=on';
+-- ίδιο SELECT με Q04.sql
+SELECT JSON_PRETTY(trace) AS optimizer_trace
+  FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE
+  LIMIT 1;
+SET optimizer_trace='enabled=off';
 \end{lstlisting}
 
-\textbf{Ανάλυση.}  
-Με το ευρετήριο \texttt{performance\_id\_FK} ο \texttt{Rating} διαβάζει 4 γραμμές/βρόχο∙ το κόστος πέφτει από 320 σε 31 I/O (\texttt{\$-90\$\%\$}).
+\paragraph{Σημείωση}  
+Καταγράφονται τα βήματα του optimizer: equality propagation, επιλογή range scan στο index \texttt{artist\_id\_FK} κ.λπ., επιβεβαιώνοντας το plan με κόστος 30.87.
 
-\subsection{Forced Hash Join (Q04d.sql)}
+\subsection{Q04c: Forced Nested–Loop Join}
+\begin{lstlisting}[language=SQL]
+SELECT
+  a.artist_id,
+  COALESCE(a.pseudonym, a.real_name) AS artist_name,
+  AVG(r.rating_interpretation)       AS avg_interpretation,
+  AVG(r.rating_overall)              AS avg_overall
+FROM Rating             AS r
+  FORCE INDEX (performance_id_FK)
+/*+ LOOP_JOIN(r pa) */
+JOIN Performance_Artist AS pa FORCE INDEX (PRIMARY)
+  ON r.performance_id_FK = pa.performance_id_FK
+JOIN Artist             AS a  FORCE INDEX (PRIMARY)
+  ON pa.artist_id_FK = a.artist_id
+WHERE a.artist_id = 5
+GROUP BY a.artist_id, artist_name;
+\end{lstlisting}
+
+\paragraph{EXPLAIN}  
+\texttt{query\_cost = 30.87}: ίδια με Q04a, καθώς το nested–loop είναι ήδη το επιλεγμένο plan.
+
+\subsection{Q04d: Forced Hash Join}
 \begin{lstlisting}[language=SQL]
 SET optimizer_switch='hash_join=on';
 /*+ HASH_JOIN(r pa) */
--- ίδιο SELECT με το Q04a.sql
+-- ίδιο SELECT με Q04a
 \end{lstlisting}
 
-\begin{lstlisting}
-"query_cost": "30.87"   % ίδιο I/O, μικρό (~5 %) CPU κέρδος
-\end{lstlisting}
-
-\subsection{Συμπέρασμα Ερώτημα 4}
-Το bottle‑neck ήταν το full scan στον \texttt{Rating}.  
-Με το ευρετήριο \texttt{performance\_id\_FK} το κόστος μειώθηκε
-από 320 σε 31 I/O ($\approx$‑90\%).  \emph{Index‑nested‑loop} παραμένει το
-ταχύτερο σχέδιο· τα hints δεν αλλάζουν το I/O όταν το driving set
-έχει ήδη περιοριστεί.
+\paragraph{EXPLAIN}  
+\texttt{query\_cost = 30.87}: επιπλέον CPU κέρδος, αλλά καμία αλλαγή στο I/O.
 
 \bigskip
 
-
-\section{Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Ratings}
+\section{Ερώτημα 6: Μέσος Όρος Ratings Επισκέπτη ανά Παράσταση}
 \label{sec:q6}
 
-Σκοπός: ο μέσος βαθμός ενός επισκέπτη για κάθε παράσταση που
-βαθμολόγησε.
+Σκοπός: Υπολογισμός μέσου όρου των 5 κριτηρίων που έδωσε ένας επισκέπτης σε κάθε παράσταση.
 
-% -------------------------------------------------------------
-\subsection{Βασική εκδοχή (Q06.sql)}
+\subsection{Βασική Έκδοση (Q06.sql)}
 \begin{lstlisting}[language=SQL]
 SELECT
   p.performance_id,
   e.event_name,
   p.performance_type,
-  AVG((r.rating_interpretation +
-            r.rating_sound_light +
-            r.rating_stage_presence +
-            r.rating_organization +
-            r.rating_overall)/5.0) AS avg_visitor_rating
-FROM   Rating      r
-JOIN   Performance p ON r.performance_id_FK = p.performance_id
-JOIN   Event       e ON p.event_id_FK      = e.event_id
-WHERE  r.visitor_id_FK = 24
-GROUP  BY p.performance_id, e.event_name, p.performance_type
+  AVG(
+    (r.rating_interpretation
+   + r.rating_sound_light
+   + r.rating_stage_presence
+   + r.rating_organization
+   + r.rating_overall) / 5.0
+  ) AS avg_visitor_rating
+FROM Rating      AS r
+JOIN Performance AS p ON r.performance_id_FK = p.performance_id
+JOIN Event       AS e ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+GROUP BY p.performance_id, e.event_name, p.performance_type
+ORDER BY e.event_name, p.start_time;
 \end{lstlisting}
 
-\paragraph{Σχέδιο εκτέλεσης (σύνοψη)}
-\begin{lstlisting}
-"query_cost":"3.15",
-"table_name":"r",
-"access_type":"ref",
-"access_type":"ref",
-"key":"uk_visitor_performance", "rows":3
-\end{lstlisting}
+\paragraph{EXPLAIN}
+\texttt{query\_cost = 3.15}: \texttt{ref} access μέσω composite index \texttt{uk\_visitor\_performance} $\rightarrow$ 3 rows.
 
-\textbf{Παρατήρηση.}  
-Ο σύνθετος unique‑index
-\texttt{uk\_visitor\_performance(visitor\_id\_FK, performance\_id\_FK)}
-περιορίζει τον \texttt{Rating} σε 3 σειρές. Πολύ φθηνό σχέδιο (3.15 I/O).
-
-\subsection{Λάθος \texttt{FORCE INDEX} (Q06a.sql)}
+\subsection{Q06a: Λάθος FORCE INDEX}
 \begin{lstlisting}[language=SQL]
-SELECT ...           -- ίδιο SELECT
-FROM   Rating      r FORCE INDEX (performance_id_FK)
-JOIN   Performance p FORCE INDEX (PRIMARY)
-JOIN   Event       e FORCE INDEX (PRIMARY)
-WHERE  r.visitor_id_FK = 24
-GROUP  BY ...
-ORDER  BY ...;
+FROM Rating AS r FORCE INDEX (performance_id_FK)
 \end{lstlisting}
 
-\begin{lstlisting}
-"query_cost":"141.83",
+\paragraph{EXPLAIN}  
+\texttt{query\_cost = 141.83}: full scan 400 rows, περίπου 45× πιο αργό.
+
+\subsection{Q06b: Optimizer Trace}
+\begin{lstlisting}[language=SQL]
+SET optimizer_trace='enabled=on';
+-- ίδιο SELECT με Q06.sql
+SELECT * FROM INFORMATION_SCHEMA.OPTIMIZER_TRACE\G
 \end{lstlisting}
 
-\textbf{Αποτέλεσμα.}  Full scan 400 γραμμών· το κόστος
-εκτοξεύεται σε 142 I/O ($\approx$45 × πιο αργό).
+\paragraph{Σημείωση}
+Το plan επιλέγει "range scan" στον composite index, "eq\_ref" σε \texttt{Performance} και "scan" σε \texttt{Event}, σύνολο κόστους 3.15.
 
-\subsection{Συμπέρασμα Ερώτημα 6}
-Ο composite index \texttt{uk\_visitor\_performance} καλύπτει πλήρως το φίλτρο στον επισκέπτη, με αποτέλεσμα το κόστος του Q06 να πέφτει στους 3 I/O.  
-Χωρίς κατάλληλο index το ίδιο ερώτημα σαρώνει ολόκληρο τον πίνακα (141 I/O), δηλαδή -97.9 % πιο αργά.  
-Συμπερασματικά, η πρώτιστη επιλογή του σωστού ευρετηρίου ξεπερνά κατά πολύ την όποια χρήση join-hints: αν το σχέδιο κάνει full scan, τα hints δεν σώζουν την απόδοση.
+\subsection{Q06c: Forced Nested–Loop Join}
+\begin{lstlisting}[language=SQL]
+SELECT
+  ... -- ίδιο SELECT
+FROM Rating      AS r FORCE INDEX (performance_id_FK)
+/*+ LOOP_JOIN(r p) */
+JOIN Performance AS p FORCE INDEX (PRIMARY)
+  ON r.performance_id_FK = p.performance_id
+JOIN Event      AS e FORCE INDEX (PRIMARY)
+  ON p.event_id_FK      = e.event_id
+WHERE r.visitor_id_FK = 24
+...
+\end{lstlisting}
+
+\paragraph{EXPLAIN}  
+\texttt{query\_cost = 141.83}: επειδή το \texttt{r} επιλέγεται με full scan, το nested–loop επιδεινώνει το κόστος.
+
+\subsection{Q06d: Forced Hash Join}
+\begin{lstlisting}[language=SQL]
+SET optimizer_switch='hash_join=on';
+/*+ HASH_JOIN(r p) */
+-- ίδιο SELECT
+\end{lstlisting}
+
+\paragraph{EXPLAIN}  
+\texttt{query\_cost = 141.83}: καμία βελτίωση, καθώς το driving set δεν χρησιμοποιεί composite index.
+
+\subsection{Συμπέρασμα}
+\begin{itemize}
+  \item Ο composite index \texttt{uk\_visitor\_performance} είναι κρίσιμος για χαμηλό κόστος (3.15 I/O).
+  \item Λανθασμένη χρήση index ή hints οδηγεί σε full scan και πολύ υψηλό κόστος (142 I/O).
+  \item Η επιλογή κατάλληλου ευρετηρίου υπερτερεί των join–hints σε κάθε σενάριο.
+\end{itemize}
 
 \bigskip
 
@@ -1228,6 +1261,119 @@ ORDER  BY ...;
         Απενεργοποίηση FK checks και triggers κατά το \texttt{LOAD DATA}
         μείωσε το χρόνο από 18 s σε 4.3 s (-76 \%).
 \end{itemize}
+\appendix
+\section{Αποσπάσματα Κώδικα}
+%========================================================
+%  ΕΡΩΤΗΜΑ 4  –  ΟΛΕΣ ΟΙ ΠΑΡΑΛΛΑΓΕΣ
+%========================================================
+\subsection*{Ερώτημα 4 – Μέσοι όροι καλλιτέχνη (@p\_artist\_id = 5)}
 
+%--------------------------------------------------------
+\paragraph{Q04  – Baseline}
+\begin{lstlisting}
+mysql> SELECT …
+| artist_id | artist_name | avg_interpretation | avg_overall |
+| 5         | NULL        | 3.14               | 3.29        |
+1 row in set (0.00 sec)
+
+mysql> EXPLAIN FORMAT=JSON …
+   "access_type": "ALL",
+   "rows_examined_per_scan": 400,
+   "query_cost": "320.25"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q04a – FORCE INDEX}
+\begin{lstlisting}
+... (ίδια  αποτελέσματα) ...
+
+
+   "access_type": "ref",
+   "rows_examined_per_scan": 75,
+   "query_cost": "30.87"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q04b – optimizer\_trace}
+\begin{lstlisting}
+... (ίδια  αποτελέσματα) ...
+
+   "chosen_range_access_summary": {
+       "index": "artist_id_FK", "rows_for_plan": 2
+   },
+   "query_cost": "30.87"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q04c – /*+ LOOP\_JOIN */}
+\begin{lstlisting}
+... (ίδια  αποτελέσματα) ...
+
+   "access_type": "ref",  "query_cost": "30.87"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q04d – /*+ HASH\_JOIN */}
+\begin{lstlisting}
+... (ίδια  αποτελέσματα) ...
+
+   "access_type": "ref",  "query_cost": "30.87"
+\end{lstlisting}
+
+
+%========================================================
+%  ΕΡΩΤΗΜΑ 6  –  ΟΛΕΣ ΟΙ ΠΑΡΑΛΛΑΓΕΣ
+%========================================================
+\subsection*{Ερώτημα 6 – Μέσος όρος ratings επισκέπτη \#24}
+
+%--------------------------------------------------------
+\paragraph{Q06  – Baseline}
+\begin{lstlisting}
+| performance_id| event_name| performance_type| avg_visitor_rating|
+| 23            | Event_1   | main act        | 3.80              |
+| 19            | Event_20  | main act        | 3.20              |
+| 27            | Event_49  | special guest   | 3.00              |
+3 rows in set (0.01 sec)
+
+   "access_type": "ref",
+   "rows_examined_per_scan": 3,
+   "query_cost": "3.15"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q06a – λάθος FORCE INDEX}
+\begin{lstlisting}
+... (ίδια τριπλέτα αποτελεσμάτων) ...
+
+   "access_type": "ALL",
+   "rows_examined_per_scan": 400,
+   "query_cost": "141.83"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q06b – optimizer\_trace}
+\begin{lstlisting}
+... (ίδια τριπλέτα αποτελεσμάτων) ...
+
+   "range_access_plan": { "index": "uk_visitor_performance",
+                          "rows": 3 },
+   "query_cost": "3.15"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q06c – /*+ LOOP\_JOIN */}
+\begin{lstlisting}
+... (ίδια τριπλέτα αποτελεσμάτων) ...
+
+   "access_type": "ALL",  "query_cost": "141.83"
+\end{lstlisting}
+
+%--------------------------------------------------------
+\paragraph{Q06d – /*+ HASH\_JOIN */}
+\begin{lstlisting}
+... (ίδια τριπλέτα αποτελεσμάτων) ...
+
+   "access_type": "ALL",  "query_cost": "141.83"
+\end{lstlisting}
 
 \end{document}

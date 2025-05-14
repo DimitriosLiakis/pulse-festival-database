@@ -2,21 +2,6 @@
 Εξαμηνιαία Εργασία Βάσεων Δεδομένων (NTUA 2024‑2025) 
 **Φοιτητής:** Δημήτριος Λιάκης · ΑΜ 03120846
 
----
-## Περιεχόμενα Repository
-
-| Φάκελος / Αρχείο | Περιγραφή |
-| ---------------- | --------- |
-| `report.tex` + εικόνες | Η τελική αναφορά (LaTeX). |
-| `sql/install.sql` | DDL – δημιουργία σχήματος, indexes, trigger. |
-| `sql/load.sql` | Φόρτωση όλων των CSV. |
-| `csv_data/*.csv` | Mock data (δημιουργούνται από το script). |
-| `csv_data/data.py` | Παραγωγή δειγματικών δεδομένων + self‑test. |
-| `sql/` | Τα 15 ερωτήματα και οι optimized παραλλαγές. |
-| `README.md` | Το παρόν αρχείο. |
-
----
-
 ## 1 . Overview
 
 Η βάση **Pulse Festival** υποστηρίζει:
@@ -68,7 +53,7 @@
 
 ```bash
 # Δημιουργία mock δεδομένων
-python data_generator.py
+python data.py
 
 # Δημιουργία schema
 mysql -u root -p < sql/install.sql
@@ -83,20 +68,20 @@ mysql -u root -p music_festival < sql/load_new.sql
 
 ```bash
 # Παράδειγμα: Query 4
-mysql -u root -p music_festival < queries/Q04.sql
+mysql -u root -p music_festival < sql/Q04.sql
 
 # Query 6 με trace
-mysql -u root -p music_festival < queries/Q06b.sql > traces/Q06_trace.json
+mysql -u root -p music_festival < sql/Q06b.sql > sql/Q06_out.txt
 ```
 
 ---
 
 ## 6 . Δείκτες & Βελτιστοποίηση
 
-* `idx_event_schedule (event_date, start_time)` — ημερολόγιο ημέρας.
-* `idx_performance_by_event (event_id_FK, start_time)` — driving set Q04, Q06.
-* `uk_visitor_performance` — μοναδικό + φιλτράρισμα 3 rows (Q06).
-* `idx_staff_role` — αναζητήσεις εμπειρίας ανά ρόλο (Q07).
+* `idx_event_schedule (event_date, start_time)` 
+* `idx_performance_by_event (event_id_FK, start_time)` 
+* `uk_visitor_performance` 
+* `idx_staff_role` 
 
 Πλήρης ανάλυση στις § 2.2, § 4 της αναφοράς.
 

@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  14 MAY 2025 19:00
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  14 MAY 2025 19:52
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -520,8 +520,8 @@ Package hyperref Info: Link coloring OFF on input line 38.
 
 \c@lstlisting=\count318
  (./report.toc
-Overfull \hbox (12.67606pt too wide) in paragraph at lines 23--23
- [] [][]\TU/NotoSerif(1)/b/n/12 Ερώτημα 6 – Παραστάσεις Επισκέπτη & Μέσος Όρος Ratings[] []  
+Overfull \hbox (7.23117pt too wide) in paragraph at lines 27--27
+ [] [][]\TU/NotoSerif(1)/b/n/12 Ερώτημα 6: Μέσος Όρος Ratings Επισκέπτη ανά Παράσταση[] []  
  []
 
 [1
@@ -717,70 +717,48 @@ Underfull \hbox (badness 6364) in paragraph at lines 1022--1026
 \TU/NotoSerif(1)/m/n/12 υπο‐είδους εμφανίσεων είναι: \TU/NotoSerif(1)/m/it/12 hard rock–rock \TU/NotoSerif(1)/m/n/12 (20 φορές),
  []
 
-[26]
-Underfull \hbox (badness 1253) in paragraph at lines 1058--1058
-[]\TU/NotoSerif(1)/b/n/17.28 Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων
+[26] [27]
+Missing character: There is no → (U+2192) in font Noto Serif Regular/OT:script=latn;language=dflt;!
+[28]
+Underfull \hbox (badness 5490) in paragraph at lines 1120--1121
+ []\TU/NotoSerif(1)/b/n/12 Σημείωση[] \TU/NotoSerif(1)/m/n/12 Καταγράφονται τα βήματα του optimizer: equality
+ []
+
+[29] [30] [31]
+Underfull \hbox (badness 1072) in paragraph at lines 1227--1228
+ []\TU/NotoSerif(1)/b/n/12 EXPLAIN[] \TU/DejaVuSansMono(0)/m/n/12 query_cost = 141.83\TU/NotoSerif(1)/m/n/12 : καμία βελτίωση, καθώς το
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1061--1062
-[]\TU/NotoSerif(1)/m/n/12 Η ερώτηση μετρά τον μέσο όρο δύο κριτηρίων
- []
-
-[27] [28]
-Missing character: There is no ∙ (U+2219) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Underfull \hbox (badness 2443) in paragraph at lines 1141--1141
-[]\TU/NotoSerif(1)/b/n/17.28 Ερώτημα 6 – Παραστάσεις Επισκέπτη &
- []
-
-[29]
-Underfull \hbox (badness 10000) in paragraph at lines 1175--1179
-[]\TU/NotoSerif(1)/b/n/12 Παρατήρηση. \TU/NotoSerif(1)/m/n/12 Ο σύνθετος unique‑index
- []
-
-
-Overfull \hbox (14.57813pt too wide) in paragraph at lines 1175--1179
-\TU/DejaVuSansMono(0)/m/n/12 uk_visitor_performance(visitor_id_FK, performance_id_FK)
- []
-
-
-Underfull \hbox (badness 2726) in paragraph at lines 1195--1197
-[]\TU/NotoSerif(1)/b/n/12 Αποτέλεσμα. \TU/NotoSerif(1)/m/n/12  Full scan 400 γραμμών· το κόστος εκτοξεύεται
- []
-
-[30]
-Underfull \hbox (badness 10000) in paragraph at lines 1218--1221
+Underfull \hbox (badness 10000) in paragraph at lines 1251--1254
 []\TU/NotoSerif(1)/m/it/12 Mock dataset: \TU/NotoSerif(1)/m/n/12 Εγγραφές παράγονται επαναλήψιμα
  []
 
 
-Underfull \hbox (badness 6001) in paragraph at lines 1218--1221
+Underfull \hbox (badness 6001) in paragraph at lines 1251--1254
 \TU/NotoSerif(1)/m/n/12 (\TU/DejaVuSansMono(0)/m/n/12 Faker.seed(42)\TU/NotoSerif(1)/m/n/12 ) και ελέγχονται με ενσωματωμένο self-
  []
 
-[31] [32] (./report.aux)
+[32]
+Underfull \hbox (badness 10000) in paragraph at lines 1269--1269
+[][]\TU/NotoSerif(1)/b/n/14.4 Ερώτημα 4 – Μέσοι όροι καλλιτέ-
+ []
+
+[33] [34] [35] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-Package rerunfilecheck Warning: File `report.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `report.out':
-(rerunfilecheck)             Before: E5047FA4790B45A7435D5B5D67D1FFA0;6314
-(rerunfilecheck)             After:  404400FA59E58B247F35F1EF8101A8FA;5914.
+Package rerunfilecheck Info: File `report.out' has not changed.
+(rerunfilecheck)             Checksum: 7BBBB0D8ED89D9AC1CE0CEB06E0F9A01;6501.
  ) 
 Here is how much of TeX's memory you used:
- 15324 strings out of 474878
- 300525 string characters out of 5762517
- 2167627 words of memory out of 5000000
- 37150 multiletter control sequences out of 15000+600000
+ 15336 strings out of 474878
+ 300689 string characters out of 5762517
+ 2166627 words of memory out of 5000000
+ 37162 multiletter control sequences out of 15000+600000
  563547 words of font info for 97 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,17n,107p,480b,2027s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,17n,107p,469b,2027s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on report.pdf (32 pages).
+Output written on report.pdf (35 pages).
