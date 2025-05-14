@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  13 MAY 2025 18:41
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  14 MAY 2025 13:50
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -423,99 +423,104 @@ Package: array 2023/10/16 v2.5g Tabular extension package (FMi)
 \extratabsurround=\skip58
 \backup@length=\skip59
 \ar@cellbox=\box63
+) (/usr/share/texlive/texmf-dist/tex/latex/makecell/makecell.sty
+Package: makecell 2009/08/03 V0.1e Managing of Tab Column Heads and Cells
+\rotheadsize=\dimen179
+\c@nlinenum=\count317
+\TeXr@lab=\toks27
 ) (/usr/share/texlive/texmf-dist/tex/latex/listings/lstlang1.sty
 File: lstlang1.sty 2023/02/27 1.9 listings language file
 ) (./report.aux)
 \openout1 = `report.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 37.
-LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 37.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 38.
+LaTeX Font Info:    Trying to load font information for TS1+cmr on input line 38.
  (/usr/share/texlive/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 2023/04/13 v2.5m Standard LaTeX font definitions
 )
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
-LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 37.
-LaTeX Font Info:    ... okay on input line 37.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for TU/lmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
+LaTeX Font Info:    Checking defaults for PU/pdf/m/n on input line 38.
+LaTeX Font Info:    ... okay on input line 38.
 
 Package fontspec Info: Adjusting the maths setup (use [no-math] to avoid
 (fontspec)             this).
 
 \symlegacymaths=\mathgroup4
 LaTeX Font Info:    Overwriting symbol font `legacymaths' in version `bold'
-(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 37.
-LaTeX Font Info:    Redeclaring math accent \acute on input line 37.
-LaTeX Font Info:    Redeclaring math accent \grave on input line 37.
-LaTeX Font Info:    Redeclaring math accent \ddot on input line 37.
-LaTeX Font Info:    Redeclaring math accent \tilde on input line 37.
-LaTeX Font Info:    Redeclaring math accent \bar on input line 37.
-LaTeX Font Info:    Redeclaring math accent \breve on input line 37.
-LaTeX Font Info:    Redeclaring math accent \check on input line 37.
-LaTeX Font Info:    Redeclaring math accent \hat on input line 37.
-LaTeX Font Info:    Redeclaring math accent \dot on input line 37.
-LaTeX Font Info:    Redeclaring math accent \mathring on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Delta on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Theta on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Xi on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Pi on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Phi on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Psi on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \Omega on input line 37.
-LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 37.
-LaTeX Font Info:    Redeclaring symbol font `operators' on input line 37.
+(Font)                  OT1/cmr/m/n --> OT1/cmr/bx/n on input line 38.
+LaTeX Font Info:    Redeclaring math accent \acute on input line 38.
+LaTeX Font Info:    Redeclaring math accent \grave on input line 38.
+LaTeX Font Info:    Redeclaring math accent \ddot on input line 38.
+LaTeX Font Info:    Redeclaring math accent \tilde on input line 38.
+LaTeX Font Info:    Redeclaring math accent \bar on input line 38.
+LaTeX Font Info:    Redeclaring math accent \breve on input line 38.
+LaTeX Font Info:    Redeclaring math accent \check on input line 38.
+LaTeX Font Info:    Redeclaring math accent \hat on input line 38.
+LaTeX Font Info:    Redeclaring math accent \dot on input line 38.
+LaTeX Font Info:    Redeclaring math accent \mathring on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Gamma on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Delta on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Theta on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Lambda on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Xi on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Pi on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Sigma on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Upsilon on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Phi on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Psi on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \Omega on input line 38.
+LaTeX Font Info:    Redeclaring math symbol \mathdollar on input line 38.
+LaTeX Font Info:    Redeclaring symbol font `operators' on input line 38.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `normal' on input line 37.
+(Font)              `operators' in the math version `normal' on input line 38.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/NotoSerif(0)/m/n on input line 37.
+(Font)                  OT1/cmr/m/n --> TU/NotoSerif(0)/m/n on input line 38.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
-(Font)              `operators' in the math version `bold' on input line 37.
+(Font)              `operators' in the math version `bold' on input line 38.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> TU/NotoSerif(0)/m/n on input line 37.
+(Font)                  OT1/cmr/bx/n --> TU/NotoSerif(0)/m/n on input line 38.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  TU/NotoSerif(0)/m/n --> TU/NotoSerif(0)/m/n on input line 37.
+(Font)                  TU/NotoSerif(0)/m/n --> TU/NotoSerif(0)/m/n on input line 38.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/NotoSerif(0)/m/it on input line 37.
+(Font)                  OT1/cmr/m/it --> TU/NotoSerif(0)/m/it on input line 38.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/NotoSerif(0)/b/n on input line 37.
+(Font)                  OT1/cmr/bx/n --> TU/NotoSerif(0)/b/n on input line 38.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
-(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 37.
+(Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 38.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 37.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/m/n on input line 38.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  TU/NotoSerif(0)/m/n --> TU/NotoSerif(0)/b/n on input line 37.
+(Font)                  TU/NotoSerif(0)/m/n --> TU/NotoSerif(0)/b/n on input line 38.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> TU/NotoSerif(0)/b/it on input line 37.
+(Font)                  OT1/cmr/bx/it --> TU/NotoSerif(0)/b/it on input line 38.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
-(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 37.
+(Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 38.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
-(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 37.
-Package hyperref Info: Link coloring OFF on input line 37.
+(Font)                  OT1/cmtt/m/n --> TU/lmtt/b/n on input line 38.
+Package hyperref Info: Link coloring OFF on input line 38.
  (./report.out) (./report.out)
 \@outlinefile=\write3
 \openout3 = `report.out'.
 
-\c@lstlisting=\count317
+\c@lstlisting=\count318
  (./report.toc
-Overfull \hbox (12.67606pt too wide) in paragraph at lines 24--24
+Overfull \hbox (12.67606pt too wide) in paragraph at lines 23--23
  [] [][]\TU/NotoSerif(1)/b/n/12 Ερώτημα 6 – Παραστάσεις Επισκέπτη & Μέσος Όρος Ratings[] []  
  []
 
@@ -530,18 +535,7 @@ File: er.png Graphic file (type bmp)
 <er.png>
 File: relational.png Graphic file (type bmp)
 <relational.png>
- [3]
-
-LaTeX Warning: Reference `fig:er' on page 4 undefined on input line 56.
-
-
-LaTeX Warning: Reference `tab:all-tables' on page 4 undefined on input line 57.
-
-
-LaTeX Warning: Reference `app:install' on page 4 undefined on input line 58.
-
-Missing character: There is no ∙ (U+2219) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-[4]
+ [3] [4]
 Underfull \hbox (badness 10000) in paragraph at lines 73--75
 []\TU/NotoSerif(1)/m/n/12 Κάθε πίνακας διαθέτει τεχνητό \TU/DejaVuSansMono(0)/m/n/12 PRIMARY KEY
  []
@@ -572,284 +566,214 @@ Underfull \hbox (badness 10000) in paragraph at lines 119--123
  []
 
 [5]
-Missing character: There is no Ν ("39D) in font cmmi12!
-Missing character: There is no Ν ("39D) in font cmmi12!
-
-Underfull \hbox (badness 10000) in paragraph at lines 137--140
-[]\TU/NotoSerif(1)/m/n/12 Πίνακες $  \OT1/cmr/m/n/12 :  $ \TU/NotoSerif(1)/m/n/12 (\TU/DejaVuSansMono(0)/m/n/12 Artist_Band\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 Performance_Artist\TU/NotoSerif(1)/m/n/12 ,
- []
-
-
-Underfull \hbox (badness 10000) in paragraph at lines 162--162
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
 []|\TU/NotoSerif(1)/m/n/12 Επικάλυψη events στο
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 162--162
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
 []|\TU/NotoSerif(1)/m/n/12 Κενό 5–30 min μεταξύ
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 162--162
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
 []|\TU/NotoSerif(1)/m/n/12 Καλλιτέχνης σε άλλη
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 162--162
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
 []|\TU/NotoSerif(1)/m/n/12 Αποφυγή ταυτόχρονων
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 162--162
+Underfull \hbox (badness 10000) in paragraph at lines 161--161
 []|\TU/NotoSerif(1)/m/n/12 Χωρητικότητα
  []
 
 
-Underfull \hbox (badness 3375) in paragraph at lines 162--162
+Underfull \hbox (badness 3375) in paragraph at lines 161--161
 []|\TU/NotoSerif(1)/m/n/12 Έλεγχος ενεργού εισιτη-
  []
 
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-Missing character: There is no ≠ (U+2260) in font Noto Serif Regular/OT:script=latn;language=dflt;!
 
-Underfull \hbox (badness 6173) in paragraph at lines 174--176
+Underfull \hbox (badness 6173) in paragraph at lines 172--174
 []\TU/NotoSerif(1)/m/n/12 Επιλέχθηκαν ευρετήρια για \TU/NotoSerif(1)/m/it/12 συχνά \TU/NotoSerif(1)/m/n/12 φίλτρα σε \TU/DejaVuSansMono(0)/m/n/12 WHERE\TU/NotoSerif(1)/m/n/12 , \TU/DejaVuSansMono(0)/m/n/12 JOIN\TU/NotoSerif(1)/m/n/12 ,
  []
 
 
-Overfull \hbox (80.33856pt too wide) in alignment at lines 186--192
- [] [] [] 
+Overfull \hbox (16.23195pt too wide) in paragraph at lines 191--191
+[]|\TU/DejaVuSansMono(0)/m/n/12 idx_event_schedule| 
  []
 
 
-Overfull \hbox (80.33856pt too wide) in alignment at lines 192--197
- [] [] [] 
+Underfull \hbox (badness 10000) in paragraph at lines 195--196
+[]|\TU/NotoSerif(1)/m/n/12 Πρόγραμμα ημέρας, trigger
  []
 
 
-Overfull \hbox (80.33856pt too wide) in alignment at lines 197--201
- [] [] [] 
+Overfull \hbox (59.5796pt too wide) in paragraph at lines 197--197
+[]|\TU/DejaVuSansMono(0)/m/n/12 idx_performance_by_event| 
  []
 
 
-Overfull \hbox (80.33856pt too wide) in alignment at lines 201--204
- [] [] [] 
+Overfull \hbox (45.13039pt too wide) in paragraph at lines 202--202
+[]|\TU/DejaVuSansMono(0)/m/n/12 uk_visitor_performance| 
  []
 
 
-Overfull \hbox (26.03775pt too wide) in paragraph at lines 210--211
-[]|\TU/NotoSerif(1)/m/n/12 idx_event_schedule|  
+Underfull \hbox (badness 10000) in paragraph at lines 205--206
+[]|\TU/NotoSerif(1)/m/n/12 Αποτροπή διπλο-rating, «οι
  []
 
 
-Overfull \hbox (69.57375pt too wide) in paragraph at lines 214--215
-[]|\TU/NotoSerif(1)/m/n/12 idx_performance_by_event|  
+Underfull \hbox (badness 10000) in paragraph at lines 209--210
+[]|\TU/NotoSerif(1)/m/n/12 Συχνές καταμετρήσεις
  []
 
 
-Overfull \hbox (51.74174pt too wide) in paragraph at lines 218--219
-[]|\TU/NotoSerif(1)/m/n/12 uk_visitor_performance|  
+Overfull \hbox (84.79132pt too wide) in paragraph at lines 187--213
+ [][] 
  []
 
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (0.54974pt too wide) in paragraph at lines 226--227
-[]|\TU/NotoSerif(1)/m/n/12 idx_ticket_vip★|  
- []
-
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (19.23375pt too wide) in paragraph at lines 230--231
-[]|\TU/NotoSerif(1)/m/n/12 idx_ticket_visitor★|  
- []
-
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (4.97774pt too wide) in paragraph at lines 238--239
-[]|\TU/NotoSerif(1)/m/n/12 idx_perf_artist★|  
- []
-
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (4.10175pt too wide) in paragraph at lines 242--243
-[]|\TU/NotoSerif(1)/m/n/12 idx_perf_band★|  
- []
-
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (20.82974pt too wide) in paragraph at lines 246--247
-[]|\TU/NotoSerif(1)/m/n/12 idx_resale_queue★|  
- []
-
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (13.79774pt too wide) in paragraph at lines 250--251
-[]|\TU/NotoSerif(1)/m/n/12 idx_genre_artist★|  
- []
-
-Missing character: There is no ★ (U+2605) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Overfull \hbox (1.53374pt too wide) in paragraph at lines 254--255
-[]|\TU/NotoSerif(1)/m/n/12 ft_stage_descr★|  
- []
-
-
-Overfull \hbox (25.41222pt too wide) in paragraph at lines 255--256
-[]|\TU/NotoSerif(1)/m/n/12 FULLTEXT(stage_description)|  
- []
-
-
-Overfull \hbox (80.33856pt too wide) in alignment at lines 204--257
- [] [] [] 
- []
-
-[6] [7]
-Missing character: There is no ≈ (U+2248) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-
-Underfull \hbox (badness 10000) in paragraph at lines 281--283
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 233--235
 []\TU/NotoSerif(1)/b/n/12 Query 06\TU/NotoSerif(1)/m/n/12 : από [][]\TU/DejaVuSansMono(0)/m/n/12 141.83$\OMS/cmsy/m/n/12 !$[]\TU/DejaVuSansMono(0)/m/n/12 3.15 []\TU/NotoSerif(1)/m/n/12 (‑97.8 %) χάρη στο
  []
 
 
-Overfull \hbox (15.62607pt too wide) in paragraph at lines 298--314
+Overfull \hbox (15.62607pt too wide) in paragraph at lines 250--266
 []\TU/NotoSerif(1)/b/n/12 Πλήθος οντοτήτων: [] 
  []
 
-
-Underfull \hbox (badness 1552) in paragraph at lines 315--318
+[7]
+Underfull \hbox (badness 1552) in paragraph at lines 267--270
 []\TU/NotoSerif(1)/b/n/12 Determinism: \TU/DejaVuSansMono(0)/m/n/12 Faker.seed(42) \TU/NotoSerif(1)/m/n/12 και \TU/DejaVuSansMono(0)/m/n/12 random.seed(42) \TU/NotoSerif(1)/m/n/12 για
  []
 
-[8]
-Underfull \hbox (badness 10000) in paragraph at lines 327--330
+
+Underfull \hbox (badness 10000) in paragraph at lines 279--282
 []\TU/NotoSerif(1)/m/it/12 Seed 3: \TU/NotoSerif(1)/m/n/12 Τουλάχιστον 3 \TU/NotoSerif(1)/b/n/12 Events \TU/NotoSerif(1)/m/n/12 στο Festival #1
  []
 
-Missing character: There is no ≥ (U+2265) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-[9]
-Overfull \hbox (37.35352pt too wide) in paragraph at lines 374--374
+[8]
+Overfull \hbox (37.35352pt too wide) in paragraph at lines 326--326
  []\TU/DejaVuSansMono(0)/m/n/12 New-schema CSVs generated (with seeded cases 3, 7, 9, 14).[] 
  []
 
-[10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20] [21]
+[9] [10] [11] [12] [13] [14] [15] [16] [17] [18] [19] [20]
 Missing character: There is no ✅ (U+2705) in font DejaVu Sans Mono/OT:script=latn;language=dflt;!
-[22] [23] [24] [25]
-Underfull \hbox (badness 2951) in paragraph at lines 1022--1027
+[21] [22] [23] [24]
+Underfull \hbox (badness 2951) in paragraph at lines 974--979
 []\TU/NotoSerif(1)/b/n/12 Q01 (Έσοδα ανά Έτος & Τρόπος Πληρωμής) \TU/NotoSerif(1)/m/n/12 Εμφανίζο-
  []
 
-
-Underfull \hbox (badness 10000) in paragraph at lines 1037--1040
+[25]
+Underfull \hbox (badness 10000) in paragraph at lines 989--992
 []\TU/NotoSerif(1)/b/n/12 Q04 Series (Μέσος Όρος Βαθμολογίας Καλλιτέχνη)
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1037--1040
+Underfull \hbox (badness 10000) in paragraph at lines 989--992
 \TU/NotoSerif(1)/m/n/12 Για τον καλλιτέχνη #5 υπολογίσαμε τους μέσους όρους
  []
 
 
-Underfull \hbox (badness 6725) in paragraph at lines 1037--1040
+Underfull \hbox (badness 6725) in paragraph at lines 989--992
 \TU/DejaVuSansMono(0)/m/n/12 interpretation \TU/NotoSerif(1)/m/n/12 και \TU/DejaVuSansMono(0)/m/n/12 overall \TU/NotoSerif(1)/m/n/12 με διάφορα hints (FORCE
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1041--1042
+Underfull \hbox (badness 10000) in paragraph at lines 993--994
 []\TU/NotoSerif(1)/m/n/12 Χωρίς hints, το κόστος ήταν υψηλό
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1042--1044
+Underfull \hbox (badness 10000) in paragraph at lines 994--996
 []\TU/NotoSerif(1)/m/n/12 Με το \TU/DejaVuSansMono(0)/m/n/12 idx_visitor_performance \TU/NotoSerif(1)/m/n/12 και
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1042--1044
+Underfull \hbox (badness 10000) in paragraph at lines 994--996
 \TU/DejaVuSansMono(0)/m/n/12 performance_id_FK \TU/NotoSerif(1)/m/n/12 το κόστος έπεσε σε [][]\TU/DejaVuSansMono(0)/m/n/12 "3.15" []\TU/NotoSerif(1)/m/n/12 ή
  []
 
-[26]
-Underfull \hbox (badness 1048) in paragraph at lines 1052--1057
+
+Underfull \hbox (badness 1048) in paragraph at lines 1004--1009
 []\TU/NotoSerif(1)/b/n/12 Q06 Series (Μέσος Όρος Βαθμολογίας per Performance
  []
 
 
-Underfull \hbox (badness 2913) in paragraph at lines 1052--1057
+Underfull \hbox (badness 2913) in paragraph at lines 1004--1009
 \TU/NotoSerif(1)/m/n/12 της συνολικής βαθμολογίας. Η χρήση του σύνθετου index
  []
 
 
-Underfull \hbox (badness 1728) in paragraph at lines 1070--1074
+Underfull \hbox (badness 1728) in paragraph at lines 1022--1026
 []\TU/NotoSerif(1)/b/n/12 Q10 (Top 3 Ζεύγη Υπο‐είδων) \TU/NotoSerif(1)/m/n/12 Οι συχνότεροι συνδυασμοί
  []
 
 
-Underfull \hbox (badness 6364) in paragraph at lines 1070--1074
+Underfull \hbox (badness 6364) in paragraph at lines 1022--1026
 \TU/NotoSerif(1)/m/n/12 υπο‐είδους εμφανίσεων είναι: \TU/NotoSerif(1)/m/it/12 hard rock–rock \TU/NotoSerif(1)/m/n/12 (20 φορές),
  []
 
-[27]
-Underfull \hbox (badness 1253) in paragraph at lines 1106--1106
+[26]
+Underfull \hbox (badness 1253) in paragraph at lines 1058--1058
 []\TU/NotoSerif(1)/b/n/17.28 Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 1109--1110
+Underfull \hbox (badness 10000) in paragraph at lines 1061--1062
 []\TU/NotoSerif(1)/m/n/12 Η ερώτηση μετρά τον μέσο όρο δύο κριτηρίων
  []
 
-[28]
+[27] [28]
 Missing character: There is no ∙ (U+2219) in font Noto Serif Regular/OT:script=latn;language=dflt;!
-[29]
-Underfull \hbox (badness 2443) in paragraph at lines 1189--1189
+
+Underfull \hbox (badness 2443) in paragraph at lines 1141--1141
 []\TU/NotoSerif(1)/b/n/17.28 Ερώτημα 6 – Παραστάσεις Επισκέπτη &
  []
 
-[30]
-Underfull \hbox (badness 10000) in paragraph at lines 1223--1227
+[29]
+Underfull \hbox (badness 10000) in paragraph at lines 1175--1179
 []\TU/NotoSerif(1)/b/n/12 Παρατήρηση. \TU/NotoSerif(1)/m/n/12 Ο σύνθετος unique‑index
  []
 
 
-Overfull \hbox (14.57813pt too wide) in paragraph at lines 1223--1227
+Overfull \hbox (14.57813pt too wide) in paragraph at lines 1175--1179
 \TU/DejaVuSansMono(0)/m/n/12 uk_visitor_performance(visitor_id_FK, performance_id_FK)
  []
 
 
-Underfull \hbox (badness 2726) in paragraph at lines 1243--1245
+Underfull \hbox (badness 2726) in paragraph at lines 1195--1197
 []\TU/NotoSerif(1)/b/n/12 Αποτέλεσμα. \TU/NotoSerif(1)/m/n/12  Full scan 400 γραμμών· το κόστος εκτοξεύεται
  []
 
-[31]
-Underfull \hbox (badness 10000) in paragraph at lines 1266--1269
+[30]
+Underfull \hbox (badness 10000) in paragraph at lines 1218--1221
 []\TU/NotoSerif(1)/m/it/12 Mock dataset: \TU/NotoSerif(1)/m/n/12 Εγγραφές παράγονται επαναλήψιμα
  []
 
 
-Underfull \hbox (badness 6001) in paragraph at lines 1266--1269
+Underfull \hbox (badness 6001) in paragraph at lines 1218--1221
 \TU/NotoSerif(1)/m/n/12 (\TU/DejaVuSansMono(0)/m/n/12 Faker.seed(42)\TU/NotoSerif(1)/m/n/12 ) και ελέγχονται με ενσωματωμένο self-
  []
 
-[32] (./report.aux)
+[31] [32] (./report.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-
-
-LaTeX Warning: There were undefined references.
-
 Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: BE6286043FEB4FA4E80CBF9B4A8F34FD;5914.
+(rerunfilecheck)             Checksum: 404400FA59E58B247F35F1EF8101A8FA;5914.
  ) 
 Here is how much of TeX's memory you used:
- 15168 strings out of 474878
- 298699 string characters out of 5762517
- 2156627 words of memory out of 5000000
- 36998 multiletter control sequences out of 15000+600000
+ 15322 strings out of 474878
+ 300507 string characters out of 5762517
+ 2167627 words of memory out of 5000000
+ 37148 multiletter control sequences out of 15000+600000
  563547 words of font info for 97 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
- 93i,12n,107p,480b,2027s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 93i,17n,107p,480b,2027s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
 Output written on report.pdf (32 pages).

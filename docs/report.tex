@@ -18,6 +18,7 @@
 \usepackage{longtable}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{makecell}
 
 % Set up listings for SQL
 \lstset{
@@ -53,10 +54,9 @@
 
 \section{Σχεδίαση και Ανάπτυξη Σχήματος}
 
-Η λογική σχεδίαση βασίστηκε στο Διάγραμμα E/R (Εικόνα~\ref{fig:er}) και
-μετατράπηκε σε σχεσιακό σχήμα 16 πινάκων (Πίνακας~\ref{tab:all-tables}).
-Το πλήρες~DDL παρατίθεται αυτούσιο στο Παράρτημα~\ref{app:install}∙
-εδώ παρουσιάζονται \emph{οι αρχές σχεδίασης} και οι σημαντικότεροι
+Η λογική σχεδίαση βασίστηκε στο Διάγραμμα E/R και
+μετατράπηκε σε σχεσιακό σχήμα 16 πινάκων.
+Το πλήρες~DDL παρατίθεται αυτούσιο στη συνέχεια. Εδώ παρουσιάζονται \emph{οι αρχές σχεδίασης} και οι σημαντικότεροι
 περιορισμοί ακεραιότητας \& οι δείκτες που υλοποιήθηκαν.
 
 \sloppy                   
@@ -134,7 +134,7 @@
         αποτροπή διπλοκαταχώρισης καλλιτέχνη.
   \item \texttt{Band(band\_name,~formation\_date)}:
         αντίστοιχα για συγκροτήματα.
-  \item Πίνακες $Ν\!:\!Ν$
+  \item Πίνακες:
         (\texttt{Artist\_Band}, \texttt{Performance\_Artist},
         \texttt{Stage\_Staff}) χρησιμοποιούν σύνθετο \texttt{PRIMARY~KEY}.
 \end{itemize}
@@ -157,8 +157,7 @@
       \texttt{trg\_artist\_double\_booking} & Καλλιτέχνης σε άλλη σκηνή       & Αποφυγή ταυτόχρονων bookings                          & BEFORE~INSERT \\
       \texttt{trg\_artist\_consecutive\_years} & Συνεχόμενες συμμετοχές        & Μέγιστο 3 έτη                                         & BEFORE~INSERT \\
       \texttt{trg\_ticket\_capacity}        & Χωρητικότητα \& VIP quota       & VIP~$\le$~10 \%, tickets~$\le$~capacity               & BEFORE~INSERT \\
-      \texttt{trg\_rating\_allowed}         & Έλεγχος ενεργού εισιτηρίου      & Μόνο κάτοχος ενεργού εισιτηρίου βαθμολογεί            & BEFORE~INSERT \\
-      \texttt{trg\_artist\_member\_check}★  & Μέλος ≠ guest conflict          & Artist πρέπει ήδη να ανήκει στο Band                  & BEFORE~INSERT \\ \bottomrule
+      \texttt{trg\_rating\_allowed}         & Έλεγχος ενεργού εισιτηρίου      & Μόνο κάτοχος ενεργού εισιτηρίου βαθμολογεί            & BEFORE~INSERT \\ \bottomrule
     \end{tabular}}
   \caption{Triggers επιχειρησιακής λογικής}
   \label{tab:trg}
@@ -168,8 +167,7 @@
 Κατά το import CSV ορίζουμε \texttt{@bulk\_load=1} ώστε οι πιο «βαριοί»
 έλεγχοι (π.\,χ.\ \texttt{trg\_staff\_quota}) να παραλείπονται —
 το import επιταχύνεται $\approx$40 \%.
-
-\subsection{Ευρετήρια (Index Design) και Δικαιολόγηση}
+\subsection{Ευρετήρια (Index Design) και Δικαιολόγηση}
 
 Επιλέχθηκαν ευρετήρια για \emph{συχνά} φίλτρα σε
 \texttt{WHERE}, \texttt{JOIN}, \texttt{GROUP~BY}, \texttt{ORDER~BY}.
@@ -178,93 +176,47 @@
 \setlength{\tabcolsep}{12pt}        % default=6pt, δοκίμασε και 14pt–16pt
 \renewcommand{\arraystretch}{1.3}   % default=1.0, δοκίμασε και 1.4
 
-% --- ο πίνακας Longtable ---
-\begin{longtable}{
-  >{\raggedright\arraybackslash}p{3cm}
-  >{\raggedright\arraybackslash}p{5cm}
-  >{\raggedright\arraybackslash}p{6cm}
-}
+
+
+\begin{table}[ht]
+  \centering
   \caption{Ευρετήρια και δικαιολόγηση}
-  \label{tab:indexes_full}\\
-  \toprule
-  \textbf{Index} & \textbf{Στήλες} & \textbf{Λόγος / Ερωτήματα} \\
-  \midrule
-  \endfirsthead
+  \label{tab:indexes_full}
+  \setlength{\tabcolsep}{12pt}
+  \renewcommand{\arraystretch}{1.3}
+  \begin{tabular}{@{} p{4cm} p{5cm} p{6cm} @{}}
+    \toprule
+    \textbf{Index} & \textbf{Στήλες} & \textbf{Αιτιολόγηση} \\
+    \midrule
+    \texttt{idx\_event\_schedule} &
+      \makecell[l]{\texttt{(event\_date,}\\
+                   \texttt{start\_time,}\\
+                   \texttt{end\_time)}} &
+      Πρόγραμμα ημέρας, trigger \texttt{event\_overlap}. \\
+    [1ex]
+    \texttt{idx\_performance\_by\_event} &
+      \makecell[l]{\texttt{(event\_id\_FK,}\\
+                   \texttt{start\_time)}} &
+      Εμφανίσεις ανά event, trigger \texttt{performance\_gap}. \\
+    [1ex]
+    \texttt{uk\_visitor\_performance} &
+      \makecell[l]{\texttt{(visitor\_id\_FK,}\\
+                   \texttt{performance\_id\_FK)}} &
+      Αποτροπή διπλο-rating, «οι κριτικές μου». \\
+    [1ex]
+    \texttt{idx\_staff\_role} &
+      \makecell[l]{\texttt{(staff\_role)}} &
+      Συχνές καταμετρήσεις security/support. \\
+    \bottomrule
+  \end{tabular}
+  \setlength{\tabcolsep}{8pt}
+\end{table}
 
-  \toprule
-  \textbf{Index} & \textbf{Στήλες} & \textbf{Λόγος} \\
-  \midrule
-  \endhead
-
-  \midrule
-  \multicolumn{3}{r}{\textit{συνεχίζεται…}}\\
-  \endfoot
-
-  \bottomrule
-  \endlastfoot
-
-  PRIMARY (auto)
-    & κάθε \texttt{id}
-    & Lookup σε JOINs (\texttt{eq\_ref}). \\
-
-  idx\_event\_schedule
-    & (event\_date, start\_time, end\_time)
-    & Πρόγραμμα ημέρας, trigger \texttt{event\_overlap}. \\
-
-  idx\_performance\_by\_event
-    & (event\_id\_FK, start\_time)
-    & Εμφανίσεις ανά event, trigger \texttt{performance\_gap}. \\
-
-  uk\_visitor\_performance
-    & (visitor\_id\_FK, performance\_id\_FK)
-    & Αποτροπή διπλο-rating, «οι κριτικές μου». \\
-
-  idx\_staff\_role
-    & (staff\_role)
-    & Συχνές καταμετρήσεις security/support. \\
-
-  idx\_ticket\_vip★
-    & (event\_id\_FK, ticket\_category)
-    & Υπολογισμός VIP quota (trigger \texttt{ticket\_capacity}). \\
-
-  idx\_ticket\_visitor★
-    & (visitor\_id\_FK)
-    & Έλεγχος ενεργών εισιτηρίων (trigger \texttt{rating\_allowed}). \\
-
-  idx\_staff\_day★
-    & (stage\_id\_FK, start\_date)
-    & HR dashboards / quota checks. \\
-
-  idx\_perf\_artist★
-    & (artist\_id\_FK, performance\_id\_FK)
-    & Πρόγραμμα καλλιτέχνη, έλεγχος double-booking. \\
-
-  idx\_perf\_band★
-    & (band\_id\_FK, performance\_id\_FK)
-    & Στατιστικά ανά συγκρότημα. \\
-
-  idx\_resale\_queue★
-    & (event\_id\_FK, interest\_type)
-    & Real-time matching buyer/seller. \\
-
-  idx\_genre\_artist★
-    & (music\_genre, sub\_genre)
-    & Φίλτρο line-up (Web UI). \\
-
-  ft\_stage\_descr★
-    & FULLTEXT(stage\_description)
-    & Ελεύθερη αναζήτηση σε CMS (InnoDB FTS). \\
-\end{longtable}
 
 
 % Πριν τον πίνακα, στο preamble ή τοπικά:
 \setlength{\tabcolsep}{8pt}
 
-
-\paragraph{Κόστος συντήρησης.}
-Σε write‑heavy πίνακες (π.\,χ.\ \texttt{Ticket}) χρησιμοποιήθηκαν
-\emph{σύνθετα} indexes αντί για πολλούς μονούς, ώστε να μειωθεί το
-overhead ενημέρωσης.
 
 \paragraph{Μεθοδολογία μέτρησης.}
 \begin{itemize}
@@ -276,8 +228,8 @@ overhead ενημέρωσης.
 Ενδεικτικά αποτελέσματα:
 \begin{itemize}
   \item \textbf{Query 04}: από \verb|"query_cost": "320.25"| \(\rightarrow\)
-        \verb|"26.79"| (≈12× ταχύτερο) χάρη στο
-        \texttt{idx\_performance\_by\_event}.
+        \verb|"26.79"| ($\approx$12$\times$ ταχύτερο) χάρη στο
+          \texttt{idx\_performance\_by\_event}.
   \item \textbf{Query 06}: από \verb|141.83|\(\rightarrow\)\verb|3.15|
         (‑97.8 \%) χάρη στο \texttt{uk\_visitor\_performance}.
 \end{itemize}
@@ -333,7 +285,7 @@ overhead ενημέρωσης.
           \item \emph{Seed 9:} Οι επισκέπτες \#1 και \#2 παίρνουν
                 τουλάχιστον 4 performances στο παλαιότερο έτος.
           \item \emph{Seed 14:} Ισορρόπηση rock εμφανίσεων:
-                ≥ 3 σε κάθε ένα από τα έτη 2023 και 2024.
+                \(\ge\) 3 σε κάθε ένα από τα έτη 2023 και 2024.
         \end{enumerate}
 
   \item \textbf{Επιπλέον έλεγχοι:}
@@ -1253,7 +1205,7 @@ ORDER  BY ...;
 \section{Συμπεράσματα Εργασίας}
 \label{sec:conclusions}
 
-Η παρούσα μελέτη κάλυψε ολόκληρο τον κύκλο ανάπτυξης βάσης δεδομένων:
+Η παρούσα εργασία κάλυψε ολόκληρο τον κύκλο ανάπτυξης βάσης δεδομένων:
 από τη λογική σχεδίαση και τη δημιουργία ρεαλιστικού mock dataset
 μέχρι τη βελτιστοποίηση και τη μέτρηση απόδοσης των ερωτημάτων.
 
@@ -1261,7 +1213,7 @@ ORDER  BY ...;
 \textbf{Κύρια Ευρήματα}
 \begin{itemize}
   \item \emph{Λογική Σχεδίαση:}  
-        16 πίνακες σε 3NF, 28 \texttt{CHECK}, 9 triggers, 25 ξένα κλειδιά·
+        16 πίνακες, 28 \texttt{CHECK}, 9 triggers, 25 ξένα κλειδιά·
         καλύπτουν πλήρως την επιχειρησιακή λογική και εγγυώνται ακεραιότητα.
   \item \emph{Mock dataset:}  
         Εγγραφές παράγονται επαναλήψιμα (\texttt{Faker.seed(42)}) 
@@ -1271,12 +1223,10 @@ ORDER  BY ...;
           \item[Q04:] Το κόστος έπεσε από 320 I/O σε 31 I/O (-90 \%) με το index \texttt{performance\_id\_FK}.
           \item[Q06:] Το κόστος έπεσε από 142 I/O σε 3 I/O (-97.9 \%) με το composite index \texttt{uk\_visitor\_performance}.
         \end{description}
-        Το είδος join (nested vs. hash) προσέφερε οριακά (< 5 \%) επιπλέον οφέλη μόνον αφού είχε εφαρμοστεί ο σωστός index.
+        Το είδος join (nested vs. hash) προσέφερε οριακά (< 5 \%) επιπλέον οφέλη μόνον αφού είχε εφαρμοστεί το σωστό index.
   \item \emph{Φόρτωση Δεδομένων:}  
         Απενεργοποίηση FK checks και triggers κατά το \texttt{LOAD DATA}
         μείωσε το χρόνο από 18 s σε 4.3 s (-76 \%).
 \end{itemize}
-
- 
 
 \end{document}

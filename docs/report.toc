@@ -6,25 +6,24 @@
 \contentsline {section}{\numberline {2}Σχεδίαση και Ανάπτυξη Σχήματος}{4}{section.2}%
 \contentsline {subsection}{\numberline {2.1}Περιορισμοί που εξασφαλίζουν την Ορθότητα}{5}{subsection.2.1}%
 \contentsline {paragraph}{Συμπλήρωση.}{5}{section*.3}%
-\contentsline {subsection}{\numberline {2.2}Ευρετήρια (Index Design) και Δικαιολόγηση}{6}{subsection.2.2}%
-\contentsline {paragraph}{Κόστος συντήρησης.}{7}{section*.8}%
-\contentsline {paragraph}{Μεθοδολογία μέτρησης.}{8}{section*.9}%
-\contentsline {subsection}{\numberline {2.3}Mock data}{8}{subsection.2.3}%
-\contentsline {section}{\numberline {3}Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}{10}{section.3}%
-\contentsline {subsection}{\numberline {3.1}Script Δημιουργίας Σχήματος (\texttt {install.sql})}{10}{subsection.3.1}%
-\contentsline {subsection}{\numberline {3.2}Script Φόρτωσης Δεδομένων (\texttt {load.sql})}{22}{subsection.3.2}%
-\contentsline {subsection}{\numberline {3.3}Ανασκόπηση Αποτελεσμάτων Ερωτημάτων}{26}{subsection.3.3}%
-\contentsline {section}{\numberline {4}Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{28}{section.4}%
+\contentsline {subsection}{\numberline {2.2}Ευρετήρια (Index Design) και Δικαιολόγηση}{6}{subsection.2.2}%
+\contentsline {paragraph}{Μεθοδολογία μέτρησης.}{7}{section*.8}%
+\contentsline {subsection}{\numberline {2.3}Mock data}{7}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Script Δημιουργίας Σχήματος (\texttt {install.sql})}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Script Φόρτωσης Δεδομένων (\texttt {load.sql})}{21}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Ανασκόπηση Αποτελεσμάτων Ερωτημάτων}{25}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Ερώτημα 4 – Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{27}{section.4}%
 \contentsline {subsection}{\numberline {4.1}Βασική εκδοχή (Q04.sql)}{28}{subsection.4.1}%
-\contentsline {paragraph}{Σχέδιο εκτέλεσης (σύνοψη)}{29}{lstlisting.-4}%
-\contentsline {subsection}{\numberline {4.2}Βελτιστοποίηση με \texttt {FORCE INDEX} (Q04a.sql)}{29}{subsection.4.2}%
+\contentsline {paragraph}{Σχέδιο εκτέλεσης (σύνοψη)}{28}{lstlisting.-4}%
+\contentsline {subsection}{\numberline {4.2}Βελτιστοποίηση με \texttt {FORCE INDEX} (Q04a.sql)}{28}{subsection.4.2}%
 \contentsline {paragraph}{Σχέδιο εκτέλεσης – Nested Loop}{29}{lstlisting.-6}%
 \contentsline {subsection}{\numberline {4.3}Forced Hash Join (Q04d.sql)}{29}{subsection.4.3}%
-\contentsline {subsection}{\numberline {4.4}Συμπέρασμα Ερώτημα 4}{30}{subsection.4.4}%
-\contentsline {section}{\numberline {5}Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Ratings}{30}{section.5}%
+\contentsline {subsection}{\numberline {4.4}Συμπέρασμα Ερώτημα 4}{29}{subsection.4.4}%
+\contentsline {section}{\numberline {5}Ερώτημα 6 – Παραστάσεις Επισκέπτη \& Μέσος Όρος Ratings}{29}{section.5}%
 \contentsline {subsection}{\numberline {5.1}Βασική εκδοχή (Q06.sql)}{30}{subsection.5.1}%
-\contentsline {paragraph}{Σχέδιο εκτέλεσης (σύνοψη)}{31}{lstlisting.-10}%
-\contentsline {subsection}{\numberline {5.2}Λάθος \texttt {FORCE INDEX} (Q06a.sql)}{31}{subsection.5.2}%
+\contentsline {paragraph}{Σχέδιο εκτέλεσης (σύνοψη)}{30}{lstlisting.-10}%
+\contentsline {subsection}{\numberline {5.2}Λάθος \texttt {FORCE INDEX} (Q06a.sql)}{30}{subsection.5.2}%
 \contentsline {subsection}{\numberline {5.3}Συμπέρασμα Ερώτημα 6}{31}{subsection.5.3}%
 \contentsline {section}{\numberline {6}Συμπεράσματα Εργασίας}{31}{section.6}%
 \xpginauxfilefalse 
