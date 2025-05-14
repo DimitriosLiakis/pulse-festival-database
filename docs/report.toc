@@ -48,4 +48,5 @@
 \contentsline {paragraph}{Q06b – optimizer\_trace}{35}{lstlisting.-20}%
 \contentsline {paragraph}{Q06c – /*+ LOOP\_JOIN */}{35}{lstlisting.-21}%
 \contentsline {paragraph}{Q06d – /*+ HASH\_JOIN */}{35}{lstlisting.-22}%
+\contentsline {paragraph}{Σημείωση}{35}{section*.31}%
 \xpginauxfilefalse 
