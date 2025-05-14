@@ -1,0 +1,51 @@
+\xpginauxfiletrue 
+\selectlanguage *{greek}
+\contentsline {section}{\numberline {1}Σχεδίαση Βάσης Δεδομένων}{3}{section.1}%
+\contentsline {subsection}{\numberline {1.1}Διάγραμμα Οντοτήτων-Συσχετίσεων (E/R)}{3}{subsection.1.1}%
+\contentsline {subsection}{\numberline {1.2}Σχεσιακό Σχήμα}{4}{subsection.1.2}%
+\contentsline {section}{\numberline {2}Σχεδίαση και Ανάπτυξη Σχήματος}{4}{section.2}%
+\contentsline {subsection}{\numberline {2.1}Περιορισμοί που εξασφαλίζουν την Ορθότητα}{5}{subsection.2.1}%
+\contentsline {paragraph}{Συμπλήρωση.}{5}{section*.3}%
+\contentsline {subsection}{\numberline {2.2}Ευρετήρια (Index Design) και Δικαιολόγηση}{6}{subsection.2.2}%
+\contentsline {paragraph}{Μεθοδολογία μέτρησης.}{7}{section*.8}%
+\contentsline {subsection}{\numberline {2.3}Mock data}{7}{subsection.2.3}%
+\contentsline {section}{\numberline {3}Υλοποίηση Σχήματος και Φόρτωση Δεδομένων}{9}{section.3}%
+\contentsline {subsection}{\numberline {3.1}Script Δημιουργίας Σχήματος (\texttt {install.sql})}{9}{subsection.3.1}%
+\contentsline {subsection}{\numberline {3.2}Script Φόρτωσης Δεδομένων (\texttt {load.sql})}{21}{subsection.3.2}%
+\contentsline {subsection}{\numberline {3.3}Ανασκόπηση Αποτελεσμάτων Ερωτημάτων}{25}{subsection.3.3}%
+\contentsline {section}{\numberline {4}Ερώτημα 4: Μέσος Όρος Αξιολογήσεων Καλλιτέχνη}{27}{section.4}%
+\contentsline {subsection}{\numberline {4.1}Βασική Έκδοση (Q04.sql)}{28}{subsection.4.1}%
+\contentsline {paragraph}{Σχέδιο Εκτέλεσης (EXPLAIN)}{28}{section*.9}%
+\contentsline {subsection}{\numberline {4.2}Q04a: FORCE INDEX}{28}{subsection.4.2}%
+\contentsline {paragraph}{EXPLAIN}{29}{section*.10}%
+\contentsline {subsection}{\numberline {4.3}Q04b: Optimizer Trace}{29}{subsection.4.3}%
+\contentsline {paragraph}{Σημείωση}{29}{section*.11}%
+\contentsline {subsection}{\numberline {4.4}Q04c: Forced Nested–Loop Join}{29}{subsection.4.4}%
+\contentsline {paragraph}{EXPLAIN}{29}{section*.12}%
+\contentsline {subsection}{\numberline {4.5}Q04d: Forced Hash Join}{30}{subsection.4.5}%
+\contentsline {paragraph}{EXPLAIN}{30}{section*.13}%
+\contentsline {section}{\numberline {5}Ερώτημα 6: Μέσος Όρος Ratings Επισκέπτη ανά Παράσταση}{30}{section.5}%
+\contentsline {subsection}{\numberline {5.1}Βασική Έκδοση (Q06.sql)}{30}{subsection.5.1}%
+\contentsline {paragraph}{EXPLAIN}{31}{section*.14}%
+\contentsline {subsection}{\numberline {5.2}Q06a: Λάθος FORCE INDEX}{31}{subsection.5.2}%
+\contentsline {paragraph}{EXPLAIN}{31}{section*.15}%
+\contentsline {subsection}{\numberline {5.3}Q06b: Optimizer Trace}{31}{subsection.5.3}%
+\contentsline {paragraph}{Σημείωση}{31}{section*.16}%
+\contentsline {subsection}{\numberline {5.4}Q06c: Forced Nested–Loop Join}{31}{subsection.5.4}%
+\contentsline {paragraph}{EXPLAIN}{31}{section*.17}%
+\contentsline {subsection}{\numberline {5.5}Q06d: Forced Hash Join}{32}{subsection.5.5}%
+\contentsline {paragraph}{EXPLAIN}{32}{section*.18}%
+\contentsline {subsection}{\numberline {5.6}Συμπέρασμα}{32}{subsection.5.6}%
+\contentsline {section}{\numberline {6}Συμπεράσματα Εργασίας}{32}{section.6}%
+\contentsline {section}{\numberline {\Greeknumeral {1}}Αποσπάσματα Κώδικα}{33}{appendix.Alph1}%
+\contentsline {paragraph}{Q04 – Baseline}{33}{lstlisting.-13}%
+\contentsline {paragraph}{Q04a – FORCE INDEX}{33}{lstlisting.-14}%
+\contentsline {paragraph}{Q04b – optimizer\_trace}{33}{lstlisting.-15}%
+\contentsline {paragraph}{Q04c – /*+ LOOP\_JOIN */}{34}{lstlisting.-16}%
+\contentsline {paragraph}{Q04d – /*+ HASH\_JOIN */}{34}{lstlisting.-17}%
+\contentsline {paragraph}{Q06 – Baseline}{34}{lstlisting.-18}%
+\contentsline {paragraph}{Q06a – λάθος FORCE INDEX}{34}{lstlisting.-19}%
+\contentsline {paragraph}{Q06b – optimizer\_trace}{35}{lstlisting.-20}%
+\contentsline {paragraph}{Q06c – /*+ LOOP\_JOIN */}{35}{lstlisting.-21}%
+\contentsline {paragraph}{Q06d – /*+ HASH\_JOIN */}{35}{lstlisting.-22}%
+\xpginauxfilefalse 
