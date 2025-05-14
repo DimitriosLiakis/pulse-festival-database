@@ -1,4 +1,3 @@
-
 SET @p_genre = 'rock';   
 SET @p_year  = 2024;     
 
