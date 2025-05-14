@@ -1,14 +1,14 @@
-/* Δώστε τιμές στις δύο μεταβλητές πριν τρέξετε το SELECT */
+
 SET @p_genre = 'rock';   
 SET @p_year  = 2024;     
 
 SELECT  a.artist_id,
         COALESCE(a.pseudonym, a.real_name) AS artist_name,
         a.music_genre,
-        /* ‘Y’ αν ο καλλιτέχνης έπαιξε σε εκδήλωση τη συγκεκριμένη χρονιά */
+
         CASE WHEN x.artist_id_FK IS NOT NULL THEN 'Y' ELSE 'N' END AS participated
 FROM    Artist AS a
-LEFT JOIN (   /* σύνολο καλλιτεχνών που εμφανίστηκαν το @p_year */
+LEFT JOIN ( 
         SELECT DISTINCT pa.artist_id_FK
         FROM   Performance_Artist pa
         JOIN   Performance       p ON p.performance_id = pa.performance_id_FK
