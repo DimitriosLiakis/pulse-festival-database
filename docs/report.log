@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  14 MAY 2025 13:50
+This is XeTeX, Version 3.141592653-2.6-0.999995 (TeX Live 2023/Debian) (preloaded format=xelatex 2025.5.5)  14 MAY 2025 19:00
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -524,13 +524,13 @@ Overfull \hbox (12.67606pt too wide) in paragraph at lines 23--23
  [] [][]\TU/NotoSerif(1)/b/n/12 Ερώτημα 6 – Παραστάσεις Επισκέπτη & Μέσος Όρος Ratings[] []  
  []
 
-)
+[1
+
+])
 \tf@toc=\write4
 \openout4 = `report.toc'.
 
- [1
-
-] [2]
+ [2]
 File: er.png Graphic file (type bmp)
 <er.png>
 File: relational.png Graphic file (type bmp)
@@ -764,14 +764,21 @@ Underfull \hbox (badness 6001) in paragraph at lines 1218--1221
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
-Package rerunfilecheck Info: File `report.out' has not changed.
-(rerunfilecheck)             Checksum: 404400FA59E58B247F35F1EF8101A8FA;5914.
+
+
+Package rerunfilecheck Warning: File `report.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `report.out':
+(rerunfilecheck)             Before: E5047FA4790B45A7435D5B5D67D1FFA0;6314
+(rerunfilecheck)             After:  404400FA59E58B247F35F1EF8101A8FA;5914.
  ) 
 Here is how much of TeX's memory you used:
- 15322 strings out of 474878
- 300507 string characters out of 5762517
+ 15324 strings out of 474878
+ 300525 string characters out of 5762517
  2167627 words of memory out of 5000000
- 37148 multiletter control sequences out of 15000+600000
+ 37150 multiletter control sequences out of 15000+600000
  563547 words of font info for 97 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  93i,17n,107p,480b,2027s stack positions out of 10000i,1000n,20000p,200000b,200000s
